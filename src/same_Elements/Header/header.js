@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./header.css";
 import "./burger-nenu.css";
-import logo from "../src/img/Logo.png";
-import darkThemeIcon from "../src/img/Dark-theme.png";
-import lightThemeIcon from "../src/img/Ligth-theme.png";
-import userIcon from "../src/img/User-icon.png";
+import logo from "../../assets/img/Logo.png";
+import darkThemeIcon from "../../assets/img/Dark-theme.png";
+import lightThemeIcon from "../../assets/img/Ligth-theme.png";
+import userIcon from "../../assets/img/User-icon.png";
 
 const Header = () => {
   return (
