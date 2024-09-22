@@ -1,8 +1,10 @@
 import GreenMenu from "../_components/GreenMenu/greenMenu";
 import MeetDae from "../_components/MeetDae/meetDae";
+import ShopNow from "../_components/ShopNow/ShopNow";
 const Main = () => {
   return (
     <div>
+      <ShopNow text="SHOP NOW" />
       <GreenMenu />
       <MeetDae
         annotation="Meet Dae"
