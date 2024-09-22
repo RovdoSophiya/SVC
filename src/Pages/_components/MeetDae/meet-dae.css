@@ -1,0 +1,182 @@
+.meet-dae {
+  width: 100%;
+  height: 1069px;
+  background-color: var(--var-dae-bg);
+}
+.first-girl {
+  position: relative;
+  width: 44%;
+  top: 62px;
+  left: 12.7%;
+  z-index: 1;
+}
+.second-girl {
+  position: relative;
+  width: 23.5%;
+  top: 95px;
+  left: -37.1%;
+  z-index: 2;
+}
+.Dae-annotation-text {
+  position: relative;
+  width: 36%;
+  background-color: var(--var-dae-annotation-bg);
+  color: var(--var-header-menu-text);
+  font-style: normal;
+  font-family: "Roboto";
+  z-index: 3;
+  bottom: 60%;
+  left: 53.1%;
+}
+.Dae-line {
+  width: 50%;
+  margin-left: 37.7%;
+  padding-top: 9.4%;
+  padding-bottom: 4.7%;
+  font-size: 30px;
+  line-height: 57.6px; /* 192% */
+}
+.Dae-text {
+  width: 80.3%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 8%;
+  font-size: 19px;
+  line-height: 30.4px; /* 160% */
+}
+.Learn-more {
+  position: relative;
+  margin-left: 8.9%;
+  margin-bottom: 10%;
+  color: var(--var-header-menu-text);
+  font-size: 16px;
+  line-height: 25.6px; /* 160% */
+  background: none;
+  border: none;
+  transform: transition 0.6s tease-in-out;
+}
+.Learn-more:hover {
+  transform: scale(1.007);
+}
+.Learn-more:hover {
+  transform: scale(1.007);
+}
+.Learn-more::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.6s ease-in-out;
+}
+.Learn-more:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+@media (max-width: 1250px) {
+  .meet-dae {
+    height: 900px;
+  }
+  .Dae-annotation-text {
+    width: 50%;
+    bottom: 60%;
+    left: 45%;
+  }
+  .Dae-line {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 28px;
+  }
+}
+@media (max-width: 840px) {
+  .second-girl {
+    left: -42%;
+  }
+  .first-girl {
+    left: 4%;
+  }
+  .meet-dae {
+    height: 700px;
+  }
+  .Dae-annotation-text {
+    width: 53%;
+    bottom: 55%;
+    left: 45%;
+  }
+  .Dae-line {
+    padding-top: 5.4%;
+    padding-bottom: 0%;
+    font-size: 24px;
+  }
+  .Dae-text {
+    width: 90%;
+    margin-bottom: 0%;
+    font-size: 16px;
+    line-height: 30.4px; /* 160% */
+  }
+  .Dae-line {
+    padding-top: 0px;
+    font-size: 26px;
+  }
+}
+@media (max-width: 650px) {
+  .second-girl {
+    display: none;
+  }
+  .first-girl {
+    display: none;
+  }
+  .meet-dae {
+    height: 600px;
+  }
+  .Dae-annotation-text {
+    width: 80%;
+    bottom: 0%;
+    left: 0%;
+    top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .Learn-more {
+    width: 100%;
+    text-align: center;
+    margin: 0 0 0 0;
+    padding: 20px 0;
+  }
+}
+@media (max-width: 495px) {
+  .meet-dae {
+    height: 660px;
+  }
+}
+@media (max-width: 440px) {
+  .meet-dae {
+    height: 680px;
+  }
+}
+@media (max-width: 390px) {
+  .meet-dae {
+    height: 680px;
+  }
+  .Dae-line {
+    padding-top: 0px;
+    font-size: 20px;
+  }
+  .Learn-more {
+    margin-bottom: 5px;
+  }
+}
+@media (max-width: 358px) {
+  .meet-dae {
+    height: 840px;
+  }
+}
+@media (max-width: 325px) {
+  .meet-dae {
+    height: 850px;
+  }
+}
