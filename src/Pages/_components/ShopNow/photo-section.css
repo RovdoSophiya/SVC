@@ -22,9 +22,11 @@
   transition: transform 0.6s ease-in-out, box-shadow 0.6s ease-in-out;
 }
 .shop-text {
+  border-color: transparent;
+  background-color: transparent;
   color: #fff;
   font-family: "Roboto";
   font-size: 17px;
   line-height: 28.8px; /* 169.412% */
-  margin-left: 16%;
+  margin-left: 11%;
 }
