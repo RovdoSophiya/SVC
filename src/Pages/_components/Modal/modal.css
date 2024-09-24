@@ -7,11 +7,12 @@
   overflow-y: auto;
   display: none;
   z-index: 1000;
-  opacity: 0;
   transition: 0.5s;
+  pointer-events: none;
 }
 .modal.active {
-  opacity: 1;
+  display: flex;
+  pointer-events: all;
 }
 .modal-container {
   position: relative;

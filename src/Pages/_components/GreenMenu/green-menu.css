@@ -19,9 +19,12 @@
   transition: transform 0.6s ease-in-out;
 }
 .green-menu-text3 {
+  background-color: transparent;
+  border-color: transparent;
   color: #f6f4ec;
   position: relative;
-  font-size: 16px;
+  margin-left: -5px;
+  font-size: 20px;
   line-height: 27.2px; /* 170% */
   transition: transform 0.6s ease-in-out;
 }
