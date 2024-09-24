@@ -18,7 +18,11 @@ const GreenMenu = () => {
         <p data-i18="greenMenuText2" className="green-menu-text2">
           {greenMenuTexts[1]} {/* Meet Monsoon Moisture Mask */}
         </p>
-        <button data-i18="greenMenuText3" className="green-menu-text3" onClick={()=>setModalActive(true)}>
+        <button
+          data-i18="greenMenuText3"
+          className="green-menu-text3"
+          onClick={() => setModalActive(true)}
+        >
           {greenMenuTexts[2]} {/* Shop Now */}
         </button>
       </section>
