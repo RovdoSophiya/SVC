@@ -1,0 +1,41 @@
+.container {
+  width: 100%;
+  text-align: center;
+}
+.reviewsLogo {
+  color: var(--var-color-red);
+  font-family: "Roboto";
+  font-size: 30px;
+  line-height: 28.8px;
+}
+.form {
+  display: inline-flex;
+}
+input {
+  background-color: transparent;
+  border-color: var(--var-color-red);
+}
+button {
+  background-color: var(--var-color-red);
+  border-color: var(--var-color-red);
+  color: white;
+}
+.card {
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.card.selected {
+  background-color: wheat;
+}
+@media (max-width: 634px) {
+  .form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
