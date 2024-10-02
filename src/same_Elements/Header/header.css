@@ -89,55 +89,8 @@ header {
   align-items: center;
   gap: 41px;
 }
-.language-buttons-and-themes button {
-  border-color: rgb(219, 176, 113);
-  background: var(--var-themes-color);
-}
-.language-buttons {
-  display: flex;
-  width: 36.43%; /* 94px*/
-  height: 39px;
-  padding: 5px 0px;
-  justify-content: center;
-  align-items: flex-start;
-}
-.lang-button {
-  width: 45px;
-}
-.rus,
-.en {
-  color: var(--var-header-menu-text);
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 28.8px; /* 160% */
-  text-transform: capitalize;
-}
-.rus:hover,
-.en:hover {
-  transform: scale(1.1);
-  transition: transform 0.6s ease-in-out;
-}
-.red-theme .rus:focus,
-.red-theme .en:focus {
-  color: rgb(164, 137, 137);
-  transition: background-color 0.6s ease-in-out, color 0.6s ease-in-out;
-}
-.rus:focus,
-.en:focus {
-  background-color: var(--var-shop-burger);
-  color: rgb(251, 247, 247);
-  transition: background-color 0.6s ease-in-out, color 0.6s ease-in-out;
-}
-.themes {
-  display: flex;
-  width: 65px;
-  height: 27px;
-  justify-content: center;
-  align-items: flex-start;
-  border-radius: 5px;
-  margin-bottom: 10px;
-}
+
+
 .theme-page {
   width: 55px;
   height: 24px;
