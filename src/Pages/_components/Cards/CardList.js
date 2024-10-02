@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Card from "./Card";
 import "./card.css";
 
@@ -6,19 +6,6 @@ const CardList = () => {
   const [cards, setCards] = useState([]);
   const [selectedCards, setSelectedCards] = useState([]);
   const [newCard, setNewCard] = useState({ title: "", description: "" });
-
-  // Загрузка карточек из localStorage при монтировании
-  useEffect(() => {
-    const storedCards = localStorage.getItem("cards");
-    if (storedCards) {
-      setCards(JSON.parse(storedCards));
-    }
-  }, []);
-
-  // Сохранение карточек в localStorage при изменении состояния
-  useEffect(() => {
-    localStorage.setItem("cards", JSON.stringify(cards));
-  }, [cards]);
 
   const handleAddCard = () => {
     const newId = Date.now();

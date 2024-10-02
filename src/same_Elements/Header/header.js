@@ -20,7 +20,7 @@ const Header = () => {
           <Link to="/" className="menu-item" data-i18="main">
             Main
           </Link>
-          <Link to="/" className="menu-item" data-i18="shop">
+          <Link  className="menu-item" data-i18="shop">
             Shop
           </Link>
           <Link to="/about" className="menu-item" data-i18="story">
