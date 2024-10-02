@@ -20,7 +20,9 @@ header {
 .burger-menu {
   display: none;
 }
-
+.menu {
+  width: 45%;
+}
 .menu ul {
   display: flex;
   flex-direction: row;
@@ -29,14 +31,15 @@ header {
   margin-left: 3%;
   gap: 10%;
 }
-.menu ul li {
-  list-style: none;
-}
-.review-link {
+
+.link {
   text-decoration: none;
   color: rgb(255, 255, 255);
   font-size: 1.4rem;
   font-weight: 600;
+}
+.link:hover {
+  text-decoration: underline;
 }
 .welcome {
   width: 150px;
@@ -71,16 +74,27 @@ header {
   }
 }
 @media (max-width: 1235px) {
+  .menu {
+    width: 50%;
+  }
   .restaurant {
     font-size: 8.5rem;
   }
 }
+@media (max-width: 974px) {
+  .menu {
+    width: 60%;
+  }
+}
 @media (max-width: 873px) {
+  .menu {
+    width: 70%;
+  }
   .restaurant {
     font-size: 6.5rem;
   }
 }
-@media (max-width: 600px) {
+@media (max-width: 720px) {
   header {
     height: 450px;
   }

@@ -1,11 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import "./header.css";
+import { Container } from "@mui/material";
+import { Link } from "react-router-dom";
 
 export default function Header() {
   return (
     <header>
-      <div className="header-menu">
+      <Container className="header-menu">
         <div className="burger-menu">
           <div className="burger-icon">
             <span className="line"></span>
@@ -16,33 +17,33 @@ export default function Header() {
         <nav className="menu">
           <ul>
             <li className="menu-item main">
-              <Link to="/" className="review-link">
-                Main
+              <Link href="/" className="main link">
+                {"Main"}
               </Link>
             </li>
             <li className="menu-item about">
-              <Link to="/about" className="review-link">
-                About
+              <Link href="/about" className="about link">
+                {"Our story"}
               </Link>
             </li>
             <li className="menu-item reviews">
-              <Link to="/reviews" className="review-link">
-                Reviews
+              <Link href="/reviews" className="review link">
+                {"Reviews"}
               </Link>
             </li>
             <li className="menu-item contacts">
-              <Link to="/contacts" className="review-link">
-                Contacts
+              <Link href="/contacts" className="contact link">
+                {"Contacts"}
               </Link>
             </li>
           </ul>
         </nav>
         <div className="welcome">
-          <Link to="/" className="welcome-text">
+          <Link href="/welcome" className="welcome-text">
             We happy to see you!
           </Link>
         </div>
-      </div>
+      </Container>
       <div className="restaurant">
         <p>FEEL GOOD ABOUT YOUR FOOD!</p>
       </div>
