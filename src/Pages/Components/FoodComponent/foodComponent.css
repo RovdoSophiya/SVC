@@ -1,0 +1,14 @@
+.foodComponent {
+  margin-top: 100px;
+  margin-right: 100px;
+  margin-left: 100px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.foodComponent-annotation {
+  display: flex;
+  flex-direction: column;
+}
+.foodComponent-annotation p (:nth-child(1)) {
+}
