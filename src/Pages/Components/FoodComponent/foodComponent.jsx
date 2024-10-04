@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "@mui/material";
 import Food from "../../../assets/img/food.jpg";
 import "./foodComponent.css";
 

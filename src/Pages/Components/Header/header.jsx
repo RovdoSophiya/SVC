@@ -32,8 +32,8 @@ export default function Header() {
               </Link>
             </li>
             <li className="menu-item contacts">
-              <Link href="/contacts" className="contact link">
-                {"Contacts"}
+              <Link href="/menu" className="contact link">
+                {"Menu"}
               </Link>
             </li>
           </ul>
