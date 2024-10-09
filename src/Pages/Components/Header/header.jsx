@@ -23,7 +23,7 @@ export default function Header() {
             </li>
             <li className="menu-item about">
               <Link href="/about" className="about link">
-                {"Our story"}
+                {"About us"}
               </Link>
             </li>
             <li className="menu-item reviews">
