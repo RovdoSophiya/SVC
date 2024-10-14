@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1728840776386,
+    "make": "Toyota",
+    "model": "Camry",
+    "year": 2022,
+    "vin": "1234567890ABCD"
+  },
+  {
+    "id": 1728840776387,
+    "make": "Honda",
+    "model": "Accord",
+    "year": 2021,
+    "vin": "1234567890EFGH"
+  },
+  {
+    "id": 1728840776388,
+    "make": "Ford",
+    "model": "Mustang",
+    "year": 2020,
+    "vin": "1234567890IJKL"
+  },
+  {
+    "id": 1728840776389,
+    "make": "Tesla",
+    "model": "Model S",
+    "year": 2023,
+    "vin": "1234567890MNOP"
+  },
+  {
+    "id": 1728840776390,
+    "make": "BMW",
+    "model": "X5",
+    "year": 2022,
+    "vin": "1234567890QRST"
+  }
+]

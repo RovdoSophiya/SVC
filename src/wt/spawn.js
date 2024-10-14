@@ -1,16 +1,33 @@
-const { spawn } = require('child_process');
+const { spawn } = require("child_process");
+const path = require("path");
 
-function searchInCars(keyword) {
-    const child = spawn('node', ['search.js', keyword]);
+const searchCars = (keyword) => {
+  const findstr = spawn("findstr", [
+    keyword,
+    path.join(__dirname, "..", "streams", "car_data.json"),
+  ]);
 
-    child.stdout.on('data', (data) => {
-        console.log(`Результаты поиска: ${data}`);
-    });
+  findstr.stdout.on("data", (data) => {
+    console.log(`Результаты поиска: ${data}`);
+  });
 
-    child.stderr.on('data', (data) => {
-        console.error(`Ошибка: ${data}`);
-    });
+  findstr.stderr.on("data", (data) => {
+    console.error(`Ошибка поиска: ${data}`);
+  });
+
+  findstr.on("error", (error) => {
+    console.error(`Ошибка: ${error.message}`);
+  });
+
+  findstr.on("close", (code) => {
+    console.log(`Поиск завершен с кодом: ${code}`);
+  });
+};
+
+const [keyword] = process.argv.slice(2);
+
+if (keyword) {
+  searchCars(keyword);
+} else {
+  console.log("Использование: node spawn.js <ключевое_слово>");
 }
-
-const args = process.argv.slice(2);
-searchInCars(args[0]);

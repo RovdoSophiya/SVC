@@ -1,10 +1,52 @@
-const fs = require("fs-extra");
+const fs = require("fs");
+const path = require("path");
 
-function copyDirectory(src, dest) {
-    fs.copy(src, dest)
-        .then(() => console.log('Копирование завершено!'))
-        .catch(err => console.error(err));
+const copyFile = (src, dest) => {
+  return new Promise((resolve, reject) => {
+    const readStream = fs.createReadStream(src);
+    const writeStream = fs.createWriteStream(dest);
+
+    readStream.on("error", reject);
+    writeStream.on("error", reject);
+    writeStream.on("close", resolve);
+
+    readStream.pipe(writeStream);
+  });
+};
+
+const copyDirectory = async (sourceDir, destDir) => {
+  try {
+    if (!fs.existsSync(destDir)) {
+      fs.mkdirSync(destDir, { recursive: true });
+    }
+
+    const items = fs.readdirSync(sourceDir);
+
+    for (const item of items) {
+      const srcPath = path.join(sourceDir, item);
+      const destPath = path.join(destDir, item);
+
+      const stats = fs.statSync(srcPath);
+
+      if (stats.isDirectory()) {
+        await copyDirectory(srcPath, destPath);
+      } else if (stats.isFile()) {
+        await copyFile(srcPath, destPath);
+      }
+    }
+
+    console.log("Копирование данных о машинах завершено.");
+  } catch (err) {
+    console.error("Ошибка при копировании данных о машинах:", err);
+  }
+};
+
+const [source, destination] = process.argv.slice(2);
+
+if (source && destination) {
+  copyDirectory(source, destination);
+} else {
+  console.log(
+    "Использование: node copy.js <папка_источник> <папка_назначение>"
+  );
 }
-
-const args = process.argv.slice(2);
-copyDirectory(args[0], args[1]);

@@ -1,48 +1,39 @@
 const fs = require("fs");
 const path = require("path");
 
-const dataFile = "cars.json"; // Имя файла для хранения всех записей
-const indexFile = "car_index.json"; // Имя индексного файла
+const carDir = path.join(__dirname, "cars");
+const indexFile = path.join(carDir, "cars_index.json");
 
-function createRecord(make, model, year, vin) {
-  const id = Date.now().toString(); // Уникальный ID на основе времени
-  const record = {
-    id,
-    make,
-    model,
-    year,
-    vin,
-  };
+fs.mkdirSync(carDir, { recursive: true });
 
-  // Проверка существования файла
-  if (fs.existsSync(dataFile)) {
-    const existingData = JSON.parse(fs.readFileSync(dataFile));
+const createCar = (make, model, year, vin) => {
+  const id = Date.now().toString();
+  const filename = `car_${id}.json`;
+  const carData = { id, make, model, year, vin };
 
-    // Добавление новой записи
-    existingData.push(record);
-    fs.writeFileSync(dataFile, JSON.stringify(existingData, null, 2));
-  } else {
-    // Если файл не существует, создаем новый с первой записью
-    fs.writeFileSync(dataFile, JSON.stringify([record], null, 2));
+  const carPath = path.join(carDir, filename);
+
+  if (fs.existsSync(carPath)) {
+    console.error("Ошибка операции FS: Запись уже существует");
+    return;
   }
 
-  // Обновление индексного файла
-  let index = [];
-  if (fs.existsSync(indexFile)) {
-    index = JSON.parse(fs.readFileSync(indexFile));
-  }
-  index.push({
-    id,
-    make,
-    model,
-    year,
-    vin,
-    filename: dataFile, // Ссылка на общий файл
-  });
+  fs.writeFileSync(carPath, JSON.stringify(carData, null, 2));
+
+  const index = fs.existsSync(indexFile)
+    ? JSON.parse(fs.readFileSync(indexFile))
+    : [];
+  index.push({ id, make, model, filename });
   fs.writeFileSync(indexFile, JSON.stringify(index, null, 2));
 
-  console.log(`Запись успешно добавлена: ${JSON.stringify(record)}`);
-}
+  console.log(`Машина "${make} ${model}" была успешно добавлена.`);
+};
 
-const args = process.argv.slice(2);
-createRecord(args[0], args[1], args[2], args[3]);
+// Получаем аргументы командной строки
+const [make, model, year, vin] = process.argv.slice(2);
+
+if (make && model && year && vin) {
+  createCar(make, model, year, vin);
+} else {
+  console.log("Использование: node create.js <марка> <модель> <год> <VIN>");
+}
