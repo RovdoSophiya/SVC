@@ -1,0 +1,10 @@
+[
+  {
+    "id": "1728921306407",
+    "make": "Toyota",
+    "model": "Camry",
+    "year": "2022",
+    "vin": "1234567890ABCD",
+    "filename": "cars.json"
+  }
+]
