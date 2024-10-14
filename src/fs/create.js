@@ -18,13 +18,6 @@ function createRecord(make, model, year, vin) {
   if (fs.existsSync(dataFile)) {
     const existingData = JSON.parse(fs.readFileSync(dataFile));
 
-    // Проверка на дубликат по VIN или ID
-    const exists = existingData.some((car) => car.vin === vin || car.id === id);
-    if (exists) {
-      console.error("Ошибка операции FS: Запись с таким VIN уже существует.");
-      return;
-    }
-
     // Добавление новой записи
     existingData.push(record);
     fs.writeFileSync(dataFile, JSON.stringify(existingData, null, 2));
