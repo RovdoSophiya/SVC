@@ -1,7 +1,8 @@
 import React from "react";
-import { Link } from "@mui/material";
 import Food from "../../../assets/img/food.jpg";
 import "./foodComponent.css";
+import Button from "@mui/material/Button";
+import SendIcon from '@mui/icons-material/Send';
 
 export default function foodComponent() {
   return (
@@ -18,7 +19,9 @@ export default function foodComponent() {
           your needs. Your satisfaction is our priority, and we are excited to
           continue this journey with you!
         </p>
-        <Link to="/">About us</Link>
+        <Button variant="contained" endIcon={<SendIcon />}>
+          Learn more
+        </Button>
       </div>
       <div className="foodComponent-photo">
         <img src={Food} alt="Food"></img>

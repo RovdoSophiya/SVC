@@ -31,10 +31,9 @@ header {
   margin-left: 3%;
   gap: 10%;
 }
-
-.link {
-  text-decoration: none;
-  color: rgb(255, 255, 255);
+.link{
+  text-decoration:  none !important;
+  color: rgb(255, 255, 255) !important;
   font-size: 1.4rem;
   font-weight: 600;
 }
@@ -53,8 +52,8 @@ header {
 }
 .welcome-text {
   font-weight: 600;
-  text-decoration: none;
-  color: rgb(255, 253, 253);
+  text-decoration:  none !important;
+  color: rgb(255, 255, 255) !important;
 }
 .restaurant {
   width: 100%;
