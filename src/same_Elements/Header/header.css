@@ -1,0 +1,317 @@
+header {
+  width: 100%;
+}
+.annotation {
+  background-color: var(--var-color-red);
+  height: 47px;
+  width: 100%;
+}
+.shopping-annotation {
+  width: 100%;
+  text-align: center;
+  font-size: 17px;
+  font-style: normal;
+  line-height: 27.2px;
+  color: var(--var-shopping-annotation-text);
+  padding-top: 0.8%;
+}
+.header-menu {
+  width: 100%;
+  background-color: var(--var-header-menu-bg);
+  display: inline-flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  font-style: normal;
+}
+.menu {
+  display: flex;
+  width: 30%;
+  align-items: flex-start;
+  gap: 31px;
+  padding-left: 1.4%;
+  padding-top: 1.6%;
+}
+.user-page .menu {
+  width: 40%;
+}
+.menu-item {
+  font-size: 18px;
+  line-height: 28.8px; /* 160% */
+  text-transform: capitalize;
+  color: var(--var-header-menu-text);
+  transition: transform 0.4s ease-in-out;
+}
+.menu-item:hover {
+  font-size: 120%;
+  transform: scale(1.1);
+  text-decoration: underline;
+}
+.menu-logo {
+  padding-top: 0.4%;
+  padding-bottom: 0.4%;
+  margin-right: -3.6%;
+}
+.menu-logo:hover {
+  filter: drop-shadow(10px -10px 10px rgba(199, 132, 61, 0.4));
+  transform: rotate(0.01turn);
+  transition: transform 0.6s ease-in-out;
+}
+.menu-logo-user {
+  padding-top: 0.4%;
+  padding-bottom: 0.4%;
+  margin-right: 7%;
+}
+.menu-logo-user:hover {
+  filter: drop-shadow(10px -10px 10px rgba(199, 132, 61, 0.4));
+  transform: rotate(0.01turn);
+  transition: transform 0.6s ease-in-out;
+}
+.menu-user {
+  padding-top: 0.4%;
+  padding-bottom: 0.4%;
+  margin-right: -3.6%;
+}
+.account {
+  display: flex;
+  width: 35%; /* 426px*/
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  line-height: 22.4px; /* 160% */
+  padding-top: 1.5%;
+  gap: 3.1%;
+}
+.language-buttons-and-themes {
+  display: flex;
+  width: 70%; /* 258px*/
+  height: 45px;
+  justify-content: center;
+  align-items: center;
+  gap: 41px;
+}
+.language-buttons-and-themes button {
+  border-color: rgb(219, 176, 113);
+  background: var(--var-themes-color);
+}
+.language-buttons {
+  display: flex;
+  width: 36.43%; /* 94px*/
+  height: 39px;
+  padding: 5px 0px;
+  justify-content: center;
+  align-items: flex-start;
+}
+.lang-button {
+  width: 45px;
+}
+.rus,
+.en {
+  color: var(--var-header-menu-text);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28.8px; /* 160% */
+  text-transform: capitalize;
+}
+.rus:hover,
+.en:hover {
+  transform: scale(1.1);
+  transition: transform 0.6s ease-in-out;
+}
+.red-theme .rus:focus,
+.red-theme .en:focus {
+  color: rgb(164, 137, 137);
+  transition: background-color 0.6s ease-in-out, color 0.6s ease-in-out;
+}
+.rus:focus,
+.en:focus {
+  background-color: var(--var-shop-burger);
+  color: rgb(251, 247, 247);
+  transition: background-color 0.6s ease-in-out, color 0.6s ease-in-out;
+}
+.themes {
+  display: flex;
+  width: 65px;
+  height: 27px;
+  justify-content: center;
+  align-items: flex-start;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+.theme-page {
+  width: 55px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.red-theme .language-buttons-and-themes button {
+  background: var(--var-button-color);
+}
+.themes button.light-theme {
+  background: rgb(122, 224, 115);
+}
+.themes button.dark-theme {
+  background: rgb(44, 91, 34);
+  color: white;
+}
+.shop-page .language-buttons-and-themes button {
+  background-color: var(--var-button-color);
+}
+.signs {
+  display: flex;
+  width: 30%;
+  justify-content: center;
+  align-items: center;
+  margin-top: -10px;
+  gap: 5%;
+}
+.signs a {
+  width: 33px;
+  height: 33px;
+  border-radius: 20px;
+  background-color: var(--var-icon-color);
+  transition: transform 0.6s ease-in-out;
+}
+.signs a:hover {
+  filter: drop-shadow(7px -3px 15px rgba(243, 228, 67, 0.796));
+  transform: scale(1.1);
+}
+.user-exit {
+  margin-top: -15px;
+  margin-right: 15px;
+}
+.user-exit-item {
+  font-size: 24px;
+  line-height: 28.8px; /* 160% */
+  text-transform: capitalize;
+  color: var(--var-header-menu-text);
+  transition: transform 0.4s ease-in-out;
+}
+.user-exit-item:hover {
+  font-size: 200%;
+  transform: scale(1.1);
+  text-decoration: underline;
+}
+.open-modal-button {
+  display: flex;
+  border: none;
+  background-color: var(--var-icon-color);
+  border-radius: 25px;
+  height: 34px;
+  width: 35px;
+  justify-content: center;
+}
+.open-modal-button:hover {
+  filter: drop-shadow(10px -10px 10px rgba(199, 132, 61, 0.4));
+  transform: scale(1.1);
+  transition: transform 0.6s ease-in-out;
+}
+.hidden-menu {
+  display: none;
+}
+.account-information {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 10%;
+  padding-right: 10px;
+  margin-top: -10px;
+}
+.user-account {
+  display: flex;
+  width: 25%; /* 426px*/
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  line-height: 22.4px; /* 160% */
+  padding-top: 1.5%;
+  gap: 3.1%;
+}
+.burger-menu {
+  display: none;
+}
+@media (max-width: 1393px) {
+  .menu-logo-user {
+    margin-right: 17%;
+  }
+}
+@media (max-width: 1393px) and (min-width: 1001px) {
+  .menu {
+    width: 40%;
+    gap: 25px;
+  }
+  .menu-logo {
+    padding-top: 0%;
+    padding-bottom: 0.4%;
+    margin-right: 6.6%;
+  }
+  .burger-menu {
+    display: none;
+  }
+}
+@media (max-width: 1001px) {
+  .burger-menu {
+    display: flex;
+  }
+  .show-burger-menu {
+    width: 40px;
+    height: auto;
+  }
+  .hidden-menu p {
+    padding-top: 1.6%;
+    padding-left: 4%;
+  }
+  .menu {
+    display: none;
+  }
+  .menu-logo {
+    margin-left: 28%;
+  }
+  .menu-logo-user {
+    margin-right: -11%;
+  }
+  .user-exit {
+    display: none;
+  }
+  .user-account {
+    width: 15%;
+    margin-right: 30px;
+  }
+  /*__________burger-menu_____________________*/
+  .burger-menu {
+    display: flex;
+  }
+  .account {
+    justify-content: flex-end;
+  }
+  .language-buttons-and-themes {
+    width: 100%;
+  }
+}
+@media (max-width: 768px) {
+  .language-buttons {
+    display: none;
+  }
+  .themes {
+    display: none;
+  }
+  .signs {
+    margin-top: 0px;
+  }
+}
+@media (max-width: 520px) {
+  .account {
+    width: 50%;
+  }
+}
+@media (max-width: 378px) {
+  .menu-logo {
+    margin-left: 21%;
+  }
+  .signs {
+    width: 40%;
+  }
+}

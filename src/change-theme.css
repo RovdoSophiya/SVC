@@ -1,0 +1,65 @@
+:root {
+  --var-body: rgba(246, 244, 236, 1);
+
+  --var-shopping-annotation-text: #f1d3b9;
+  --var-header-menu-bg: rgba(246, 244, 236, 1);
+  --var-header-menu-text: #b45f4d;
+  --var-color-red: #b45f4d;
+
+  --var-themes-color: none;
+  --var-icon-color: transparent;
+  --var-green-menu: #a9ae8d;
+
+  --var-dae-annotation-bg: #f8f8f8;
+  --var-dae-bg: #f1d3b9;
+  --var-follow-link: #000;
+
+  --var-footer-bg: #f6f4ec;
+
+  --var-shop-container: rgba(241, 211, 185, 1);
+  --var-shop-text-color: rgba(129, 58, 58, 0.84);
+
+  --var-shop-burger: #beab6b;
+
+  --var-button-color: none;
+
+  --var-map: rgba(131, 17, 17, 0.486);
+
+  --var-green-text: #a9ae8d;
+  --var-review-bg: antiquewhite;
+  --var-review-txt: #813a3a;
+  --var-active-pag: #90995f;
+}
+/*селектор выбора*/
+[dark] {
+  --var-body: black;
+
+  --var-shopping-annotation-text: rgb(229, 225, 225);
+  --var-header-menu-bg: black;
+  --var-header-menu-text: white;
+  --var-color-red: #3a0b02;
+
+  --var-themes-color: #757f33;
+  --var-icon-color: white;
+  --var-green-menu: #2b2f12;
+
+  --var-dae-annotation-bg: #2b2f12;
+  --var-dae-bg: black;
+  --var-follow-link: white;
+
+  --var-footer-bg: black;
+
+  --var-shop-container: black;
+  --var-shop-text-color: white;
+
+  --var-shop-burger: #564303;
+
+  --var-button-color: #984407;
+
+  --var-map: rgba(238, 245, 53, 0.688);
+
+  --var-green-text: white;
+  --var-review-bg: rgb(168, 137, 96);
+  --var-review-txt: white;
+  --var-active-pag: #56630e;
+}

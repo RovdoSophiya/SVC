@@ -1,18 +1,20 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Main from "./Pages/Main/main.jsx";
-import Menu from "./Pages/Menu/Menu.jsx";
-import About from "./Pages/About/about.jsx";
-import Login from "./Pages/Welcome/Login/login.jsx";
+import Header from "../src/same_Elements/Header/header";
+import Footer from "../src/same_Elements/Footer/footer";
+import Main from "../src/Pages/Main/main";
+import About from "../src/Pages/About/about";
+import Reviews from "../src/Pages/Reviews/reviews";
 
 function App() {
   return (
     <BrowserRouter>
+      <Header></Header>
       <Routes>
         <Route path="/" element={<Main />} />
-        <Route path="/Menu" element={<Menu />} />
-        <Route path="/About" element={<About />} />  
-        <Route path="/Log in" element={<Login />} />  
+        <Route path="/About" element={<About />} />
+        <Route path="/Reviews" element={<Reviews />} />
       </Routes>
+      <Footer></Footer>
     </BrowserRouter>
   );
 }
