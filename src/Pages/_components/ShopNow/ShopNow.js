@@ -1,24 +1,30 @@
 import React, { Component } from "react";
 import "./photo-section.css";
-import Modal from "../Modal/Modal";
-import { useState } from "react";
+import { Container, Grid2, Link } from "@mui/material";
 
-const ShopNow = ({ text }) => {
-  /*состояние, отвечающее за видимость модального окна */
-  const [modalActive, setModalActive] = useState(false);
-  return (
-    <>
+class ShopNow extends Component {
+  render() {
+    const { text } = this.props;
+
+    return (
       <section className="photo-section">
-        <div className="shop-now-container">
-          <div className="shop-now">
-            <button className="shop-text" onClick={() => setModalActive(true)}>
-              {text}
-            </button>
-          </div>
-        </div>
+        <Container className="shop-now-container">
+          <Grid2 container justifyContent="center" alignItems="center">
+            <Grid2 item>
+              <Link
+                data-i18="shopText"
+                className="shop-text"
+                href="#"
+                underline="none"
+              >
+                {text}
+              </Link>
+            </Grid2>
+          </Grid2>
+        </Container>
       </section>
-      <Modal active={modalActive} setActive={setModalActive} />
-    </>
-  );
-};
+    );
+  }
+}
+
 export default ShopNow;
