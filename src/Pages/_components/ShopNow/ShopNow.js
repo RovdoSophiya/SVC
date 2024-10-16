@@ -14,9 +14,8 @@ class ShopNow extends Component {
               item
               sx={{
                 backgroundColor: "#b45f4d",
-                width: "110px",
-                height: "35px",
-                color: "white",
+                width: "100px",
+                height: "30px",
               }}
             >
               <Link
@@ -24,6 +23,9 @@ class ShopNow extends Component {
                 className="shop-text"
                 href="#"
                 underline="none"
+                sx={{
+                  color: "white",
+                }}
               >
                 {text}
               </Link>

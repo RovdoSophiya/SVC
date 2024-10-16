@@ -1,6 +1,7 @@
 .meet-dae {
   width: 100%;
   background-color: var(--var-dae-bg) !important;
+  flex-direction: row;
 }
 
 .first-girl {
@@ -26,7 +27,6 @@
 }
 .Dae-text {
   width: 80%;
-  margin-left: auto;
   margin-right: auto;
   margin-bottom: 8%;
   font-size: 19px;
@@ -76,7 +76,7 @@
   }
 }
 
-@media (max-width: 840px) {
+@media (max-width: 900px) {
   .first-girl {
     display: none !important;
   }

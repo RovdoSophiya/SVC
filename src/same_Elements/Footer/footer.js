@@ -19,45 +19,109 @@ class Footer extends Component {
             <div className="link-block">
               <div className="first-links-block">
                 <Tooltip title="Learn about sustainability" arrow>
-                  <Avatar variant="rounded" className="link" sx={{ backgroundColor: 'transparent', width: 'auto', color:'#b45f4d'}}>
-                  Sustainability
+                  <Avatar
+                    variant="rounded"
+                    className="link"
+                    sx={{
+                      backgroundColor: "transparent",
+                      width: "auto",
+                      color: "#b45f4d",
+                    }}
+                  >
+                    Sustainability
                   </Avatar>
                 </Tooltip>
                 <Tooltip title="Get in touch" arrow>
-                  <Avatar variant="rounded" className="link" sx={{ backgroundColor: 'transparent', width: 'auto',color:'#b45f4d'}}>
-                  Contact us
+                  <Avatar
+                    variant="rounded"
+                    className="link"
+                    sx={{
+                      backgroundColor: "transparent",
+                      width: "auto",
+                      color: "#b45f4d",
+                    }}
+                  >
+                    Contact us
                   </Avatar>
                 </Tooltip>
                 <Tooltip title="Frequently Asked Questions" arrow>
-                  <Avatar variant="rounded" className="link" sx={{ backgroundColor: 'transparent', width: 'auto',color:'#b45f4d'}}>
-                  FAQ
+                  <Avatar
+                    variant="rounded"
+                    className="link"
+                    sx={{
+                      backgroundColor: "transparent",
+                      width: "auto",
+                      color: "#b45f4d",
+                    }}
+                  >
+                    FAQ
                   </Avatar>
                 </Tooltip>
                 <Tooltip title="Careers opportunities" arrow>
-                  <Avatar variant="rounded" className="link" sx={{ backgroundColor: 'transparent', width: 'auto',color:'#b45f4d'}}>
-                  Careers
+                  <Avatar
+                    variant="rounded"
+                    className="link"
+                    sx={{
+                      backgroundColor: "transparent",
+                      width: "auto",
+                      color: "#b45f4d",
+                    }}
+                  >
+                    Careers
                   </Avatar>
                 </Tooltip>
               </div>
               <div className="second-links-block">
                 <Tooltip title="Read our Privacy Policy" arrow>
-                  <Avatar variant="rounded" className="link" sx={{ backgroundColor: 'transparent', width: 'auto',color:'#b45f4d'}}>
-                  Privacy Policy
+                  <Avatar
+                    variant="rounded"
+                    className="link"
+                    sx={{
+                      backgroundColor: "transparent",
+                      width: "auto",
+                      color: "#b45f4d",
+                    }}
+                  >
+                    Privacy Policy
                   </Avatar>
                 </Tooltip>
                 <Tooltip title="California Privacy Rights" arrow>
-                  <Avatar variant="rounded" className="link" sx={{ backgroundColor: 'transparent', width: 'auto',color:'#b45f4d'}}>
-                  CA Privacy Rights
+                  <Avatar
+                    variant="rounded"
+                    className="link"
+                    sx={{
+                      backgroundColor: "transparent",
+                      width: "auto",
+                      color: "#b45f4d",
+                    }}
+                  >
+                    CA Privacy Rights
                   </Avatar>
                 </Tooltip>
                 <Tooltip title="Terms of Use" arrow>
-                  <Avatar variant="rounded" className="link" sx={{ backgroundColor: 'transparent', width: 'auto',color:'#b45f4d'}}>
-                  Terms of Use
+                  <Avatar
+                    variant="rounded"
+                    className="link"
+                    sx={{
+                      backgroundColor: "transparent",
+                      width: "auto",
+                      color: "#b45f4d",
+                    }}
+                  >
+                    Terms of Use
                   </Avatar>
                 </Tooltip>
                 <Tooltip title="Sign up for our newsletter" arrow>
-                  <Avatar variant="rounded" className="link" sx={{ backgroundColor: 'transparent', width: 'auto',color:'#b45f4d'}}>
-                  Newsletter
+                  <Avatar
+                    variant="rounded"
+                    className="link"
+                    sx={{
+                      backgroundColor: "transparent",
+                      width: "auto",
+                      color: "#b45f4d",
+                    }}
+                  >
+                    Newsletter
                   </Avatar>
                 </Tooltip>
               </div>
@@ -73,7 +137,13 @@ class Footer extends Component {
                   className="email-input"
                   placeholder="Enter your email"
                   variant="outlined"
-                  sx={{ flexGrow: 1 }}
+                  sx={{
+                    flexGrow: 1,
+                    borderColor: "transparent",
+                    borderRadius: "0px",
+                    border: "0",
+                    height: "30px",
+                  }}
                 />
                 <Button
                   data-i18="subscribe"
@@ -81,7 +151,7 @@ class Footer extends Component {
                   variant="contained"
                   sx={{
                     marginLeft: 2,
-                    backgroundColor: '#b45f4d',
+                    backgroundColor: "#b45f4d",
                     "&:hover": { backgroundColor: "#b45f4c" },
                   }}
                 >

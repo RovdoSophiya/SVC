@@ -8,7 +8,6 @@ import {
 } from "@mui/material";
 import "./meet-dae.css";
 import firstGirl from "../../../assets/img/First-girl.png";
-import secondGirl from "../../../assets/img/Second-girl.png";
 
 class MeetDae extends Component {
   render() {
@@ -19,11 +18,10 @@ class MeetDae extends Component {
         className="meet-dae"
         sx={{
           display: "flex",
-          flexDirection: { xs: "column", md: "row" },
           alignItems: "center",
           boxShadow: 3,
-          height: { xs: "auto", md: "100vh" },
           overflow: "hidden",
+          color: "#b45f4d",
         }}
       >
         <CardMedia
@@ -36,7 +34,7 @@ class MeetDae extends Component {
             objectFit: "cover",
           }}
         />
-        <CardContent sx={{ padding: 3, flex: 1 }}>
+        <CardContent sx={{ padding: 3, flex: 1, height: "auto" }}>
           <Typography
             variant="h4"
             data-i18="meetDae"
@@ -57,11 +55,7 @@ class MeetDae extends Component {
             variant="outlined"
             data-i18="learnMore"
             className="Learn-more open-modal"
-            sx={{
-              color: "primary.main",
-              borderColor: "primary.main",
-              "&:hover": { backgroundColor: "primary.light" },
-            }}
+            sx={{ color: "#b45f4d", borderColor: "white" }}
           >
             Read More
           </Button>
