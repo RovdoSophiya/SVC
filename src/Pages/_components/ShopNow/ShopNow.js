@@ -16,6 +16,7 @@ class ShopNow extends Component {
                 backgroundColor: "#b45f4d",
                 width: "110px",
                 height: "35px",
+                color: "white",
               }}
             >
               <Link

@@ -1,10 +1,9 @@
 .green-menu {
   height: 304px;
-  background-color: var(--var-green-menu) !important;
-  color: #f6f4ec;
   font-style: normal;
   padding-left: 70px;
   margin-top: -20px;
+  color: #f6f4ec !important;
 }
 .green-menu-text1 {
   padding-top: 69px;
@@ -20,11 +19,7 @@
   transition: transform 0.6s ease-in-out;
 }
 .green-menu-text3 {
-  background-color: transparent;
-  border-color: transparent;
-  background-color: transparent !important;
-  border-radius: none !important;
-  color: #f6f4ec !important;
+  color: #f6f4ec;
   position: relative;
   margin-left: -5px;
   font-size: 20px;
@@ -53,10 +48,10 @@
   transform: scaleX(1);
   transform-origin: left;
 }
-@media (max-width: 545px) {
+@media (max-width: 600px) {
   .green-menu {
-    padding-left: 40px;
-    height: 230px;
+    padding-left: 20px;
+    height: 240px;
   }
   .green-menu-text1 {
     font-size: 16px;

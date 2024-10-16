@@ -8,7 +8,11 @@ const GreenMenu = () => {
     "Shop Now",
   ];
   return (
-    <Paper elevation={3} className="green-menu">
+    <Paper
+      elevation={3}
+      className="green-menu"
+      sx={{ backgroundColor: "#a9ae8d" }}
+    >
       <Container>
         <h2
           data-i18="greenMenuText1"
@@ -31,7 +35,11 @@ const GreenMenu = () => {
           data-i18="greenMenuText3"
           className="green-menu-text3"
           href="#"
-          sx={{ color: "#f6f4ec" }}
+          sx={{
+            borderRadius: "none",
+            backgroundColor: "transparent",
+            borderColor: "transparent",
+          }}
         >
           {texts[2]} {/* Shop Now */}
         </Button>
