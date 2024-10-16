@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Box, Button, Typography} from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import "./header.css";
 import "../../../src/change-theme.css";
@@ -79,7 +79,11 @@ class Header extends Component {
                       </Button>
                     </Box>
                     <Box className="lang-button">
-                      <Button data-i18="enB" className="en">
+                      <Button
+                        data-i18="enB"
+                        className="en"
+                        sx={{ color: "#b45f4d" }}
+                      >
                         En
                       </Button>
                     </Box>

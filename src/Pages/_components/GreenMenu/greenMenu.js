@@ -1,33 +1,42 @@
-import React, { Component } from "react";
+import React from "react";
 import "./green-menu.css";
-import Modal from "../Modal/Modal";
-import { useState } from "react";
+import { Button, Divider, Container, Paper } from "@mui/material";
 const GreenMenu = () => {
-  const greenMenuTexts = [
+  const texts = [
     "READY TO GET DRENCHED?",
     "Meet Monsoon Moisture Mask",
     "Shop Now",
   ];
-  const [modalActive, setModalActive] = useState(false);
   return (
-    <>
-      <section className="green-menu">
-        <p data-i18="greenMenuText1" className="green-menu-text1">
-          {greenMenuTexts[0]} {/* READY TO GET DRENCHED? */}
-        </p>
-        <p data-i18="greenMenuText2" className="green-menu-text2">
-          {greenMenuTexts[1]} {/* Meet Monsoon Moisture Mask */}
-        </p>
-        <button
+    <Paper elevation={3} className="green-menu">
+      <Container>
+        <h2
+          data-i18="greenMenuText1"
+          className="green-menu-text1"
+          sx={{ color: "#f6f4ec" }}
+        >
+          {texts[0]}
+        </h2>
+        <Divider className="divider" />
+        <h3
+          data-i18="greenMenuText2"
+          className="green-menu-text2"
+          sx={{ color: "#f6f4ec" }}
+        >
+          {texts[1]} {/* Meet Monsoon Moisture Mask */}
+        </h3>
+        <Button
+          variant="contained"
+          color="primary"
           data-i18="greenMenuText3"
           className="green-menu-text3"
-          onClick={() => setModalActive(true)}
+          href="#"
+          sx={{ color: "#f6f4ec" }}
         >
-          {greenMenuTexts[2]} {/* Shop Now */}
-        </button>
-      </section>
-      <Modal active={modalActive} setActive={setModalActive} />
-    </>
+          {texts[2]} {/* Shop Now */}
+        </Button>
+      </Container>
+    </Paper>
   );
 };
 

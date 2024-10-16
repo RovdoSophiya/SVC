@@ -12,9 +12,10 @@ html {
 
 body {
   max-width: 1440px;
-  margin: 0 auto;
+  margin: 0 auto ;
   font-family: "Roboto";
   background-color: var(--var-body);
+  padding:  0;
 }
 p {
   margin: 0;

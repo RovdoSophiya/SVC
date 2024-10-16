@@ -1,9 +1,10 @@
 .green-menu {
   height: 304px;
-  background-color: var(--var-green-menu);
+  background-color: var(--var-green-menu) !important;
   color: #f6f4ec;
   font-style: normal;
   padding-left: 70px;
+  margin-top: -20px;
 }
 .green-menu-text1 {
   padding-top: 69px;
@@ -21,7 +22,9 @@
 .green-menu-text3 {
   background-color: transparent;
   border-color: transparent;
-  color: #f6f4ec;
+  background-color: transparent !important;
+  border-radius: none !important;
+  color: #f6f4ec !important;
   position: relative;
   margin-left: -5px;
   font-size: 20px;

@@ -78,7 +78,7 @@ header {
   align-items: center;
   font-size: 14px;
   line-height: 22.4px; /* 160% */
-  padding-top: 1.5%;
+  padding-top: 1%;
   gap: 3.1%;
 }
 .language-buttons-and-themes {
@@ -164,7 +164,6 @@ header {
   width: 30%;
   justify-content: center;
   align-items: center;
-  margin-top: -10px;
   gap: 5%;
 }
 .signs a {
@@ -231,31 +230,25 @@ header {
   gap: 3.1%;
 }
 .burger-menu {
-  display: none;
+  display: none !important;
 }
 @media (max-width: 1393px) {
   .menu-logo-user {
     margin-right: 17%;
   }
-}
-@media (max-width: 1393px) and (min-width: 1001px) {
   .menu {
-    width: 40%;
-    gap: 25px;
+    width: 30%;
+    gap: 20px;
+    padding-left: 1%;
   }
   .menu-logo {
     padding-top: 0%;
     padding-bottom: 0.4%;
     margin-right: 6.6%;
   }
-  .burger-menu {
-    display: none;
-  }
 }
+
 @media (max-width: 1001px) {
-  .burger-menu {
-    display: flex;
-  }
   .show-burger-menu {
     width: 40px;
     height: auto;
@@ -268,7 +261,7 @@ header {
     display: none;
   }
   .menu-logo {
-    margin-left: 28%;
+    margin-left: 45%;
   }
   .menu-logo-user {
     margin-right: -11%;
@@ -279,10 +272,6 @@ header {
   .user-account {
     width: 15%;
     margin-right: 30px;
-  }
-  /*__________burger-menu_____________________*/
-  .burger-menu {
-    display: flex;
   }
   .account {
     justify-content: flex-end;
@@ -301,16 +290,19 @@ header {
   .signs {
     margin-top: 0px;
   }
+  .menu-logo {
+    margin-left: 40%;
+  }
 }
 @media (max-width: 520px) {
   .account {
     width: 50%;
   }
+  .menu-logo {
+    margin-left: 35%;
+  }
 }
 @media (max-width: 378px) {
-  .menu-logo {
-    margin-left: 21%;
-  }
   .signs {
     width: 40%;
   }
