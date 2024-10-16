@@ -6,6 +6,7 @@ import {
   Typography,
   Button,
 } from "@mui/material";
+import SendIcon from '@mui/icons-material/Send';
 import "./meet-dae.css";
 import firstGirl from "../../../assets/img/First-girl.png";
 
@@ -55,6 +56,7 @@ class MeetDae extends Component {
             variant="outlined"
             data-i18="learnMore"
             className="Learn-more open-modal"
+            endIcon={<SendIcon />}
             sx={{ color: "#b45f4d", borderColor: "white" }}
           >
             Read More

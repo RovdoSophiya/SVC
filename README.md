@@ -10,7 +10,7 @@ Used UI materials:
 9.Card
 10.CardMedia
 11.CardContent
-12.CardComponent
+12.IconButton
 13.Avatar
 14.TextField
 15.Tooltip
