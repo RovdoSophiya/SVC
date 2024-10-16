@@ -1,3 +1,4 @@
+//импорт компонентов для работы node.js
 const fs = require("fs");
 const path = require("path");
 
@@ -24,6 +25,7 @@ const createCar = (make, model, year, vin) => {
     ? JSON.parse(fs.readFileSync(indexFile))
     : [];
   index.push({ id, make, model, filename });
+  //null - не нужно использовать функцию замены
   fs.writeFileSync(indexFile, JSON.stringify(index, null, 2));
 
   console.log(`Машина "${make} ${model}" была успешно добавлена.`);

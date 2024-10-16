@@ -14,6 +14,7 @@ const deleteCar = (id) => {
   const carPath = path.join(__dirname, "cars", car.filename);
 
   if (fs.existsSync(carPath)) {
+    //удаление файла
     fs.unlinkSync(carPath);
     console.log(`Машина с ID ${id} была удалена.`);
 

@@ -6,10 +6,12 @@ const copyFile = (src, dest) => {
     const readStream = fs.createReadStream(src);
     const writeStream = fs.createWriteStream(dest);
 
+    //on- устаноыка обработки ошибок. вызов метода reject(отклоняет Promise)
     readStream.on("error", reject);
     writeStream.on("error", reject);
     writeStream.on("close", resolve);
 
+    //соединение потока записи и чтения
     readStream.pipe(writeStream);
   });
 };
