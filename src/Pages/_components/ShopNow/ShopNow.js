@@ -10,7 +10,14 @@ class ShopNow extends Component {
       <section className="photo-section">
         <Container className="shop-now-container">
           <Grid2 container justifyContent="center" alignItems="center">
-            <Grid2 item>
+            <Grid2
+              item
+              sx={{
+                backgroundColor: "#b45f4d",
+                width: "110px",
+                height: "35px",
+              }}
+            >
               <Link
                 data-i18="shopText"
                 className="shop-text"
