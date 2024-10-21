@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addDish } from "../features/dishesSlice";
-
+import { useTranslation } from "react-i18next";
+import "../i18n";
 const AddDishForm = () => {
+  const { t } = useTranslation();
   const [name, setName] = useState("");
   const [type, setType] = useState("Закуска");
   const [price, setPrice] = useState("");
@@ -16,29 +18,29 @@ const AddDishForm = () => {
     const parsedPrice = parseInt(price);
 
     if (parsedPrice <= 0) {
-      setError("Цена должна быть положительным числом.");
+      setError(t("error"));
       return;
     }
 
     dispatch(addDish({ id: Date.now(), name, type, price: parsedPrice }));
     setName("");
     setPrice("");
-    setError(""); // Сбрасываем ошибку после успешного добавления
+    setError("");
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <input
         type="text"
-        placeholder="Название блюда"
+        placeholder={t("dishes.addDish")}
         value={name}
         onChange={(e) => setName(e.target.value)}
         required
       />
       <select value={type} onChange={(e) => setType(e.target.value)}>
-        <option value="Закуска">Закуска</option>
-        <option value="Основное блюдо">Основное блюдо</option>
-        <option value="Десерт">Десерт</option>
+        <option value="Закуска">{t("dishes.appetizer")}</option>
+        <option value="Основное блюдо">{t("dishes.main")}</option>
+        <option value="Десерт">{t("dishes.dessert")}</option>
       </select>
       <input
         type="number"
@@ -47,8 +49,8 @@ const AddDishForm = () => {
         onChange={(e) => setPrice(e.target.value)}
         required
       />
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <button type="submit">Добавить блюдо</button>
+      {error && <p style={{ color: "red" }}>{t("dishes.error")}</p>}
+      <button type="submit">{t("dishes.addDish")}</button>
     </form>
   );
 };

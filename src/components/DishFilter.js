@@ -1,9 +1,10 @@
-//фильтрация блюд
 import React from "react";
 import { useDispatch } from "react-redux";
 import { setFilter } from "../features/dishesSlice";
+import { useTranslation } from "react-i18next";
 
 const DishFilter = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const handleFilterChange = (e) => {
@@ -12,12 +13,12 @@ const DishFilter = () => {
 
   return (
     <div>
-      <label>Фильтр по типу блюда: </label>
+      <label>{t("dishes.filterByType")}:</label>
       <select onChange={handleFilterChange}>
-        <option value="Все">Все</option>
-        <option value="Закуска">Закуска</option>
-        <option value="Основное блюдо">Основное блюдо</option>
-        <option value="Десерт">Десерт</option>
+        <option value="Все">{t("dishes.all")}</option>
+        <option value="Закуска">{t("dishes.appetizer")}</option>
+        <option value="Основное блюдо">{t("dishes.main")}</option>
+        <option value="Десерт">{t("dishes.dessert")}</option>
       </select>
     </div>
   );
