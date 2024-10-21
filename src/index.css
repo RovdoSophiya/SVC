@@ -31,7 +31,11 @@ button {
 button:hover {
   background-color: #45a049;
 }
-
+.buttons {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
 ul {
   list-style: none;
   padding: 0;
@@ -46,4 +50,14 @@ li {
 select,
 input {
   margin: 5px 0;
+}
+
+.filter,
+.dishesMenu {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.filter {
+  margin-top: 30px;
 }

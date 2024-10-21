@@ -12,7 +12,7 @@ const DishFilter = () => {
   };
 
   return (
-    <div>
+    <div className="filter">
       <label>{t("dishes.filterByType")}:</label>
       <select onChange={handleFilterChange}>
         <option value="Все">{t("dishes.all")}</option>

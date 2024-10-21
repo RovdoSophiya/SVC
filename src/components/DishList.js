@@ -22,7 +22,7 @@ const DishList = () => {
 
   return (
     <div>
-      <h2>{t("dishes.menu")}</h2>
+      <h2 className="dishesMenu">{t("dishes.menu")}</h2>
       <ul>
         {dishes.map((dish) => (
           <li key={dish.id}>

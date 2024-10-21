@@ -44,7 +44,7 @@ const AddDishForm = () => {
       </select>
       <input
         type="number"
-        placeholder="Цена"
+        placeholder={t("dishes.price")}
         value={price}
         onChange={(e) => setPrice(e.target.value)}
         required
