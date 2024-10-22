@@ -7,6 +7,7 @@ i18n.use(initReactI18next).init({
     en: {
       translation: {
         dishes: {
+          menuTitle: "Catering menu",
           appetizer: "Appetizer",
           main: "Main Course",
           dessert: "Dessert",
@@ -38,6 +39,7 @@ i18n.use(initReactI18next).init({
     ru: {
       translation: {
         dishes: {
+          menuTitle: "Кейтеринг меню",
           appetizer: "Закуска",
           main: "Основное блюдо",
           dessert: "Десерт",

@@ -10,10 +10,10 @@ const App = () => {
   const { t } = useTranslation();
   return (
     <div>
-      <h1>{t("menuTitle")}</h1>
+      <h1>{t("dishes.menuTitle")}</h1>
       <LanguageSwitcher />
-      <DishFilter />
       <AddDishForm />
+      <DishFilter />
       <DishList />
     </div>
   );
