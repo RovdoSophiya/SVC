@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const fs = require("fs");
+const path = require("path"); // Необходимо для правильного указания пути
 const app = express();
 const port = 3000;
 
@@ -8,20 +9,23 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Настройка статической папки для фронтенда
+ app.use(express.static(path.join(__dirname, '../client/public')));
+
 // Получение данных из JSON-файла
 const readData = () => {
-  return JSON.parse(fs.readFileSync("data.json", "utf8"));
+  return JSON.parse(fs.readFileSync(path.join(__dirname, "data.json"), "utf8"));
 };
 
 // Запись данных в JSON-файл
 const writeData = (data) => {
-  fs.writeFileSync("data.json", JSON.stringify(data, null, 2));
+  fs.writeFileSync(path.join(__dirname, "data.json"), JSON.stringify(data, null, 2));
 };
 
 // GET-сервис, который возвращает веб-страницу с фронтенд-кодом
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
-});
+   res.sendFile(path.join(__dirname, "../client/public/index.html"));
+ });
 
 // GET-сервис, который возвращает данные в формате JSON
 app.get("/api/data", (req, res) => {
