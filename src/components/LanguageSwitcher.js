@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 const LanguageSwitcher = () => {
@@ -9,7 +9,7 @@ const LanguageSwitcher = () => {
     localStorage.setItem("language", lng); // Сохраняем выбор языка
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const savedLang = localStorage.getItem("language");
     if (savedLang) {
       i18n.changeLanguage(savedLang);
