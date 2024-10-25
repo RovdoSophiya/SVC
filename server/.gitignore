@@ -8,6 +8,11 @@
 # testing
 /coverage
 
+# Игнорировать директории с зависимостями
+node_modules/
+bin/
+obj/
+
 # production
 /build
 
