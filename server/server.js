@@ -3,6 +3,7 @@ const cors = require("cors");
 const authRoutes = require("./routes/authRoutes");
 const clientRoutes = require("./routes/clientRoutes");
 const courierRoutes = require("./routes/courierRoutes");
+const dishRoutes = require("./routes/dishRoutes");
 // const orderRoutes = require("./routes/orderRoutes");
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use("/auth", authRoutes);
 app.use("/clients", clientRoutes);
 app.use("/couriers", courierRoutes);
+app.use("/dishes", dishRoutes);
 // app.use("/orders", orderRoutes);
 
 // Запуск сервера
