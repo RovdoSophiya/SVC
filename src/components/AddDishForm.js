@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { addDish } from "../features/dishesSlice";
 import { useTranslation } from "react-i18next";
 import "../i18n";
+
 const AddDishForm = () => {
   const { t } = useTranslation();
   const [name, setName] = useState("");
@@ -18,7 +19,7 @@ const AddDishForm = () => {
     const parsedPrice = parseInt(price);
 
     if (parsedPrice <= 0) {
-      setError(t("error"));
+      setError(t("dishes.error"));
       return;
     }
 
@@ -49,7 +50,7 @@ const AddDishForm = () => {
         onChange={(e) => setPrice(e.target.value)}
         required
       />
-      {error && <p style={{ color: "red" }}>{t("dishes.error")}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
       <button type="submit">{t("dishes.addDish")}</button>
     </form>
   );

@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { setFilter } from "../features/dishesSlice";
+import { setFilter } from "../features/filterSlice";
 import { useTranslation } from "react-i18next";
 
 const DishFilter = () => {

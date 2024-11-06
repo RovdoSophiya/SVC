@@ -1,5 +1,5 @@
 //слайс для управления блюдами
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   dishes: [
@@ -19,30 +19,28 @@ const initialState = {
     { id: 14, name: "Pumpkin Soup", type: "Суп", price: 250 },
     { id: 15, name: "Meat Pies", type: "Закуска", price: 180 },
   ],
-  filter: 'Все',
 };
 
 const dishesSlice = createSlice({
-  name: 'dishes',
+  name: "dishes",
   initialState,
   reducers: {
     addDish: (state, action) => {
       state.dishes.push(action.payload);
     },
     updateDish: (state, action) => {
-      const index = state.dishes.findIndex(dish => dish.id === action.payload.id);
+      const index = state.dishes.findIndex(
+        (dish) => dish.id === action.payload.id
+      );
       if (index !== -1) {
         state.dishes[index] = action.payload;
       }
     },
     deleteDish: (state, action) => {
-      state.dishes = state.dishes.filter(dish => dish.id !== action.payload);
-    },
-    setFilter: (state, action) => {
-      state.filter = action.payload;
+      state.dishes = state.dishes.filter((dish) => dish.id !== action.payload);
     },
   },
 });
 
-export const { addDish, updateDish, deleteDish, setFilter } = dishesSlice.actions;
+export const { addDish, updateDish, deleteDish } = dishesSlice.actions;
 export default dishesSlice.reducer;

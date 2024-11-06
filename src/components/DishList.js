@@ -6,11 +6,11 @@ import { useTranslation } from "react-i18next";
 const DishList = () => {
   const { t } = useTranslation();
   const dishes = useSelector((state) => {
-    if (state.dishes.filter === "Все") {
+    if (state.filter.filter === "Все") {
       return state.dishes.dishes;
     }
     return state.dishes.dishes.filter(
-      (dish) => dish.type === state.dishes.filter
+      (dish) => dish.type === state.filter.filter
     );
   });
 
