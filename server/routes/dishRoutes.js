@@ -1,101 +1,82 @@
 const express = require("express");
-const {
-  createDish,
-  getDishById,
-  getDishByName,
-  updateDish,
-  deleteDish,
-  filterDishesByCategory,
-  filterDishesByPriceRange,
-  filterDishesByDietaryRequirement,
-} = require("../models/dishModel");
 const router = express.Router();
+const { Op } = require("sequelize");
+const Dish = require("../models/Dish");
 
-//Создание блюда
+// Добавление блюда
 router.post("/", async (req, res) => {
   try {
-    const newDish = await createDish(req.body);
-    res.status(201).json(newDish);
+    const dish = await Dish.create(req.body);
+    res.status(201).json(dish);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// Получение информации о блюде по id
-router.get("/id/:id", async (req, res) => {
-  try {
-    const dish = await getDishById(req.params.id);
-    if (!dish) return res.status(404).json({ error: "Dish not found" });
-    res.json(dish);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Получение информации о блюде по имени
-router.get("/name/:name", async (req, res) => {
-  try {
-    const dish = await getDishByName(req.params.name);
-    if (!dish) return res.status(404).json({ error: "Dish not found" });
-    res.json(dish);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Обновление информации о блюде
-router.put("/:id", async (req, res) => {
-  try {
-    const updatedDish = await updateDish(req.params.id, req.body);
-    res.json(updatedDish);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Удаление блюда по id
+// Удаление блюда
 router.delete("/:id", async (req, res) => {
   try {
-    const deletedDish = await deleteDish(req.params.id);
-    res.json({
-      message: "Dish deleted successfully",
-      Dish: deletedDish,
-    });
+    const dish = await Dish.findByPk(req.params.id);
+    if (!dish) return res.status(404).json({ message: "Dish not found" });
+    await dish.destroy();
+    res.json({ message: "Dish deleted" });
   } catch (error) {
-    if (error.message === "Dish not found") {
-      return res.status(404).json({ error: error.message });
-    }
     res.status(500).json({ error: error.message });
   }
 });
 
-// Фильтрация блюд по категории
-router.get("/filter/category/:category", async (req, res) => {
+// Фильтрация по категории
+router.get("/filter/category", async (req, res) => {
   try {
-    const dishes = await filterDishesByCategory(req.params.category);
+    const { category } = req.query;
+    const dishes = await Dish.findAll({ where: { category } });
     res.json(dishes);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// Фильтрация блюд по цене (от и до)
+// Фильтрация по цене
 router.get("/filter/price", async (req, res) => {
-  const { minPrice, maxPrice } = req.query;
   try {
-    const dishes = await filterDishesByPriceRange(minPrice, maxPrice);
+    const { minPrice, maxPrice } = req.query;
+    const dishes = await Dish.findAll({
+      where: { price: { [Op.between]: [minPrice, maxPrice] } },
+    });
     res.json(dishes);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// Фильтрация блюд по диетическим требованиям ("веганский", "без глютена")
-router.get("/filter/dietary", async (req, res) => {
-  const { dietaryFilter } = req.query;
+// Фильтрация по требованиям
+router.get("/filter/requirements", async (req, res) => {
   try {
-    const dishes = await filterDishesByDietaryRequirement(dietaryFilter);
+    const { requirement } = req.query;
+    const dishes = await Dish.findAll({ where: { requirements: requirement } });
     res.json(dishes);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Получение информации по id
+router.get("/:id", async (req, res) => {
+  try {
+    const dish = await Dish.findByPk(req.params.id);
+    if (!dish) return res.status(404).json({ message: "Dish not found" });
+    res.json(dish);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Получение информации по имени
+router.get("/name/:name", async (req, res) => {
+  try {
+    const dish = await Dish.findOne({ where: { name: req.params.name } });
+    if (!dish) return res.status(404).json({ message: "Dish not found" });
+    res.json(dish);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
