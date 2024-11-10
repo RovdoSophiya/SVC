@@ -1,0 +1,22 @@
+.partnersContainer {
+  width: 100%;
+  margin-top: 40px;
+}
+.partnersContainer p {
+  width: 100%;
+  margin-left: 10px;
+  color: rgba(128, 96, 68, 1);
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 31.5px;
+}
+@media (max-width: 500px) {
+  .partnersImage {
+    width: 100% !important;
+  }
+  .partnersContainer p {
+    margin-left: 0px;
+    font-size: 20px;
+  }
+}
