@@ -1,5 +1,4 @@
 const express = require("express");
-const bcrypt = require("bcrypt");
 const router = express.Router();
 const Client = require("../models/Client");
 const Courier = require("../models/Courier");
@@ -18,13 +17,10 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ message: "Email already exists" });
     }
 
-    // Хеширование пароля
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     // Создание нового клиента
     const newClient = await Client.create({
       email,
-      password: hashedPassword,
+      password: password,
       name,
       lastname,
       fathername: fathername || null, // Если отчество не введено, то null
@@ -57,20 +53,16 @@ router.post("/login", async (req, res) => {
     }
 
     // Проверка пароля
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordValid) {
+    if (user.password !== password) {
       return res.status(400).json({ message: "Invalid password" });
     }
 
     // Возвращаем успешный ответ с ролью и данными пользователя
-    res
-      .status(200)
-      .json({
-        message: "Login successful",
-        role,
-        user: { id: user.id, email: user.email, name: user.name },
-      });
+    res.status(200).json({
+      message: "Login successful",
+      role,
+      user: { id: user.id, email: user.email, name: user.name },
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -1,5 +1,13 @@
 body,
-p {
+p,
+Link {
   padding: 0;
   margin: 0;
+  font-family: "Caviat-dreams";
+}
+@font-face {
+  font-family: "Caviat-dreams";
+  src: url("./assets/fonts/caviar-dreams.ttf") format("truetype");
+  font-style: normal;
+  font-weight: normal;
 }
