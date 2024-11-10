@@ -8,6 +8,7 @@ import {
   useMediaQuery,
   Typography,
   Modal,
+  Divider,
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import SearchIcon from "@mui/icons-material/Search";
@@ -114,6 +115,7 @@ const Header = ({ user, userRole, cartCount }) => {
       >
         <p>NEXT DAY DELIVERY, MINIMUM $100 + GST</p>
       </Box>
+      <Divider />
       <Box
         className="cater-project"
         sx={{
