@@ -56,7 +56,7 @@ const Collections = () => {
                 <img
                   className="collectionPhoto"
                   src={item.image}
-                  alt={`Photo ${index + 1}`}
+                  alt="none"
                   style={{ width: "100%", borderRadius: "8px" }}
                 />
                 <p className="description">{item.text}</p>
