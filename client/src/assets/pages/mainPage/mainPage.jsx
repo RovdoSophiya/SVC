@@ -1,11 +1,13 @@
 import ParisCup from "../_components/parisCup/parisCup";
+import Collections from "../_components/collections/collections";
 
-const about = () => {
+const Main = () => {
   return (
     <div>
-      <ParisCup/>
+      <ParisCup />
+      <Collections />
     </div>
   );
 };
 
-export default about;
+export default Main;
