@@ -1,0 +1,7 @@
+.aboutContainer {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: rgba(128, 96, 68, 1);
+}
