@@ -1,0 +1,79 @@
+.loginContainer {
+  width: 95%;
+  margin-top: 30px;
+  margin-bottom: 40px;
+  padding-left: 25px;
+  padding-right: 25px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  color: rgba(128, 96, 68, 1);
+}
+.authorizationLog,
+.toAuthorization {
+  width: 49%;
+}
+.exCust {
+  font-size: 25.375px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 52.36px;
+}
+.authForm {
+  width: 100%;
+}
+.authForm input {
+  width: 90%;
+  height: 30px;
+  border-color: rgb(235, 181, 112);
+}
+.SignIn {
+  width: 91%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+  height: 40px;
+  background-color: rgba(128, 96, 68, 1);
+  color: white;
+  text-decoration: none;
+  border-color: transparent;
+}
+.toAuthorization p:nth-child(1) {
+  font-size: 25.375px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 52.36px;
+}
+.toAuthorization a {
+  width: 98%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+  height: 40px;
+  background-color: rgba(128, 96, 68, 1);
+  color: white;
+  text-decoration: none;
+}
+
+@media (max-width: 1000px) {
+  .loginContainer {
+    width: 97%;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}
+@media (max-width: 500px) {
+  .loginContainer {
+    flex-direction: column;
+  }
+  .authorizationLog,
+  .toAuthorization {
+    width: 80%;
+    margin: auto;
+  }
+  .SignIn {
+    width: 98%;
+  }
+}

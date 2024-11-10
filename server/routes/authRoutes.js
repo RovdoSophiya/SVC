@@ -20,7 +20,7 @@ router.post("/register", async (req, res) => {
     // Создание нового клиента
     const newClient = await Client.create({
       email,
-      password: password,
+      password, // Хранение пароля в открытом виде (не рекомендуется)
       name,
       lastname,
       fathername: fathername || null, // Если отчество не введено, то null

@@ -147,7 +147,7 @@ const Header = ({ user, userRole, cartCount }) => {
                 },
                 "@media (max-width:505px)": {
                   width: "200px",
-                  marginLeft: "-170px",
+                  marginLeft: "-120px",
                 },
               }}
             >
@@ -198,7 +198,18 @@ const Header = ({ user, userRole, cartCount }) => {
               </Link>
             </>
           ) : (
-            <p>Login/SignUp</p>
+            <a
+              href="/login"
+              style={{
+                textDecoration: "none",
+                color: "white",
+                display: "flex",
+                alignItems: "center",
+                height: "100%",
+              }}
+            >
+              Login/SignUp
+            </a>
           )}
         </div>
         <div className="icons">
