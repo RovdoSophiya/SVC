@@ -1,0 +1,131 @@
+footer {
+  width: 100%;
+  background-color: rgba(128, 96, 68, 1);
+  color: white;
+}
+.listItems {
+  width: 100%;
+  padding-top: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-around;
+  justify-self: center;
+  gap: 30px;
+}
+.footerItem1,
+.footerItem2,
+.footerItem3 {
+  width: 20%;
+}
+.footerItem1,
+.footerItem2,
+.footerItem3 {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 15px;
+}
+.emailInput {
+  height: 30px;
+  width: 170px;
+}
+.footerItem3 button {
+  background-color: rgb(249, 201, 159);
+  height: 30px;
+  width: 80px;
+  color: white;
+  border-color: transparent;
+}
+.following {
+  margin-top: 80px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-around;
+  justify-self: center;
+}
+.followingItem1,
+.followingItem2,
+.followingItem3 {
+  width: 20%;
+}
+.followingItem2,
+.followingItem3 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  gap: 5px;
+}
+.footerItemannotation {
+  margin-bottom: 20px;
+}
+@media (max-width: 800px) {
+  .footerItem1,
+  .footerItem2,
+  .footerItem3 {
+    width: 30%;
+  }
+  .followingItem1,
+  .followingItem2,
+  .followingItem3 {
+    width: 33%;
+  }
+}
+@media (max-width: 700px) {
+  .footerItem1,
+  .footerItem2 {
+    width: 40%;
+  }
+  .footerItem3 {
+    width: 90%;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+  }
+  .footerItemannotation {
+    margin-bottom: 5px;
+    text-align: center;
+  }
+}
+@media (max-width: 550px) {
+  .followingItem1,
+  .followingItem2,
+  .followingItem3 {
+    font-size: 12px;
+  }
+  .followingItem2 div {
+    display: flex;
+    flex-direction: row;
+  }
+  .followingItem2 div a {
+    width: 20px;
+    height: 20px;
+  }
+  .followingItem2 div a img {
+    width: 20px;
+    height: 20px;
+  }
+  .followingItem3 div img {
+    width: 20px;
+    height: 15px;
+  }
+}
+@media (max-width: 415px) {
+  .listItems {
+    width: 100%;
+    flex-direction: column;
+  }
+  .footerItem1,
+  .footerItem2 {
+    width: 90%;
+    margin: auto;
+    justify-content: center;
+    text-align: center;
+  }
+  .footerItem1 img {
+    margin: auto;
+  }
+}
