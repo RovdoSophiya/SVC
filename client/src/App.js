@@ -10,8 +10,9 @@ function App() {
       <Header></Header>
       <Routes>
         <Route path="/" element={<Main />} />
-        {/* <Route path="/About" element={<About />} />
-        <Route path="/Reviews" element={<Reviews />} /> */}
+        {/* <Route path="/dishes" element={<Dishes />} />
+        <Route path="/Reviews" element={<Reviews />}
+        <Route path="/Login" element={<Login> />} /> */}
       </Routes>
       <Footer></Footer>
     </BrowserRouter>

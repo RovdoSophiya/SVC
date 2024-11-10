@@ -34,7 +34,6 @@ const ImageGallery = () => {
               style={{
                 width: "60%",
                 height: "auto",
-                objectFit: "contain",
                 margin: "auto",
               }}
             />

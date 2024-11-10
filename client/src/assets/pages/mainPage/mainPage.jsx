@@ -49,16 +49,16 @@ const aboutText = {
 const Main = () => {
   return (
     <div>
-      {/* <ParisCup />
-      <Collections /> */}
-       <Partners /> 
-       <Blog /> 
-       {/* <About
+      <ParisCup />
+      <Collections />
+      <Partners />
+      <Blog />
+      <About
         title={aboutText.title}
         description={aboutText.description}
         moreInfo={aboutText.moreInfo}
-      />    
-       <Description /> */}
+      />
+      <Description />
     </div>
   );
 };

@@ -385,7 +385,7 @@ const Header = ({ user, userRole, cartCount }) => {
           <div className="list">
             <Link
               className="list-item"
-              href="#"
+              href="/"
               underline="hover"
               color="rgba(128, 96, 68, 1)"
             >
@@ -393,7 +393,7 @@ const Header = ({ user, userRole, cartCount }) => {
             </Link>
             <Link
               className="list-item"
-              href="#"
+              href="/dishes"
               underline="hover"
               color="rgba(128, 96, 68, 1)"
             >
@@ -401,7 +401,7 @@ const Header = ({ user, userRole, cartCount }) => {
             </Link>
             <Link
               className="list-item"
-              href="#"
+              href="/reviews"
               underline="hover"
               color="rgba(128, 96, 68, 1)"
             >
