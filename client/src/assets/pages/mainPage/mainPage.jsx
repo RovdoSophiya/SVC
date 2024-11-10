@@ -3,6 +3,7 @@ import Collections from "../_components/collections/collections";
 import Partners from "../_components/partners/partners";
 import Blog from "../_components/blog/blog";
 import About from "../_components/about/about";
+import Description from "../_components/description/description";
 
 const aboutText = {
   title: "ABOUT US",
@@ -57,6 +58,7 @@ const Main = () => {
         description={aboutText.description}
         moreInfo={aboutText.moreInfo}
       />
+      <Description />
     </div>
   );
 };
