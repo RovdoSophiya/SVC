@@ -2,6 +2,15 @@ const express = require("express");
 const Client = require("../models/Client");
 const router = express.Router();
 
+// Получение информации обо всех клиентах
+router.get("/", async (req, res) => {
+  try {
+    const clients = await Client.findAll();
+    res.json(clients);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
 //Создание клиента
 router.post("/", async (req, res) => {
   try {

@@ -32,13 +32,16 @@ const Login = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetch(
+        "http://localhost:5000/api/authorization/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
       const data = await response.json();
       if (!response.ok) {
@@ -46,7 +49,7 @@ const Login = () => {
       } else {
         // Сохранение данных пользователя в локальное хранилище
         localStorage.setItem("role", data.role);
-        localStorage.setItem("userName", data.user.name);
+        localStorage.setItem("id", data.user.id);
 
         // Перенаправление в зависимости от роли
         if (data.role === "client") {

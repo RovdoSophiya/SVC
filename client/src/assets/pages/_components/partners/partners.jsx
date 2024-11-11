@@ -17,7 +17,7 @@ const ImageGallery = () => {
   ];
 
   return (
-    <div class="partnersContainer">
+    <div className="partnersContainer">
       <p>Just some of our happy customers</p>
       <ImageList
         sx={{ width: "100%", height: "auto" }}

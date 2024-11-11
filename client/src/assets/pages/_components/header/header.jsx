@@ -19,12 +19,15 @@ import Link from "@mui/material/Link";
 import "./header.css";
 import Logo from "../../../img/logo.png";
 
-const Header = ({ user, userRole, cartCount }) => {
+const Header = ({ user, userRole, userId, loading }) => {
   const [openSearch, setOpenSearch] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [openProfileModal, setOpenProfileModal] = useState(false);
   const [userData, setUserData] = useState({});
+  const [initialUserData, setInitialUserData] = useState({}); // Хранение начальныx данныx пользователя
   const [isEditing, setIsEditing] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [cartCount, setCartCount] = useState(0);
   const inputRef = useRef(null);
   const isSmallScreen = useMediaQuery("(max-width:700px)");
   const navigate = useNavigate();
@@ -56,37 +59,111 @@ const Header = ({ user, userRole, cartCount }) => {
   };
 
   const fetchUserData = async () => {
-    const response = await fetch(`/api/users/${user.id}`); // Подставьте правильный URL
+    let response;
+    if (userRole === "client") {
+      response = await fetch(`http://localhost:5000/api/clients/${userId}`);
+    } else if (userRole === "courier") {
+      response = await fetch(`http://localhost:5000/api/couriers/${userId}`);
+    }
     const data = await response.json();
     setUserData(data);
+    setInitialUserData(data); // Сохранение начальных данных
   };
 
+  //корзина
+  const fetchCartCount = async () => {
+    const response = await fetch(
+      "http://localhost:5000/api/cart/total/${userId}"
+    );
+    const data = await response.json();
+    return data.count;
+  };
+  useEffect(() => {
+    const getCartCount = async () => {
+      const count = await fetchCartCount();
+      setCartCount(count);
+    };
+
+    getCartCount();
+  }, []);
   const handleEditToggle = () => {
     setIsEditing((prev) => !prev);
   };
 
-  const handleInputChange = (e) => {
-    setUserData({ ...userData, [e.target.name]: e.target.value });
+  const handleCancel = () => {
+    setUserData(initialUserData); // Возвращение к исходным данным
+    setIsEditing(false);
+    setErrors({}); // Сброс ошибки
+  };
+
+  const handleInputChange = async (e) => {
+    const { name, value } = e.target;
+    setUserData({ ...userData, [name]: value });
+    await validateForm();
+  };
+
+  const validateForm = async () => {
+    const newErrors = {};
+    const nameRegex = /^[A-Za-zА-Яа-яЁё]+$/; // Регулярное выражение для проверки, что строка содержит только буквы
+    const phoneRegex = /^\d+$/; // Регулярное выражение для проверки, что строка содержит только цифры
+
+    if (!userData.name) newErrors.name = "Name is required";
+    else if (!nameRegex.test(userData.name))
+      newErrors.name = "Name must contain only letters";
+
+    if (!userData.lastname) newErrors.lastname = "Lastname is required";
+    else if (!nameRegex.test(userData.lastname))
+      newErrors.lastname = "Lastname must contain only letters";
+
+    if (!nameRegex.test(userData.fathername))
+      newErrors.fathername = "Fathername must contain only letters";
+
+    if (!userData.phone) newErrors.phone = "Phone is required";
+    else if (!phoneRegex.test(userData.phone))
+      newErrors.phone = "Phone must contain only numbers";
+    else {
+      // Проверка на уникальность телефона
+      const existingUsersResponse = await fetch(
+        "http://localhost:5000/api/clients/"
+      );
+      const existingUsers = await existingUsersResponse.json();
+      const phoneExists = existingUsers.some(
+        (user) => user.phone === userData.phone && user.id !== userId
+      ); // Проверка, есть ли такой телефон у другого пользователя
+      if (phoneExists) newErrors.phone = "Phone number already exists";
+    }
+
+    if (!userData.address) newErrors.address = "Address is required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Возвращает true, если ошибок нет
   };
 
   const handleSave = async () => {
-    const response = await fetch(`/api/users/${user.id}`, {
+    const isValid = await validateForm(); // Теперь функция возвращает промис
+    if (!isValid) return;
+
+    const url =
+      userRole === "client"
+        ? `http://localhost:5000/api/clients/${userId}`
+        : `http://localhost:5000/api/couriers/${userId}`;
+
+    const response = await fetch(url, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(userData),
     });
+
     if (response.ok) {
       // Обновление прошло успешно
       setIsEditing(false);
       fetchUserData(); // Обновляем данные пользователя
     } else {
-      // Обработка ошибок
       console.error("Ошибка при сохранении данных");
     }
   };
-
   useEffect(() => {
     if (openProfileModal) {
       fetchUserData();
@@ -125,8 +202,18 @@ const Header = ({ user, userRole, cartCount }) => {
           flexDirection: "row",
         }}
       >
-        <img className="logo" src={Logo} alt="Logo" />
-        <div className="search">
+        <img
+          className={`logo ${
+            userRole === "client" || userRole === "courier" ? "logo-user" : ""
+          }`}
+          src={Logo}
+          alt="Logo"
+        />
+        <div
+          className={`search ${
+            userRole === "client" || userRole === "courier" ? "search-user" : ""
+          }`}
+        >
           {(!isSmallScreen || openSearch) && (
             <Box
               ref={inputRef}
@@ -149,6 +236,15 @@ const Header = ({ user, userRole, cartCount }) => {
                   width: "200px",
                   marginLeft: "-120px",
                 },
+                ...(userRole === "client" || userRole === "courier"
+                  ? {
+                      width: "80%",
+                      "@media (max-width:1080px)": {
+                        width: "400px",
+                        marginLeft: "-120px",
+                      },
+                    }
+                  : {}),
               }}
             >
               <TextField
@@ -184,10 +280,17 @@ const Header = ({ user, userRole, cartCount }) => {
             </Box>
           )}
         </div>
-        <div className="authorization">
-          {user ? (
+
+        <div
+          className={`authorization ${
+            userRole === "client" || userRole === "courier" ? "highlight" : ""
+          }`}
+        >
+          {loading ? (
+            <p>Loading...</p> // Показать индикатор загрузки
+          ) : userRole === "client" || userRole === "courier" ? (
             <>
-              <p>Welcome, {user.name}</p>
+              <p>Welcome, {user ? user.name : "Guest"}</p>
               <Link
                 className="gotoAuthorization"
                 onClick={handleToggleProfileModal}
@@ -227,28 +330,13 @@ const Header = ({ user, userRole, cartCount }) => {
           >
             <PersonIcon />
           </IconButton>
-          {userRole === "client" && (
-            <IconButton sx={{ color: "white" }}>
-              <ShoppingCartIcon />
-              {cartCount > 0 && (
-                <span
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    backgroundColor: "red",
-                    borderRadius: "50%",
-                    padding: "2px 6px",
-                    color: "white",
-                    fontSize: "12px",
-                  }}
-                >
-                  {cartCount}
-                </span>
-              )}
-            </IconButton>
-          )}
         </div>
+        {userRole === "client" && (
+          <IconButton sx={{ color: "white" }}>
+            <ShoppingCartIcon />
+            <span>{cartCount}</span>{" "}
+          </IconButton>
+        )}
       </Box>
 
       {/* Модальное окно для карты */}
@@ -288,7 +376,7 @@ const Header = ({ user, userRole, cartCount }) => {
               width="100%"
               height="100%"
               style={{ border: 0 }}
-              allowFullЫcreen=""
+              allowFullScreen=""
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               title="Google Maps Location of Paris"
@@ -337,6 +425,8 @@ const Header = ({ user, userRole, cartCount }) => {
               disabled={!isEditing}
               fullWidth
               sx={{ mb: 2 }}
+              error={!!errors.name}
+              helperText={errors.name}
             />
             <TextField
               label="Lastname"
@@ -346,6 +436,19 @@ const Header = ({ user, userRole, cartCount }) => {
               disabled={!isEditing}
               fullWidth
               sx={{ mb: 2 }}
+              error={!!errors.lastname}
+              helperText={errors.lastname}
+            />
+            <TextField
+              label="Fathername"
+              name="fathername"
+              value={userData.fathername || ""}
+              onChange={handleInputChange}
+              disabled={!isEditing}
+              fullWidth
+              sx={{ mb: 2 }}
+              error={!!errors.fathername}
+              helperText={errors.fathername}
             />
             <TextField
               label="Phone"
@@ -355,6 +458,8 @@ const Header = ({ user, userRole, cartCount }) => {
               disabled={!isEditing}
               fullWidth
               sx={{ mb: 2 }}
+              error={!!errors.phone}
+              helperText={errors.phone}
             />
             <TextField
               label="Address"
@@ -364,6 +469,8 @@ const Header = ({ user, userRole, cartCount }) => {
               disabled={!isEditing}
               fullWidth
               sx={{ mb: 2 }}
+              error={!!errors.address}
+              helperText={errors.address}
             />
             <Button
               variant="contained"
@@ -373,7 +480,11 @@ const Header = ({ user, userRole, cartCount }) => {
               {isEditing ? "Cancel" : "Edit"}
             </Button>
             {isEditing && (
-              <Button variant="contained" onClick={handleSave}>
+              <Button
+                variant="contained"
+                onClick={handleSave}
+                disabled={Object.keys(errors).length > 0}
+              >
                 Save
               </Button>
             )}
@@ -422,7 +533,6 @@ const Header = ({ user, userRole, cartCount }) => {
               className="list-item"
               href="#"
               underline="hover"
-              c
               color="rgba(128, 96, 68, 1)"
             >
               Events

@@ -20,10 +20,10 @@ router.post("/register", async (req, res) => {
     // Создание нового клиента
     const newClient = await Client.create({
       email,
-      password, // Хранение пароля в открытом виде (не рекомендуется)
+      password,
       name,
       lastname,
-      fathername: fathername || null, // Если отчество не введено, то null
+      fathername: fathername || null,
       phone,
       address,
     });
@@ -33,31 +33,29 @@ router.post("/register", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+console.log("AuthRoutes module loaded");
 
 // Авторизация
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Проверка, существует ли пользователь как клиент или курьер
     let user = await Client.findOne({ where: { email } });
-    let role = "client"; // Устанавливаем роль по умолчанию как "client"
+    let role = "client";
 
     if (!user) {
       user = await Courier.findOne({ where: { email } });
-      role = "courier"; // Если не найден клиент, ищем курьера
+      role = "courier";
     }
 
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    // Проверка пароля
     if (user.password !== password) {
       return res.status(400).json({ message: "Invalid password" });
     }
 
-    // Возвращаем успешный ответ с ролью и данными пользователя
     res.status(200).json({
       message: "Login successful",
       role,

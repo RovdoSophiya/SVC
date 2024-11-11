@@ -1,9 +1,16 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+
 // Middleware для обработки JSON
-app.use(cors());
+// app.use(cors());
 app.use(express.json());
+// Разрешаем доступ с порта 3000
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+  })
+);
 
 // Импорт маршрутов
 const authRoutes = require("./routes/authRoutes");
@@ -18,7 +25,7 @@ const cartsRouter = require("./routes/cartRoutes");
 const reviewsRouter = require("./routes/reviewRoutes");
 
 // Подключение маршрутов к серверу
-app.use("/api/auth", authRoutes);
+app.use("/api/authorization", authRoutes);
 app.use("/api/clients", clientsRouter);
 app.use("/api/couriers", couriersRouter);
 app.use("/api/events", eventsRouter);
