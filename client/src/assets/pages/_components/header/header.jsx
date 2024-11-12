@@ -16,6 +16,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import MapIcon from "@mui/icons-material/Map";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Link from "@mui/material/Link";
+import axios from "axios"; // Импортируем Axios
 import "./header.css";
 import Logo from "../../../img/logo.png";
 
@@ -24,7 +25,7 @@ const Header = ({ user, userRole, userId, loading }) => {
   const [openModal, setOpenModal] = useState(false);
   const [openProfileModal, setOpenProfileModal] = useState(false);
   const [userData, setUserData] = useState({});
-  const [initialUserData, setInitialUserData] = useState({}); // Хранение начальныx данныx пользователя
+  const [initialUserData, setInitialUserData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [errors, setErrors] = useState({});
   const [cartCount, setCartCount] = useState(0);
@@ -59,41 +60,42 @@ const Header = ({ user, userRole, userId, loading }) => {
   };
 
   const fetchUserData = async () => {
-    let response;
-    if (userRole === "client") {
-      response = await fetch(`http://localhost:5000/api/clients/${userId}`);
-    } else if (userRole === "courier") {
-      response = await fetch(`http://localhost:5000/api/couriers/${userId}`);
+    try {
+      const response = await axios.get(
+        userRole === "client"
+          ? `http://localhost:5000/api/clients/${userId}`
+          : `http://localhost:5000/api/couriers/${userId}`
+      );
+      setUserData(response.data);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
     }
-    const data = await response.json();
-    setUserData(data);
-    setInitialUserData(data); // Сохранение начальных данных
   };
 
-  //корзина
   const fetchCartCount = async () => {
-    const response = await fetch(
-      "http://localhost:5000/api/cart/total/${userId}"
-    );
-    const data = await response.json();
-    return data.count;
+    if (userRole === "client") {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/carts/total/${userId}`
+        );
+        return response.data.count || 0;
+      } catch (error) {
+        console.error("Error fetching cart count:", error);
+        return 0; // Возвращаем 0 в случае ошибки
+      }
+    }
   };
+
   useEffect(() => {
     const getCartCount = async () => {
       const count = await fetchCartCount();
       setCartCount(count);
     };
-
     getCartCount();
-  }, []);
+  }, [fetchCartCount]);
+
   const handleEditToggle = () => {
     setIsEditing((prev) => !prev);
-  };
-
-  const handleCancel = () => {
-    setUserData(initialUserData); // Возвращение к исходным данным
-    setIsEditing(false);
-    setErrors({}); // Сброс ошибки
   };
 
   const handleInputChange = async (e) => {
@@ -104,8 +106,8 @@ const Header = ({ user, userRole, userId, loading }) => {
 
   const validateForm = async () => {
     const newErrors = {};
-    const nameRegex = /^[A-Za-zА-Яа-яЁё]+$/; // Регулярное выражение для проверки, что строка содержит только буквы
-    const phoneRegex = /^\d+$/; // Регулярное выражение для проверки, что строка содержит только цифры
+    const nameRegex = /^[A-Za-zА-Яа-яЁё]+$/;
+    const phoneRegex = /^\d+$/;
 
     if (!userData.name) newErrors.name = "Name is required";
     else if (!nameRegex.test(userData.name))
@@ -121,26 +123,29 @@ const Header = ({ user, userRole, userId, loading }) => {
     if (!userData.phone) newErrors.phone = "Phone is required";
     else if (!phoneRegex.test(userData.phone))
       newErrors.phone = "Phone must contain only numbers";
-    else {
-      // Проверка на уникальность телефона
-      const existingUsersResponse = await fetch(
-        "http://localhost:5000/api/clients/"
-      );
-      const existingUsers = await existingUsersResponse.json();
-      const phoneExists = existingUsers.some(
-        (user) => user.phone === userData.phone && user.id !== userId
-      ); // Проверка, есть ли такой телефон у другого пользователя
-      if (phoneExists) newErrors.phone = "Phone number already exists";
+    if (!newErrors.phone) {
+      try {
+        const existingUsersResponse = await axios.get(
+          "http://localhost:5000/api/clients/"
+        );
+        const existingUsers = existingUsersResponse.data;
+        const phoneExists = existingUsers.some(
+          (user) => user.phone === userData.phone && user.id !== userId
+        );
+        if (phoneExists) newErrors.phone = "Phone number already exists";
+      } catch (error) {
+        console.error("Error fetching existing users:", error);
+      }
     }
 
     if (!userData.address) newErrors.address = "Address is required";
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0; // Возвращает true, если ошибок нет
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSave = async () => {
-    const isValid = await validateForm(); // Теперь функция возвращает промис
+    const isValid = await validateForm();
     if (!isValid) return;
 
     const url =
@@ -148,21 +153,27 @@ const Header = ({ user, userRole, userId, loading }) => {
         ? `http://localhost:5000/api/clients/${userId}`
         : `http://localhost:5000/api/couriers/${userId}`;
 
-    const response = await fetch(url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userData),
-    });
+    try {
+      const response = await axios.put(url, userData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    if (response.ok) {
-      // Обновление прошло успешно
-      setIsEditing(false);
-      fetchUserData(); // Обновляем данные пользователя
-    } else {
-      console.error("Ошибка при сохранении данных");
+      if (response.status === 200) {
+        setIsEditing(false);
+        fetchUserData();
+      } else {
+        console.error("Error saving data");
+      }
+    } catch (error) {
+      console.error("Error saving user data:", error);
     }
+  };
+  const handleCancel = () => {
+    setUserData(initialUserData);
+    setErrors({});
+    setIsEditing(false);
   };
   useEffect(() => {
     if (openProfileModal) {
@@ -287,7 +298,7 @@ const Header = ({ user, userRole, userId, loading }) => {
           }`}
         >
           {loading ? (
-            <p>Loading...</p> // Показать индикатор загрузки
+            <p>Loading...</p>
           ) : userRole === "client" || userRole === "courier" ? (
             <>
               <p>Welcome, {user ? user.name : "Guest"}</p>
@@ -325,7 +336,13 @@ const Header = ({ user, userRole, userId, loading }) => {
             </IconButton>
           )}
           <IconButton
-            onClick={() => navigate("/login")}
+            onClick={() => {
+              if (userRole === "client" || userRole === "courier") {
+                handleToggleProfileModal();
+              } else {
+                navigate("/login");
+              }
+            }}
             sx={{ color: "white" }}
           >
             <PersonIcon />
@@ -334,7 +351,7 @@ const Header = ({ user, userRole, userId, loading }) => {
         {userRole === "client" && (
           <IconButton sx={{ color: "white" }}>
             <ShoppingCartIcon />
-            <span>{cartCount}</span>{" "}
+            <span>{cartCount}</span>
           </IconButton>
         )}
       </Box>
