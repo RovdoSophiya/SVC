@@ -103,8 +103,12 @@ router.get("/total/:clientid", async (req, res) => {
     // Находим все товары в корзине для указанного клиента
     const cartItems = await Cart.findAll({ where: { clientid } });
 
+    // if (cartItems.length === 0) {
+    //   return res.status(400).json({ message: "Cart is empty" }); // Ошибка, если корзина пуста
+    // }
+
     if (cartItems.length === 0) {
-      return res.status(400).json({ message: "Cart is empty" }); // Ошибка, если корзина пуста
+      return res.json({ total: 0 });
     }
 
     // Вычисляем общую сумму
