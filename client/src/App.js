@@ -5,6 +5,7 @@ import Main from "../src/assets/pages/mainPage/mainPage";
 import Footer from "./assets/pages/_components/footer/footer";
 import Login from "./assets/pages/loginPage/loginPage";
 import Client from "./assets/pages/clientPage/clientPage";
+import Courier from "./assets/pages/couirerPage/courierPage";
 // import Registration from "./assets/pages/registrationPage/registrationPage";
 import "./App.css";
 
@@ -51,7 +52,28 @@ function App() {
         {/* <Route path="/dishes" element={<Dishes />} />
         <Route path="/Reviews" element={<Reviews />} */}
         <Route path="/login" element={<Login />} />
-        <Route path="/client" element={<Client />} />
+        <Route
+          path="/client"
+          element={
+            <Client
+              user={user}
+              userRole={userRole}
+              userId={userId}
+              loading={loading}
+            />
+          }
+        />
+        <Route
+          path="/courier"
+          element={
+            <Courier
+              user={user}
+              userRole={userRole}
+              userId={userId}
+              loading={loading}
+            />
+          }
+        />
       </Routes>
       <Footer></Footer>
     </BrowserRouter>
