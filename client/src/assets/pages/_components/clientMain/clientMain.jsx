@@ -1,10 +1,18 @@
+import React, { useState } from "react";
 import "./clientMain.css";
 import icon1 from "../../../img/icons/user.png";
 import icon2 from "../../../img/icons/order.png";
 import icon3 from "../../../img/icons/book.png";
 import icon4 from "../../../img/icons/review.png";
+import LogoutModal from "../modal/exitAccountModal/logoutModal";
 
 const ClientMain = (user, userRole, userId, loading) => {
+  /*Модальное окно для выхода*/
+  const [openLogoutModal, setOpenLogoutModal] = useState(false);
+  const handleToggleLogoutModal = () => {
+    setOpenLogoutModal((prev) => !prev);
+  };
+
   return (
     <div>
       <div className="clientContainer">
@@ -45,9 +53,17 @@ const ClientMain = (user, userRole, userId, loading) => {
           </div>
         </div>
       </div>
-      <a href="/" className="backToHome">
+      <button
+        variant="contained"
+        className="backToHome"
+        onClick={handleToggleLogoutModal}
+      >
         Back to home
-      </a>
+      </button>
+      <LogoutModal
+        open={openLogoutModal}
+        handleClose={handleToggleLogoutModal}
+      />
     </div>
   );
 };
