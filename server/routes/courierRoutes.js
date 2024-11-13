@@ -1,6 +1,10 @@
 const express = require("express");
 const Courier = require("../models/Courier");
 const Delivery = require("../models/Delivery");
+const Order = require("../models/Order");
+const OrderedDish = require("../models/OrderedDish");
+const Client = require("../models/Client");
+const Dish = require("../models/Dish");
 const router = express.Router();
 
 //Создание курьера
@@ -54,6 +58,169 @@ router.put("/:id/status", async (req, res) => {
       res.status(404).json({ message: "Courier not found" });
     }
   } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Просмотр всех доступных заказов
+router.get("/deliveries/available", async (req, res) => {
+  try {
+    const deliveries = await Delivery.findAll({
+      where: { courierid: null },
+      include: [
+        {
+          model: Order,
+          attributes: ["totalamount"],
+          include: [
+            {
+              model: Client,
+              attributes: ["lastname", "name", "fathername"],
+            },
+            {
+              model: OrderedDish,
+              include: [
+                {
+                  model: Dish,
+                  attributes: ["name"],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    const formattedDeliveries = deliveries.map((delivery) => {
+      const order = delivery.Order || {};
+      const client = order.Client || {};
+      const orderedDishes = order.OrderedDishes || [];
+
+      return {
+        id: delivery.id,
+        deliveryAddress: delivery.deliveryaddress,
+        deliveryDate: delivery.deliverydate,
+        status: delivery.status,
+        totalAmount: order.totalamount || 0,
+        clientFullName: `${client.lastname || ""} ${client.name || ""} ${
+          client.fathername || ""
+        }`.trim(),
+        orderedDishes: orderedDishes.map((orderedDish) => ({
+          dishName: orderedDish.Dish ? orderedDish.Dish.name : "Без названия",
+          quantity: orderedDish.quantity,
+          totalPrice: orderedDish.totalprice,
+        })),
+      };
+    });
+
+    res.json(formattedDeliveries);
+  } catch (error) {
+    console.error("Ошибка на сервере:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Сортировка по дате
+router.get("/deliveries/sortByDate", async (req, res) => {
+  const order = req.query.order || "ASC"; // По умолчанию по возрастанию
+  try {
+    const deliveries = await Delivery.findAll({
+      include: [
+        {
+          model: Order,
+          attributes: ["totalamount"],
+          include: [
+            {
+              model: Client,
+              attributes: ["lastname", "name", "fathername"],
+            },
+            {
+              model: OrderedDish,
+              include: [
+                {
+                  model: Dish,
+                  attributes: ["name"],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      order: [["deliverydate", order]],
+    });
+
+    // Форматирование данных
+    const formattedDeliveries = deliveries.map((delivery) => ({
+      id: delivery.id,
+      deliveryAddress: delivery.deliveryaddress,
+      deliveryDate: delivery.deliverydate,
+      status: delivery.status,
+      totalAmount: delivery.Order.totalamount || 0,
+      clientFullName: `${delivery.Order.Client.lastname || ""} ${
+        delivery.Order.Client.name || ""
+      } ${delivery.Order.Client.fathername || ""}`.trim(),
+      orderedDishes: delivery.Order.OrderedDishes.map((orderedDish) => ({
+        dishName: orderedDish.Dish ? orderedDish.Dish.name : "Без названия",
+        quantity: orderedDish.quantity,
+        totalPrice: orderedDish.totalprice,
+      })),
+    }));
+
+    res.json(formattedDeliveries);
+  } catch (error) {
+    console.error("Ошибка на сервере:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Сортировка по цене
+router.get("/deliveries/sortByPrice", async (req, res) => {
+  const order = req.query.order || "ASC"; // По умолчанию по возрастанию
+  try {
+    const deliveries = await Delivery.findAll({
+      include: [
+        {
+          model: Order,
+          attributes: ["totalamount"],
+          include: [
+            {
+              model: Client,
+              attributes: ["lastname", "name", "fathername"],
+            },
+            {
+              model: OrderedDish,
+              include: [
+                {
+                  model: Dish,
+                  attributes: ["name"],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      order: [[{ model: Order, as: "Order" }, "totalamount", order]], // Используйте переменную order
+    });
+
+    // Форматирование данных
+    const formattedDeliveries = deliveries.map((delivery) => ({
+      id: delivery.id,
+      deliveryAddress: delivery.deliveryaddress,
+      deliveryDate: delivery.deliverydate,
+      status: delivery.status,
+      totalAmount: delivery.Order.totalamount || 0,
+      clientFullName: `${delivery.Order.Client.lastname || ""} ${
+        delivery.Order.Client.name || ""
+      } ${delivery.Order.Client.fathername || ""}`.trim(),
+      orderedDishes: delivery.Order.OrderedDishes.map((orderedDish) => ({
+        dishName: orderedDish.Dish ? orderedDish.Dish.name : "Без названия",
+        quantity: orderedDish.quantity,
+        totalPrice: orderedDish.totalprice,
+      })),
+    }));
+
+    res.json(formattedDeliveries);
+  } catch (error) {
+    console.error("Ошибка на сервере:", error);
     res.status(500).json({ error: error.message });
   }
 });

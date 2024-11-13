@@ -50,7 +50,9 @@ header {
   height: 100%;
   margin-top: auto;
   margin-bottom: auto;
-  margin-right: -5px;
+  /*Проверить у клиента*/
+  /* margin-right: -5px; */
+  margin-right: 0px;
 }
 .icons {
   display: none;

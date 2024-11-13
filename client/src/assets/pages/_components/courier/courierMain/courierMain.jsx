@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import "./courier.css";
-import icon1 from "../../../img/icons/user.png";
-import icon2 from "../../../img/icons/order.png";
-import icon3 from "../../../img/icons/book.png";
-import icon4 from "../../../img/icons/delivery.png";
-import LogoutModal from "../modal/exitAccountModal/logoutModal";
+import icon1 from "../../../../img/icons/user.png";
+import icon2 from "../../../../img/icons/order.png";
+import icon3 from "../../../../img/icons/book.png";
+import icon4 from "../../../../img/icons/delivery.png";
+import LogoutModal from "../../modal/exitAccountModal/logoutModal";
 
 const CourierMain = (user, userRole, userId, loading) => {
   /*Модальное окно для выхода*/

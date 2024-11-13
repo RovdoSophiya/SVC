@@ -6,6 +6,7 @@ import Footer from "./assets/pages/_components/footer/footer";
 import Login from "./assets/pages/loginPage/loginPage";
 import Client from "./assets/pages/clientPage/clientPage";
 import Courier from "./assets/pages/couirerPage/courierPage";
+import CourierAvailDeliveries from "./assets/pages/couirerPage/courierAvailableDeliveriesPage";
 // import Registration from "./assets/pages/registrationPage/registrationPage";
 import "./App.css";
 
@@ -73,6 +74,10 @@ function App() {
               loading={loading}
             />
           }
+        />
+        <Route
+          path="/courier/availableDeliveries"
+          element={<CourierAvailDeliveries userId={userId} />}
         />
       </Routes>
       <Footer></Footer>
