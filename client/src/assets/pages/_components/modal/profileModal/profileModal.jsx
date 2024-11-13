@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Box,
@@ -10,19 +10,38 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
 
-const ProfileModal = ({
-  openProfileModal,
-  handleToggleProfileModal,
-  userData,
-  setUserData,
-  isEditing,
-  setIsEditing,
-  fetchUserData,
-  userRole,
-  userId,
-  errors,
-  setErrors,
-}) => {
+const ProfileModal = ({ openProfileModal, userRole, userId }) => {
+  const [userData, setUserData] = useState({
+    name: "",
+    lastname: "",
+    fathername: "",
+    phone: "",
+    address: "",
+  });
+  const [isEditing, setIsEditing] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  // Fetch user data when modal opens (for example)
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const url =
+        userRole === "client"
+          ? `http://localhost:5000/api/clients/${userId}`
+          : `http://localhost:5000/api/couriers/${userId}`;
+
+      try {
+        const response = await axios.get(url);
+        setUserData(response.data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    if (openProfileModal) {
+      fetchUserData();
+    }
+  }, [openProfileModal, userRole, userId]);
+
   const handleInputChange = async (e) => {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
@@ -73,7 +92,7 @@ const ProfileModal = ({
 
       if (response.status === 200) {
         setIsEditing(false);
-        fetchUserData();
+        // Optionally refetch user data here
       } else {
         console.error("Error saving data");
       }
@@ -83,7 +102,7 @@ const ProfileModal = ({
   };
 
   return (
-    <Modal open={openProfileModal} onClose={handleToggleProfileModal}>
+    <Modal open={openProfileModal} onClose={() => setIsEditing(false)}>
       <Box
         sx={{
           position: "absolute",
@@ -100,7 +119,7 @@ const ProfileModal = ({
         }}
       >
         <IconButton
-          onClick={handleToggleProfileModal}
+          onClick={() => setIsEditing(false)}
           sx={{
             position: "absolute",
             top: "10px",
