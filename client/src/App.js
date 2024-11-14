@@ -9,7 +9,7 @@ import Courier from "./assets/pages/couirerPage/courierPage";
 import CourierAvailDeliveries from "./assets/pages/couirerPage/courierAvailableDeliveriesPage";
 import CourierCurrentDeliveries from "./assets/pages/couirerPage/courierCurrentDeliveries";
 import CourierOrderHistory from "./assets/pages/couirerPage/courierOrderHistory";
-// import Registration from "./assets/pages/registrationPage/registrationPage";
+import Registration from "./assets/pages/registrationPage/registrationPage";
 import "./App.css";
 
 function App() {
@@ -66,6 +66,7 @@ function App() {
         {/* <Route path="/dishes" element={<Dishes />} />
         <Route path="/Reviews" element={<Reviews />} */}
         <Route path="/login" element={<Login />} />
+        <Route path="/registration" element={<Registration />} />
         <Route
           path="/client"
           element={

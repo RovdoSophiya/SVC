@@ -16,7 +16,10 @@ router.post("/register", async (req, res) => {
     if (existingClient || existingCourier) {
       return res.status(400).json({ message: "Email already exists" });
     }
-
+    const existingPhone = await Client.findOne({ where: { phone } });
+    if (existingPhone) {
+      return res.status(400).json({ message: "Phone already exists." });
+    }
     // Создание нового клиента
     const newClient = await Client.create({
       email,
@@ -28,12 +31,16 @@ router.post("/register", async (req, res) => {
       address,
     });
 
-    res.status(201).json({ message: "Client registered successfully" });
+    // Возвращаем идентификатор и роль нового клиента
+    res.status(201).json({
+      id: newClient.id,
+      role: "client",
+      message: "Client registered successfully",
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
-console.log("AuthRoutes module loaded");
 
 // Авторизация
 router.post("/login", async (req, res) => {
