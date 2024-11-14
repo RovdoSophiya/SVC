@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { Op } = require("sequelize");
 const Delivery = require("../models/Delivery");
 const Client = require("../models/Client");
 const Courier = require("../models/Courier");
@@ -27,6 +28,211 @@ router.patch("/:id/status", async (req, res) => {
     res.json(delivery);
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+});
+
+// Просмотр всех доступных заказов
+router.get("/search/:filter?", async (req, res) => {
+  const { filter } = req.params;
+
+  try {
+    const whereClause = {};
+
+    // Условие для фильтрации
+    if (filter === "available") {
+      whereClause.courierid = null;
+    } else if (filter && filter.startsWith("clientid:")) {
+      const clientId = filter.split(":")[1];
+      whereClause.clientid = Number(clientId);
+    } else if (filter && filter.startsWith("courierid:")) {
+      const courierId = filter.split(":")[1];
+      whereClause.courierid = Number(courierId);
+    }
+    if (filter !== "all") {
+      whereClause.status = { [Op.ne]: "Delivered" };
+    }
+    const deliveries = await Delivery.findAll({
+      where: whereClause,
+      include: [
+        {
+          model: Order,
+          attributes: ["totalamount"],
+          include: [
+            {
+              model: Client,
+              attributes: ["lastname", "name", "fathername"],
+            },
+            {
+              model: OrderedDish,
+              include: [
+                {
+                  model: Dish,
+                  attributes: ["name"],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    const formattedDeliveries = deliveries.map((delivery) => {
+      const order = delivery.Order || {};
+      const client = order.Client || {};
+      const orderedDishes = order.OrderedDishes || [];
+
+      return {
+        id: delivery.id,
+        deliveryAddress: delivery.deliveryaddress,
+        deliveryDate: delivery.deliverydate,
+        status: delivery.status,
+        totalAmount: order.totalamount || 0,
+        clientFullName: `${client.lastname || ""} ${client.name || ""} ${
+          client.fathername || ""
+        }`.trim(),
+        orderedDishes: orderedDishes.map((orderedDish) => ({
+          dishName: orderedDish.Dish ? orderedDish.Dish.name : "Без названия",
+          quantity: orderedDish.quantity,
+          totalPrice: orderedDish.totalprice,
+        })),
+      };
+    });
+
+    res.json(formattedDeliveries);
+  } catch (error) {
+    console.error("Ошибка на сервере:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Сортировка по дате(для свободных доставок, для всех доставок, для доставок определенного курьера)
+router.get("/sort/sortByDate/:filter?", async (req, res) => {
+  const order = req.query.order || "ASC";
+  const filter = req.params.filter;
+  try {
+    const whereClause = {};
+
+    if (filter === "available") {
+      whereClause.courierid = null;
+    } else if (filter && filter !== "all") {
+      whereClause.courierid = filter;
+    }
+    if (filter !== "all") {
+      whereClause.status = { [Op.ne]: "Delivered" };
+    }
+
+    const deliveries = await Delivery.findAll({
+      where: whereClause,
+      include: [
+        {
+          model: Order,
+          attributes: ["totalamount"],
+          include: [
+            {
+              model: Client,
+              attributes: ["lastname", "name", "fathername"],
+            },
+            {
+              model: OrderedDish,
+              include: [
+                {
+                  model: Dish,
+                  attributes: ["name"],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      order: [["deliverydate", order]],
+    });
+
+    // Форматирование данных
+    const formattedDeliveries = deliveries.map((delivery) => ({
+      id: delivery.id,
+      deliveryAddress: delivery.deliveryaddress,
+      deliveryDate: delivery.deliverydate,
+      status: delivery.status,
+      totalAmount: delivery.Order.totalamount || 0,
+      clientFullName: `${delivery.Order.Client.lastname || ""} ${
+        delivery.Order.Client.name || ""
+      } ${delivery.Order.Client.fathername || ""}`.trim(),
+      orderedDishes: delivery.Order.OrderedDishes.map((orderedDish) => ({
+        dishName: orderedDish.Dish ? orderedDish.Dish.name : "Без названия",
+        quantity: orderedDish.quantity,
+        totalPrice: orderedDish.totalprice,
+      })),
+    }));
+
+    res.json(formattedDeliveries);
+  } catch (error) {
+    console.error("Ошибка на сервере:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Сортировка по цене(для свободных доставок, для всех доставок, для доставок определенного курьера)
+router.get("/sort/sortByPrice/:filter?", async (req, res) => {
+  const order = req.query.order || "ASC";
+  const filter = req.params.filter;
+  try {
+    const whereClause = {};
+
+    if (filter === "available") {
+      whereClause.courierid = null;
+    } else if (filter && filter !== "all") {
+      whereClause.courierid = filter;
+    }
+    if (filter !== "all") {
+      whereClause.status = { [Op.ne]: "Delivered" };
+    }
+    const deliveries = await Delivery.findAll({
+      where: whereClause,
+      include: [
+        {
+          model: Order,
+          attributes: ["totalamount"],
+          include: [
+            {
+              model: Client,
+              attributes: ["lastname", "name", "fathername"],
+            },
+            {
+              model: OrderedDish,
+              include: [
+                {
+                  model: Dish,
+                  attributes: ["name"],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      order: [[{ model: Order, as: "Order" }, "totalamount", order]],
+    });
+
+    // Форматирование данных
+    const formattedDeliveries = deliveries.map((delivery) => ({
+      id: delivery.id,
+      deliveryAddress: delivery.deliveryaddress,
+      deliveryDate: delivery.deliverydate,
+      status: delivery.status,
+      totalAmount: delivery.Order.totalamount || 0,
+      clientFullName: `${delivery.Order.Client.lastname || ""} ${
+        delivery.Order.Client.name || ""
+      } ${delivery.Order.Client.fathername || ""}`.trim(),
+      orderedDishes: delivery.Order.OrderedDishes.map((orderedDish) => ({
+        dishName: orderedDish.Dish ? orderedDish.Dish.name : "Без названия",
+        quantity: orderedDish.quantity,
+        totalPrice: orderedDish.totalprice,
+      })),
+    }));
+
+    res.json(formattedDeliveries);
+  } catch (error) {
+    console.error("Ошибка на сервере:", error);
+    res.status(500).json({ error: error.message });
   }
 });
 

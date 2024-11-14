@@ -14,10 +14,17 @@ import {
   IconButton,
   Snackbar,
   Alert,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-const AvailableOrders = ({ userId }) => {
+const CurrentDeliveries = ({ userId }) => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,48 +33,39 @@ const AvailableOrders = ({ userId }) => {
     sortBy: "Price",
     order: "ASC",
   });
-  const [openSnackbar, setOpenSnackbar] = React.useState(false);
-  const [snackbarMessage, setSnackbarMessage] = React.useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = React.useState("success");
 
-  const fetchAvailableOrders = useCallback(async () => {
+  //Управление снакбаром
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
+  //Управление модальным окном и статусом
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState("Pending");
+
+  const fetchCurrentDeliveries = useCallback(async () => {
     setLoading(true);
     setError(null);
+    const id = Number(userId);
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/deliveries/search/available"
+        `http://localhost:5000/api/deliveries/search/courierid:${id}`
       );
       setOrders(response.data);
     } catch (error) {
-      setError("Error loading orders");
+      setError("Error loading current deliveries");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [userId]);
 
-  //   setLoading(true);
-  //   setError(null);
-  //   try {
-  //     const response = await axios.get(
-  //       `http://localhost:5000/api/couriers/deliveries/sortBy${sortBy}`,
-  //       {
-  //         params: { order },
-  //       }
-  //     );
-  //     setOrders(response.data);
-  //     setSortConfig({ sortBy, order });
-  //   } catch (error) {
-  //     setError(`Error loading sorted orders by ${sortBy.toLowerCase()}`);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-  const fetchSortedOrders = async (sortBy, order) => {
+  const fetchSortedDeliveries = async (sortBy, order) => {
     setLoading(true);
     setError(null);
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/deliveries/sort/sortBy${sortBy}/available`,
+        `http://localhost:5000/api/deliveries/sort/sortBy${sortBy}/${userId}`,
         {
           params: { order },
         }
@@ -75,72 +73,66 @@ const AvailableOrders = ({ userId }) => {
       setOrders(response.data);
       setSortConfig({ sortBy, order });
     } catch (error) {
-      setError(`Error loading sorted orders by ${sortBy.toLowerCase()}`);
+      setError(`Error loading sorted deliveries by ${sortBy.toLowerCase()}`);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchAvailableOrders();
-  }, [fetchAvailableOrders]);
+    fetchCurrentDeliveries();
+  }, [fetchCurrentDeliveries]);
 
   const handleToggleRow = (id) => {
     setOpenRows((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  //   const id = userId.userId || userId;
-  //   try {
-  //     await axios.put(
-  //       `http://localhost:5000/api/couriers/${id}/takeOrder/${orderId}`
-  //     );
-  //     setSnackbarMessage("Delivery has been added to current deliveries.");
-  //     setSnackbarSeverity("success");
-  //     setOpenSnackbar(true);
-  //     fetchAvailableOrders(); // Обновляем список заказов
-  //   } catch (error) {
-  //     setSnackbarMessage("Oops, something went wrong!");
-  //     setSnackbarSeverity("error");
-  //     setOpenSnackbar(true);
-  //   }
-  // };
-  const handleTakeOrder = async (orderId) => {
-    const id = userId.userId || userId;
+  const handleDialogOpen = (orderId) => {
+    setSelectedOrderId(orderId);
+    setOpenDialog(true);
+  };
+
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+    setSelectedOrderId(null);
+    setSelectedStatus("Pending");
+  };
+
+  const handleStatusChange = async () => {
     try {
-      await axios.put(
-        `http://localhost:5000/api/couriers/${id}/takeOrder/${orderId}`
+      await axios.patch(
+        `http://localhost:5000/api/deliveries/${selectedOrderId}/status`,
+        { status: selectedStatus }
       );
-      setSnackbarMessage("Delivery has been added to current deliveries.");
+      setSnackbarMessage("Order status has been updated.");
       setSnackbarSeverity("success");
       setOpenSnackbar(true);
-      await fetchAvailableOrders();
+      await fetchCurrentDeliveries(); // Обновляем список заказов
+      handleDialogClose(); // Закрываем диалог
     } catch (error) {
-      setSnackbarMessage("Oops, something went wrong!");
+      setSnackbarMessage("Error updating order status.");
       setSnackbarSeverity("error");
       setOpenSnackbar(true);
     }
   };
-
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
   };
 
   const handleSortByDate = () => {
-    fetchAvailableOrders();
     const newOrder =
       sortConfig.sortBy === "Date" && sortConfig.order === "ASC"
         ? "DESC"
         : "ASC";
-    fetchSortedOrders("Date", newOrder);
+    fetchSortedDeliveries("Date", newOrder);
   };
 
   const handleSortByPrice = () => {
-    fetchAvailableOrders();
     const newOrder =
       sortConfig.sortBy === "Price" && sortConfig.order === "ASC"
         ? "DESC"
         : "ASC";
-    fetchSortedOrders("Price", newOrder);
+    fetchSortedDeliveries("Price", newOrder);
   };
 
   if (loading) {
@@ -172,7 +164,7 @@ const AvailableOrders = ({ userId }) => {
         variant="h6"
         sx={{ display: "flex", justifyContent: "center" }}
       >
-        No available orders
+        No current deliveries
       </Typography>
     );
   }
@@ -199,9 +191,7 @@ const AvailableOrders = ({ userId }) => {
                 : "transparent",
             color:
               sortConfig.sortBy === "Date" ? "white" : "rgba(128, 96, 68, 1)",
-            "@media(max-width:400px)": {
-              fontSize: "10px",
-            },
+            "@media(max-width:400px)": { fontSize: "10px" },
           }}
         >
           Sort by Date{" "}
@@ -222,9 +212,7 @@ const AvailableOrders = ({ userId }) => {
                 : "transparent",
             color:
               sortConfig.sortBy === "Price" ? "white" : "rgba(128, 96, 68, 1)",
-            "@media(max-width:400px)": {
-              fontSize: "10px",
-            },
+            "@media(max-width:400px)": { fontSize: "10px" },
           }}
         >
           Sort by Amount{" "}
@@ -250,60 +238,16 @@ const AvailableOrders = ({ userId }) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: "1rem",
-                    "@media(max-width:540px)": {
-                      paddingRight: "3px",
-                    },
-                    "@media(max-width:328px)": {
-                      paddingRight: "1px",
-                    },
-                  }}
-                >
+                <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
                   Address
                 </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: "1rem",
-                    "@media(max-width:540px)": {
-                      paddingRight: "3px",
-                    },
-                    "@media(max-width:328px)": {
-                      paddingRight: "1px",
-                    },
-                  }}
-                >
+                <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
                   Status
                 </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: "1rem",
-                    "@media(max-width:540px)": {
-                      paddingRight: "3px",
-                    },
-                    "@media(max-width:328px)": {
-                      paddingRight: "1px",
-                    },
-                  }}
-                >
+                <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
                   Amount
                 </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: "1rem",
-                    "@media(max-width:540px)": {
-                      paddingRight: "3px",
-                    },
-                    "@media(max-width:328px)": {
-                      paddingRight: "1px",
-                    },
-                  }}
-                >
+                <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
                   Actions
                 </TableCell>
               </TableRow>
@@ -312,13 +256,7 @@ const AvailableOrders = ({ userId }) => {
               {orders.map((order) => (
                 <React.Fragment key={order.id}>
                   <TableRow>
-                    <TableCell
-                      sx={{
-                        "@media(max-width:540px)": {
-                          padding: "0px",
-                        },
-                      }}
-                    >
+                    <TableCell>
                       <IconButton onClick={() => handleToggleRow(order.id)}>
                         <ExpandMoreIcon
                           className={openRows[order.id] ? "rotated" : ""}
@@ -332,54 +270,19 @@ const AvailableOrders = ({ userId }) => {
                       </IconButton>
                       {order.deliveryAddress}
                     </TableCell>
-                    <TableCell
-                      sx={{
-                        "@media(max-width:540px)": {
-                          paddingRight: "3px",
-                        },
-                        "@media(max-width:328px)": {
-                          paddingRight: "1px",
-                        },
-                      }}
-                    >
-                      {order.status}
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        "@media(max-width:540px)": {
-                          paddingRight: "3px",
-                        },
-                        "@media(max-width:328px)": {
-                          paddingRight: "1px",
-                        },
-                      }}
-                    >
-                      {order.totalAmount}
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        "@media(max-width:540px)": {
-                          paddingRight: "3px",
-                        },
-                        "@media(max-width:328px)": {
-                          paddingRight: "1px",
-                        },
-                      }}
-                    >
+                    <TableCell>{order.status}</TableCell>
+                    <TableCell>{order.totalAmount}</TableCell>
+                    <TableCell>
                       <Button
                         variant="contained"
-                        onClick={() => handleTakeOrder(order.id)}
+                        onClick={() => handleDialogOpen(order.id)}
                         sx={{
                           textTransform: "none",
                           fontWeight: "bold",
                           backgroundColor: "rgba(128, 96, 68, 1)",
-                          "@media(max-width:540px)": {
-                            fontSize: "10px",
-                            width: "13px",
-                          },
                         }}
                       >
-                        Accept
+                        Change Status
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -450,18 +353,40 @@ const AvailableOrders = ({ userId }) => {
         sx={{
           backgroundColor: "rgba(128, 96, 68, 1)",
           color: "white",
-          display: "flex",
-          justifyContent: "center",
-          alignContent: "center",
-          alignSelf: "center",
         }}
       >
         <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity}>
           {snackbarMessage}
         </Alert>
       </Snackbar>
+      <Dialog open={openDialog} onClose={handleDialogClose}>
+        <DialogTitle>Change Order Status</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to change the status to{" "}
+            <strong>{selectedStatus}</strong>?
+          </DialogContentText>
+          <Select
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+            fullWidth
+          >
+            <MenuItem value="Pending">Pending</MenuItem>
+            <MenuItem value="Delivered">Delivered</MenuItem>
+            <MenuItem value="Delayed">Delayed</MenuItem>
+          </Select>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="rgba(128, 96, 68, 1)">
+            Cancel
+          </Button>
+          <Button onClick={handleStatusChange} color="rgba(128, 96, 68, 1)">
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
 
-export default AvailableOrders;
+export default CurrentDeliveries;
