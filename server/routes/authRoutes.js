@@ -47,30 +47,29 @@ router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    let user = await Client.findOne({ where: { email } });
-    let role = "client";
+    // Поиск пользователя среди клиентов и курьеров
+    let user =
+      (await Client.findOne({ where: { email } })) ||
+      (await Courier.findOne({ where: { email } }));
 
+    // Если пользователь не найден, возвращаем ошибку
     if (!user) {
-      user = await Courier.findOne({ where: { email } });
-      role = "courier";
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    if (!user) {
-      return res.status(400).json({ message: "User not found" });
-    }
-
+    // Проверка пароля
     if (user.password !== password) {
       return res.status(400).json({ message: "Invalid password" });
     }
 
+    // Если все проверки прошли успешно, возвращаем ответ
     res.status(200).json({
       message: "Login successful",
-      role,
-      user: { id: user.id, email: user.email, name: user.name },
+      role: user instanceof Client ? "client" : "courier",
+      user: { id: user.id, name: user.name },
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
-
 module.exports = router;

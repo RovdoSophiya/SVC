@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./login.css";
 
 const Login = () => {
@@ -32,33 +33,34 @@ const Login = () => {
     }
 
     try {
-      const response = await fetch(
+      const response = await axios.post(
         "http://localhost:5000/api/authorization/login",
         {
-          method: "POST",
+          email,
+          password,
+        },
+        {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email, password }),
         }
       );
 
-      const data = await response.json();
-      if (!response.ok) {
-        setError(data.message || "Login failed.");
-      } else {
-        sessionStorage.setItem("role", data.role);
-        sessionStorage.setItem("id", data.user.id);
+      // Сохраняем JWT в sessionStorage
+      const { token, role, user } = response.data;
+      sessionStorage.setItem("token", token);
+      sessionStorage.setItem("role", role);
+      sessionStorage.setItem("id", user.id);
 
-        // Перенаправление в зависимости от роли
-        if (data.role === "client") {
-          navigate("/client"); // Перенаправление на страницу клиента
-        } else if (data.role === "courier") {
-          navigate("/courier"); // Перенаправление на страницу курьера
-        }
+      // Перенаправление в зависимости от роли
+      if (role === "client") {
+        navigate("/client"); // Перенаправление на страницу клиента
+      } else if (role === "courier") {
+        navigate("/courier"); // Перенаправление на страницу курьера
       }
     } catch (error) {
-      setError("An error occurred. Please try again.");
+      const message = error.response?.data?.message || "Login failed.";
+      setError(message);
     }
   };
 
