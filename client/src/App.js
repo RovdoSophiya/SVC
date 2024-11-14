@@ -19,11 +19,11 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const role = localStorage.getItem("role");
+    const role = sessionStorage.getItem("role"); // Используйте sessionStorage
     setUserRole(role);
 
     const fetchUserData = async () => {
-      const userId = localStorage.getItem("id");
+      const userId = sessionStorage.getItem("id"); // Используйте sessionStorage
       setUserId(userId);
       if (userId) {
         let response;
@@ -42,6 +42,16 @@ function App() {
 
     fetchUserData();
   }, []);
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("role"); // Используйте sessionStorage
+    sessionStorage.removeItem("id"); // Используйте sessionStorage
+    setUser(null);
+    setUserRole(null);
+    setUserId(null);
+    // Здесь вы можете добавить перенаправление на страницу логина, если нужно
+  };
+
   return (
     <BrowserRouter>
       <Header
@@ -49,6 +59,7 @@ function App() {
         userRole={userRole}
         userId={userId}
         loading={loading}
+        onLogout={handleLogout}
       />
       <Routes>
         <Route path="/" element={<Main />} />

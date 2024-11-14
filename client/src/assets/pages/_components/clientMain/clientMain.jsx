@@ -21,7 +21,7 @@ const ClientMain = (user, userRole, userId, loading) => {
             <img src={icon1} alt="icon"></img>
           </button>
           <div className="blockText">
-            <p class="modalTextClient">INFORMATION</p>
+            <p className="modalTextClient">INFORMATION</p>
             <p>Watch information about your account.</p>
           </div>
         </div>

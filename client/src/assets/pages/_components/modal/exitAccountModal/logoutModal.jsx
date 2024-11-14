@@ -3,11 +3,11 @@ import { Modal, Box, Typography, Button, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router-dom";
 
-const LogoutModal = ({ open, handleClose }) => {
+const LogoutModal = ({ open, handleClose, onLogout }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.clear();
+    onLogout();
     navigate("/");
   };
 

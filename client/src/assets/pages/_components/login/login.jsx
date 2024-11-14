@@ -6,7 +6,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate(); //history для навигации
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.history.pushState(null, document.title, window.location.href);
@@ -47,9 +47,8 @@ const Login = () => {
       if (!response.ok) {
         setError(data.message || "Login failed.");
       } else {
-        // Сохранение данных пользователя в локальное хранилище
-        localStorage.setItem("role", data.role);
-        localStorage.setItem("id", data.user.id);
+        sessionStorage.setItem("role", data.role);
+        sessionStorage.setItem("id", data.user.id);
 
         // Перенаправление в зависимости от роли
         if (data.role === "client") {

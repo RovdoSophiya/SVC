@@ -20,7 +20,7 @@ import "./header.css";
 import Logo from "../../../img/logo.png";
 import ProfileModal from "../modal/profileModal/profileModal";
 
-const Header = ({ user, userRole, userId, loading }) => {
+const Header = ({ user, userRole, userId, loading, onLogout }) => {
   const [openSearch, setOpenSearch] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [openProfileModal, setOpenProfileModal] = useState(false);
@@ -144,8 +144,7 @@ const Header = ({ user, userRole, userId, loading }) => {
             userRole === "client" || userRole === "courier" ? "search-user" : ""
           }`}
           style={{
-            display:
-              userRole === "client" || userRole === "courier" ? "none" : "flex",
+            display: userRole === "courier" ? "none" : "flex",
           }}
         >
           {(!isSmallScreen || openSearch) && (
@@ -371,11 +370,11 @@ const Header = ({ user, userRole, userId, loading }) => {
             </Link>
             <Link
               className="list-item"
-              href="/reviews"
+              href={userRole === "client" ? "/client" : "/reviews"}
               underline="hover"
               color="rgba(128, 96, 68, 1)"
             >
-              Reviews
+              {userRole === "client" ? "Cabinet" : "Reviews"}
             </Link>
             <Link
               className="list-item"
