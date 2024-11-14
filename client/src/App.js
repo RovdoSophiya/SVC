@@ -59,7 +59,6 @@ function App() {
         userRole={userRole}
         userId={userId}
         loading={loading}
-        onLogout={handleLogout}
       />
       <Routes>
         <Route path="/" element={<Main />} />
@@ -75,6 +74,7 @@ function App() {
               userRole={userRole}
               userId={userId}
               loading={loading}
+              onLogout={handleLogout}
             />
           }
         />

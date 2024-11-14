@@ -6,7 +6,7 @@ import icon3 from "../../../img/icons/book.png";
 import icon4 from "../../../img/icons/review.png";
 import LogoutModal from "../modal/exitAccountModal/logoutModal";
 
-const ClientMain = (user, userRole, userId, loading) => {
+const ClientMain = ({ user, userRole, userId, loading, onLogout }) => {
   /*Модальное окно для выхода*/
   const [openLogoutModal, setOpenLogoutModal] = useState(false);
   const handleToggleLogoutModal = () => {
@@ -63,6 +63,7 @@ const ClientMain = (user, userRole, userId, loading) => {
       <LogoutModal
         open={openLogoutModal}
         handleClose={handleToggleLogoutModal}
+        onLogout={onLogout}
       />
     </div>
   );

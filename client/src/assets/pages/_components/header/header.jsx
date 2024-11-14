@@ -20,7 +20,7 @@ import "./header.css";
 import Logo from "../../../img/logo.png";
 import ProfileModal from "../modal/profileModal/profileModal";
 
-const Header = ({ user, userRole, userId, loading, onLogout }) => {
+const Header = ({ user, userRole, userId, loading }) => {
   const [openSearch, setOpenSearch] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [openProfileModal, setOpenProfileModal] = useState(false);
