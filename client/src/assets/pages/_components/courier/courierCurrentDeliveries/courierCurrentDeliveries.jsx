@@ -233,21 +233,69 @@ const CurrentDeliveries = ({ userId }) => {
         }}
       >
         <TableContainer
-          sx={{ width: "100%", margin: "auto", marginTop: "20px" }}
+          sx={{
+            width: "100%",
+            margin: "auto",
+            marginTop: "20px",
+          }}
         >
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "1rem",
+                    "@media(max-width:540px)": {
+                      paddingRight: "3px",
+                    },
+                    "@media(max-width:328px)": {
+                      paddingRight: "1px",
+                    },
+                  }}
+                >
                   Address
                 </TableCell>
-                <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "1rem",
+                    "@media(max-width:540px)": {
+                      paddingRight: "3px",
+                    },
+                    "@media(max-width:328px)": {
+                      paddingRight: "1px",
+                    },
+                  }}
+                >
                   Status
                 </TableCell>
-                <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "1rem",
+                    "@media(max-width:540px)": {
+                      paddingRight: "3px",
+                    },
+                    "@media(max-width:328px)": {
+                      paddingRight: "1px",
+                    },
+                  }}
+                >
                   Amount
                 </TableCell>
-                <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "1rem",
+                    "@media(max-width:540px)": {
+                      paddingRight: "3px",
+                    },
+                    "@media(max-width:328px)": {
+                      paddingRight: "1px",
+                    },
+                  }}
+                >
                   Actions
                 </TableCell>
               </TableRow>
@@ -256,7 +304,14 @@ const CurrentDeliveries = ({ userId }) => {
               {orders.map((order) => (
                 <React.Fragment key={order.id}>
                   <TableRow>
-                    <TableCell>
+                    <TableCell
+                      sx={{
+                        "@media(max-width:540px)": {
+                          padding: "0px",
+                          textAlign: "center",
+                        },
+                      }}
+                    >
                       <IconButton onClick={() => handleToggleRow(order.id)}>
                         <ExpandMoreIcon
                           className={openRows[order.id] ? "rotated" : ""}
@@ -270,9 +325,40 @@ const CurrentDeliveries = ({ userId }) => {
                       </IconButton>
                       {order.deliveryAddress}
                     </TableCell>
-                    <TableCell>{order.status}</TableCell>
-                    <TableCell>{order.totalAmount}</TableCell>
-                    <TableCell>
+                    <TableCell
+                      sx={{
+                        "@media(max-width:540px)": {
+                          paddingRight: "3px",
+                        },
+                        "@media(max-width:328px)": {
+                          paddingRight: "1px",
+                        },
+                      }}
+                    >
+                      {order.status}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        "@media(max-width:540px)": {
+                          paddingRight: "3px",
+                        },
+                        "@media(max-width:328px)": {
+                          paddingRight: "1px",
+                        },
+                      }}
+                    >
+                      {order.totalAmount}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        "@media(max-width:540px)": {
+                          paddingRight: "3px",
+                        },
+                        "@media(max-width:328px)": {
+                          paddingRight: "1px",
+                        },
+                      }}
+                    >
                       <Button
                         variant="contained"
                         onClick={() => handleDialogOpen(order.id)}
@@ -280,6 +366,9 @@ const CurrentDeliveries = ({ userId }) => {
                           textTransform: "none",
                           fontWeight: "bold",
                           backgroundColor: "rgba(128, 96, 68, 1)",
+                          "@media(max-width:540px)": {
+                            fontSize: "10px",
+                          },
                         }}
                       >
                         Change Status
