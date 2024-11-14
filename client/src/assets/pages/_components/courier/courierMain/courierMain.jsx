@@ -30,7 +30,7 @@ const CourierMain = (user, userRole, userId, loading) => {
             <img alt="icon" src={icon2}></img>
           </a>
           <div className="blockText-courier">
-            <a href="/courier/availableDeliveries">AVAILABLE dELIVERIES</a>
+            <a href="/courier/availableDeliveries">AVAILABLE DELIVERIES</a>
             <p>Watch all available deliveries</p>
           </div>
         </div>

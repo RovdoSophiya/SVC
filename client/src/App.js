@@ -8,6 +8,7 @@ import Client from "./assets/pages/clientPage/clientPage";
 import Courier from "./assets/pages/couirerPage/courierPage";
 import CourierAvailDeliveries from "./assets/pages/couirerPage/courierAvailableDeliveriesPage";
 import CourierCurrentDeliveries from "./assets/pages/couirerPage/courierCurrentDeliveries";
+import CourierOrderHistory from "./assets/pages/couirerPage/courierOrderHistory";
 // import Registration from "./assets/pages/registrationPage/registrationPage";
 import "./App.css";
 
@@ -83,6 +84,10 @@ function App() {
         <Route
           path="/courier/currentDeliveries"
           element={<CourierCurrentDeliveries userId={userId} />}
+        />
+        <Route
+          path="/courier/deliveryHistory"
+          element={<CourierOrderHistory userId={userId} />}
         />
       </Routes>
       <Footer></Footer>

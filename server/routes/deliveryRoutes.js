@@ -7,6 +7,10 @@ const Courier = require("../models/Courier");
 const OrderedDish = require("../models/OrderedDish");
 const Dish = require("../models/Dish");
 const Order = require("../models/Order");
+const XLSX = require("xlsx");
+const fs = require("fs");
+const os = require("os");
+const path = require("path");
 
 // Добавление доставки
 router.post("/", async (req, res) => {
@@ -28,6 +32,122 @@ router.patch("/:id/status", async (req, res) => {
     res.json(delivery);
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+});
+
+// Просмотр истории заказов клиента
+router.get("/courier/history/:courierId", async (req, res) => {
+  const courierId = parseInt(req.params.courierId, 10);
+  try {
+    const deliveries = await Delivery.findAll({
+      where: { courierid: courierId },
+      include: [
+        {
+          model: Order,
+          attributes: ["totalamount"],
+          include: [
+            {
+              model: Client,
+              attributes: ["lastname", "name", "fathername"],
+            },
+            {
+              model: OrderedDish,
+              include: [
+                {
+                  model: Dish,
+                  attributes: ["name"],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!deliveries || deliveries.length === 0) {
+      return res.status(404).json({ error: "No deliveries found" });
+    }
+
+    const formattedDeliveries = deliveries.map((delivery) => ({
+      id: delivery.id,
+      deliveryAddress: delivery.deliveryaddress,
+      deliveryDate: delivery.deliverydate,
+      status: delivery.status,
+      totalAmount: delivery.Order.totalamount || 0,
+      clientFullName: `${delivery.Order.Client.lastname || ""} ${
+        delivery.Order.Client.name || ""
+      } ${delivery.Order.Client.fathername || ""}`.trim(),
+      orderedDishes: delivery.Order.OrderedDishes.map((orderedDish) => ({
+        dishName: orderedDish.Dish ? orderedDish.Dish.name : "Без названия",
+        quantity: orderedDish.quantity,
+        totalPrice: orderedDish.totalprice,
+      })),
+    }));
+
+    res.json(formattedDeliveries);
+  } catch (error) {
+    console.error("Error fetching deliveries:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Скачивание файлов истории курьера
+router.get("/courier/history/download/:courierid", async (req, res) => {
+  const courierid = parseInt(req.params.courierid, 10);
+
+  try {
+    const deliveries = await Delivery.findAll({
+      where: { courierid: Number(courierid) },
+      include: [
+        {
+          model: Order,
+          attributes: ["totalamount"],
+          include: [
+            {
+              model: Client,
+              attributes: ["lastname", "name", "fathername"],
+            },
+          ],
+        },
+      ],
+    });
+
+    const formattedDeliveries = deliveries.map((delivery) => {
+      const order = delivery.Order || {};
+      const client = order.Client || {};
+      return {
+        deliveryAddress: delivery.deliveryaddress,
+        deliveryDate: delivery.deliverydate,
+        status: delivery.status,
+        totalAmount: order.totalamount || 0,
+        clientFullName: `${client.lastname || ""} ${client.name || ""} ${
+          client.fathername || ""
+        }`.trim(),
+      };
+    });
+
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(formattedDeliveries);
+    XLSX.utils.book_append_sheet(workbook, worksheet, "CourierHistory");
+
+    const downloadsPath = path.join(os.homedir(), "Downloads");
+    const filePath = path.join(
+      downloadsPath,
+      `courier_history_${courierid}.xlsx`
+    );
+
+    XLSX.writeFile(workbook, filePath); // Сохраняем в файл
+
+    res.download(filePath, `courier_history_${courierid}.csv`, (err) => {
+      if (err) {
+        console.error("Download error:", err);
+        res.status(500).send("Error downloading file.");
+      }
+      fs.unlinkSync(filePath); // Удаляем файл после скачки
+    });
+  } catch (error) {
+    console.error("Error generating CSV:", error);
+    res.status(500).json({ error: error.message });
   }
 });
 
