@@ -84,6 +84,7 @@ header {
 @media (max-width: 420px) {
   .logo {
     margin-left: 5px;
+    width: 130px;
   }
   .search-user {
     width: 40%;

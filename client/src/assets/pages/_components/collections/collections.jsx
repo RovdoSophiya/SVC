@@ -29,12 +29,12 @@ const Item = styled(Paper)(({ theme }) => ({
 const Collections = () => {
   const collections = [
     { image: collection1, text: "New & Refreshed", link: "/shop" },
-    { image: collection2, text: "Last Minute Orders", link: "/shop" },
+    { image: collection7, text: "Grazing Food", link: "/shop" },
     { image: collection3, text: "Finger Food", link: "/shop" },
     { image: collection4, text: "Hot Food", link: "/shop" },
     { image: collection5, text: "Kids Party", link: "/shop" },
     { image: collection6, text: "Sandwich", link: "/shop" },
-    { image: collection7, text: "Grazing Food ", link: "/shop" },
+    { image: collection2, text: "Last Minute Orders", link: "/shop" },
     { image: collection8, text: "Corporate Platters", link: "/shop" },
   ];
   return (
