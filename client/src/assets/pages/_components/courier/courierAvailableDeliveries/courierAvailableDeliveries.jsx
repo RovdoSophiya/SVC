@@ -14,6 +14,10 @@ import {
   IconButton,
   Snackbar,
   Alert,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
@@ -29,6 +33,8 @@ const AvailableOrders = ({ userId }) => {
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
   const [snackbarMessage, setSnackbarMessage] = React.useState("");
   const [snackbarSeverity, setSnackbarSeverity] = React.useState("success");
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
 
   const fetchAvailableOrders = useCallback(async () => {
     setLoading(true);
@@ -89,26 +95,16 @@ const AvailableOrders = ({ userId }) => {
     setOpenRows((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  //   const id = userId.userId || userId;
-  //   try {
-  //     await axios.put(
-  //       `http://localhost:5000/api/couriers/${id}/takeOrder/${orderId}`
-  //     );
-  //     setSnackbarMessage("Delivery has been added to current deliveries.");
-  //     setSnackbarSeverity("success");
-  //     setOpenSnackbar(true);
-  //     fetchAvailableOrders(); // Обновляем список заказов
-  //   } catch (error) {
-  //     setSnackbarMessage("Oops, something went wrong!");
-  //     setSnackbarSeverity("error");
-  //     setOpenSnackbar(true);
-  //   }
-  // };
-  const handleTakeOrder = async (orderId) => {
+  const handleTakeOrder = (orderId) => {
+    setSelectedOrderId(orderId);
+    setOpenModal(true);
+  };
+
+  const handleConfirmOrder = async () => {
     const id = userId.userId || userId;
     try {
       await axios.put(
-        `http://localhost:5000/api/couriers/${id}/takeOrder/${orderId}`
+        `http://localhost:5000/api/couriers/${id}/takeOrder/${selectedOrderId}`
       );
       setSnackbarMessage("Delivery has been added to current deliveries.");
       setSnackbarSeverity("success");
@@ -118,7 +114,14 @@ const AvailableOrders = ({ userId }) => {
       setSnackbarMessage("Oops, something went wrong!");
       setSnackbarSeverity("error");
       setOpenSnackbar(true);
+    } finally {
+      setOpenModal(false);
+      setSelectedOrderId(null);
     }
+  };
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedOrderId(null);
   };
 
   const handleCloseSnackbar = () => {
@@ -460,6 +463,21 @@ const AvailableOrders = ({ userId }) => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
+
+      <Dialog open={openModal} onClose={handleCloseModal}>
+        <DialogTitle>Confirm Order Acceptance</DialogTitle>
+        <DialogContent>
+          <Typography>Are you sure you want to accept this order?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmOrder} color="primary">
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
