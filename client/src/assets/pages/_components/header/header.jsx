@@ -143,6 +143,10 @@ const Header = ({ user, userRole, userId, loading }) => {
           className={`search ${
             userRole === "client" || userRole === "courier" ? "search-user" : ""
           }`}
+          style={{
+            display:
+              userRole === "client" || userRole === "courier" ? "none" : "flex",
+          }}
         >
           {(!isSmallScreen || openSearch) && (
             <Box
@@ -249,7 +253,7 @@ const Header = ({ user, userRole, userId, loading }) => {
           <IconButton onClick={handleToggleModal} sx={{ color: "white" }}>
             <MapIcon />
           </IconButton>
-          {isSmallScreen && (
+          {isSmallScreen && userRole !== "courier" && (
             <IconButton onClick={handleToggleSearch} sx={{ color: "white" }}>
               <SearchIcon />
             </IconButton>
