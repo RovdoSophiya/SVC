@@ -5,6 +5,7 @@ import icon2 from "../../../../img/icons/order.png";
 import icon3 from "../../../../img/icons/book.png";
 import icon4 from "../../../../img/icons/delivery.png";
 import LogoutModal from "../../modal/exitAccountModal/logoutModal";
+import CourierInfoModal from "../../modal/courierModal/courierModal";
 
 const CourierMain = (user, userRole, userId, loading) => {
   /*Модальное окно для выхода*/
@@ -12,12 +13,16 @@ const CourierMain = (user, userRole, userId, loading) => {
   const handleToggleLogoutModal = () => {
     setOpenLogoutModal((prev) => !prev);
   };
-
+  /*Модальное окно для информации*/
+  const [openInfoModal, setOpenInfoModal] = useState(false);
+  const handleToggleInfoModal = () => {
+    setOpenInfoModal((prev) => !prev);
+  };
   return (
     <div>
       <div className="courierContainer">
         <div className="block-courier">
-          <button>
+          <button onClick={handleToggleInfoModal}>
             <img src={icon1} alt="icon"></img>
           </button>
           <div className="blockText-courier">
@@ -63,6 +68,11 @@ const CourierMain = (user, userRole, userId, loading) => {
       <LogoutModal
         open={openLogoutModal}
         handleClose={handleToggleLogoutModal}
+      />
+      <CourierInfoModal
+        open={openInfoModal}
+        onClose={handleToggleInfoModal}
+        userId={userId}
       />
     </div>
   );
