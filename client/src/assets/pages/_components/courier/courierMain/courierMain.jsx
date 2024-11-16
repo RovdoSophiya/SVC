@@ -7,7 +7,7 @@ import icon4 from "../../../../img/icons/delivery.png";
 import LogoutModal from "../../modal/exitAccountModal/logoutModal";
 import CourierInfoModal from "../../modal/courierModal/courierModal";
 
-const CourierMain = (user, userRole, userId, loading) => {
+const CourierMain = ({ user, userRole, userId, loading }) => {
   /*Модальное окно для выхода*/
   const [openLogoutModal, setOpenLogoutModal] = useState(false);
   const handleToggleLogoutModal = () => {

@@ -1,27 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const Order = require("../models/Order");
+const OrderController = require("../controllers/orderController");
 
 // Добавление заказа
-router.post("/", async (req, res) => {
-  try {
-    const order = await Order.create(req.body);
-    res.status(201).json(order);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+router.post("/", OrderController.addOrder);
 
 // Удаление заказа
-router.delete("/:id", async (req, res) => {
-  try {
-    const order = await Order.findByPk(req.params.id);
-    if (!order) return res.status(404).json({ message: "Order not found" });
-    await order.destroy();
-    res.json({ message: "Order deleted" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+router.delete("/:id", OrderController.deleteOrder);
 
 module.exports = router;

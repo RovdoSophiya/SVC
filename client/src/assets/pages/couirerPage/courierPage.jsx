@@ -1,6 +1,6 @@
 import CourierMain from "../_components/courier/courierMain/courierMain";
 
-const Courier = (user, userRole, userId, loading) => {
+const Courier = ({ user, userRole, userId, loading }) => {
   return (
     <div>
       <CourierMain

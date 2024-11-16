@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
+  Box,
   Modal,
   TextField,
   Button,
@@ -21,7 +22,6 @@ const CourierInfoModal = ({ open, onClose, userId }) => {
     vehicletype: "",
     available: false,
   });
-  //Состояние началных данных курьера
   const [originalCourier, setOriginalCourier] = useState({});
   const [errors, setErrors] = useState({});
   const [oldPassword, setOldPassword] = useState("");
@@ -31,29 +31,12 @@ const CourierInfoModal = ({ open, onClose, userId }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
+    console.log(userId);
     if (userId) {
       axios
         .get(`http://localhost:5000/api/couriers/${userId}`)
         .then((response) => {
-          console.log("Fetched courier data:", response.data);
-          const {
-            lastname,
-            name,
-            fathername,
-            phone,
-            email,
-            vehicletype,
-            available,
-          } = response.data;
-          const fetchedCourier = {
-            lastname,
-            name,
-            fathername,
-            phone,
-            email,
-            vehicletype,
-            available,
-          };
+          const fetchedCourier = response.data;
           setCourier(fetchedCourier);
           setOriginalCourier(fetchedCourier);
         })
@@ -106,21 +89,20 @@ const CourierInfoModal = ({ open, onClose, userId }) => {
     } catch (error) {
       console.error("Error updating courier:", error);
       setErrors({
-        server: error.response?.data?.message || "Failed to save changes.",
+        server: error.response?.data?.errors || "Failed to save changes.",
       });
     }
   };
-  // const handleClose = () => {
-  //   onClose();
-  // };
+
   const handleCancel = () => {
-    setCourier(originalCourier); //Сброс до данных в бд
+    setCourier(originalCourier);
     setIsEditing(false);
     setOldPassword("");
     setNewPassword("");
     setConfirmPassword("");
-    setErrors({}); //Очистка от ошибок
+    setErrors({});
   };
+
   return (
     <Modal
       open={open}
@@ -143,143 +125,151 @@ const CourierInfoModal = ({ open, onClose, userId }) => {
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <h2>Edit information</h2>{" "}
+          <h2>Edit Information</h2>
           <CloseIcon onClick={onClose} style={{ cursor: "pointer" }} />
         </div>
+        <Box sx={{ mt: 2 }}>
+          <TextField
+            label="Name"
+            name="name"
+            value={courier.name}
+            onChange={(e) => setCourier({ ...courier, name: e.target.value })}
+            disabled={!isEditing}
+            fullWidth
+            sx={{ mb: 2 }}
+            error={!!errors.name}
+            helperText={errors.name}
+            margin="dense"
+          />
+          <TextField
+            label="Last Name"
+            value={courier.lastname}
+            onChange={(e) =>
+              setCourier({ ...courier, lastname: e.target.value })
+            }
+            error={!!errors.lastname}
+            helperText={errors.lastname}
+            fullWidth
+            margin="dense"
+            disabled={!isEditing}
+          />
+          <TextField
+            label="Father Name"
+            value={courier.fathername}
+            onChange={(e) =>
+              setCourier({ ...courier, fathername: e.target.value })
+            }
+            fullWidth
+            margin="dense"
+            disabled={!isEditing}
+          />
+          <TextField
+            label="Email"
+            type="email"
+            value={courier.email}
+            onChange={(e) => setCourier({ ...courier, email: e.target.value })}
+            error={!!errors.email}
+            helperText={errors.email}
+            fullWidth
+            margin="dense"
+            disabled={!isEditing}
+          />
+          <TextField
+            label="Phone"
+            value={courier.phone}
+            onChange={(e) => setCourier({ ...courier, phone: e.target.value })}
+            error={!!errors.phone}
+            helperText={errors.phone}
+            fullWidth
+            margin="dense"
+            disabled={!isEditing}
+          />
+          <TextField
+            label="Vehicle Type"
+            value={courier.vehicletype}
+            onChange={(e) =>
+              setCourier({ ...courier, vehicletype: e.target.value })
+            }
+            fullWidth
+            margin="dense"
+            disabled={!isEditing}
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={courier.available}
+                onChange={(e) =>
+                  setCourier({ ...courier, available: e.target.checked })
+                }
+                disabled={!isEditing}
+              />
+            }
+            label="Available"
+          />
 
-        <TextField
-          label="Name"
-          value={courier.name}
-          onChange={(e) => setCourier({ ...courier, name: e.target.value })}
-          error={!!errors.name}
-          helperText={errors.name}
-          fullWidth
-          margin="dense"
-          disabled={!isEditing}
-        />
-        <TextField
-          label="Last name"
-          value={courier.lastname}
-          onChange={(e) => setCourier({ ...courier, lastname: e.target.value })}
-          error={!!errors.lastname}
-          helperText={errors.lastname}
-          fullWidth
-          margin="dense"
-          disabled={!isEditing}
-        />
-        <TextField
-          label="Father name"
-          value={courier.fathername}
-          onChange={(e) =>
-            setCourier({ ...courier, fathername: e.target.value })
-          }
-          fullWidth
-          margin="dense"
-          disabled={!isEditing}
-        />
-        <TextField
-          label="Email"
-          type="email"
-          value={courier.email}
-          onChange={(e) => setCourier({ ...courier, email: e.target.value })}
-          error={!!errors.email}
-          helperText={errors.email}
-          fullWidth
-          margin="dense"
-          disabled={!isEditing}
-        />
-        <TextField
-          label="Phone"
-          value={courier.phone}
-          onChange={(e) => setCourier({ ...courier, phone: e.target.value })}
-          error={!!errors.phone}
-          helperText={errors.phone}
-          fullWidth
-          margin="dense"
-          disabled={!isEditing}
-        />
-        <TextField
-          label="Vehicle Type"
-          value={courier.vehicletype}
-          onChange={(e) =>
-            setCourier({ ...courier, vehicletype: e.target.value })
-          }
-          fullWidth
-          margin="dense"
-          disabled={!isEditing}
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={courier.available}
-              onChange={(e) =>
-                setCourier({ ...courier, available: e.target.checked })
-              }
-              disabled={!isEditing}
-            />
-          }
-          label="Available"
-        />
+          <h4>Change Password</h4>
+          <TextField
+            label="Old Password"
+            type="password"
+            value={oldPassword}
+            onChange={(e) => setOldPassword(e.target.value)}
+            error={!!errors.oldPassword}
+            helperText={errors.oldPassword}
+            fullWidth
+            margin="dense"
+            disabled={!isEditing}
+          />
+          <TextField
+            label="New Password"
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            error={!!errors.newPassword}
+            helperText={errors.newPassword}
+            fullWidth
+            margin="dense"
+            disabled={!isEditing}
+          />
+          <TextField
+            label="Confirm Password"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            error={!!errors.confirmPassword}
+            helperText={errors.confirmPassword}
+            fullWidth
+            margin="dense"
+            disabled={!isEditing}
+          />
 
-        <h4>Change Password</h4>
-        <TextField
-          label="Old Password"
-          type="password"
-          value={oldPassword}
-          onChange={(e) => setOldPassword(e.target.value)}
-          error={!!errors.oldPassword}
-          helperText={errors.oldPassword}
-          fullWidth
-          margin="dense"
-        />
-        <TextField
-          label="New Password"
-          type="password"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          error={!!errors.newPassword}
-          helperText={errors.newPassword}
-          fullWidth
-          margin="dense"
-        />
-        <TextField
-          label="Confirm Password"
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          error={!!errors.confirmPassword}
-          helperText={errors.confirmPassword}
-          fullWidth
-          margin="dense"
-        />
-
-        {errors.server && <p style={{ color: "red" }}>{errors.server}</p>}
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setIsEditing(true)} // Включаем режим редактирования
-          disabled={isEditing}
-        >
-          Change
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleSave}
-          style={{ marginLeft: 10 }}
-          disabled={!isEditing}
-        >
-          Save
-        </Button>
-        <Button
-          variant="outlined"
-          color="secondary"
-          onClick={handleCancel}
-          style={{ marginLeft: 10 }}
-          disabled={!isEditing}
-        >
-          Cancel
-        </Button>
+          {errors.server && <p style={{ color: "red" }}>{errors.server}</p>}
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setIsEditing(true)}
+            disabled={isEditing}
+          >
+            Change
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSave}
+            style={{ marginLeft: 10 }}
+            disabled={!isEditing}
+          >
+            Save
+          </Button>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={handleCancel}
+            style={{ marginLeft: 10 }}
+            disabled={!isEditing}
+          >
+            Cancel
+          </Button>
+        </Box>
         <Snackbar
           open={snackbarOpen}
           autoHideDuration={6000}

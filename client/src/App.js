@@ -19,11 +19,12 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const role = sessionStorage.getItem("role"); // Используйте sessionStorage
+    const role = sessionStorage.getItem("role");
     setUserRole(role);
 
     const fetchUserData = async () => {
-      const userId = sessionStorage.getItem("id"); // Используйте sessionStorage
+      const userId = sessionStorage.getItem("id");
+      // console.log(userId);
       setUserId(userId);
       if (userId) {
         let response;
