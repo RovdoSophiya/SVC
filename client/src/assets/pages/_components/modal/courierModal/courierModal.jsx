@@ -74,12 +74,14 @@ const CourierInfoModal = ({ open, onClose, userId }) => {
 
   const handleSave = async () => {
     if (!validateFields()) return;
-
+    const id = Number(userId);
+    console.log(id);
+    console.log(typeof id);
     try {
       const updates = { ...courier };
       if (newPassword) updates.password = newPassword;
       const response = await axios.put(
-        `http://localhost:5000/api/couriers/${userId}`,
+        `http://localhost:5000/api/couriers/${id}`,
         updates
       );
       if (response.status === 200) {

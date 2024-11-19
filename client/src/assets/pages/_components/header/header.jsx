@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -18,15 +18,12 @@ import Link from "@mui/material/Link";
 import axios from "axios"; // Импортируем Axios
 import "./header.css";
 import Logo from "../../../img/logo.png";
-import ProfileModal from "../modal/profileModal/profileModal";
+import CourierInfoModal from "../../_components/modal/courierModal/courierModal";
 
 const Header = ({ user, userRole, userId, loading }) => {
   const [openSearch, setOpenSearch] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [openProfileModal, setOpenProfileModal] = useState(false);
-  const [userData, setUserData] = useState({});
-  const [isEditing, setIsEditing] = useState(false);
-  const [errors, setErrors] = useState({});
+  const [openInfoModal, setOpenInfoModal] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const inputRef = useRef(null);
   const isSmallScreen = useMediaQuery("(max-width:700px)");
@@ -54,22 +51,10 @@ const Header = ({ user, userRole, userId, loading }) => {
     };
   }, [openSearch]);
 
-  const handleToggleProfileModal = () => {
-    setOpenProfileModal((prev) => !prev);
+  /*Модальное окно для информации о курьере*/
+  const handleToggleInfoModal = () => {
+    setOpenInfoModal((prev) => !prev);
   };
-
-  const fetchUserData = useCallback(async () => {
-    try {
-      const response = await axios.get(
-        userRole === "client"
-          ? `http://localhost:5000/api/clients/${userId}`
-          : `http://localhost:5000/api/couriers/${userId}`
-      );
-      setUserData(response.data);
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  }, [userId, userRole]);
 
   useEffect(() => {
     const fetchCartCount = async () => {
@@ -92,13 +77,7 @@ const Header = ({ user, userRole, userId, loading }) => {
     };
 
     getCartCount();
-  }, [userRole, userId, fetchUserData]);
-
-  useEffect(() => {
-    if (openProfileModal) {
-      fetchUserData();
-    }
-  }, [openProfileModal, fetchUserData]);
+  }, [userRole, userId]);
 
   const handleToggleModal = () => {
     setOpenModal(!openModal);
@@ -226,7 +205,7 @@ const Header = ({ user, userRole, userId, loading }) => {
               <p>Welcome, {user ? user.name : "Guest"}</p>
               <Link
                 className="gotoAuthorization"
-                onClick={handleToggleProfileModal}
+                onClick={handleToggleInfoModal}
                 underline="hover"
                 color="white"
               >
@@ -260,7 +239,7 @@ const Header = ({ user, userRole, userId, loading }) => {
           <IconButton
             onClick={() => {
               if (userRole === "client" || userRole === "courier") {
-                handleToggleProfileModal();
+                handleToggleInfoModal();
               } else {
                 navigate("/login");
               }
@@ -325,18 +304,10 @@ const Header = ({ user, userRole, userId, loading }) => {
       </Modal>
 
       {/* Модальное окно для профиля */}
-      <ProfileModal
-        openProfileModal={openProfileModal}
-        handleToggleProfileModal={handleToggleProfileModal}
-        userData={userData}
-        setUserData={setUserData}
-        isEditing={isEditing}
-        setIsEditing={setIsEditing}
-        fetchUserData={fetchUserData}
-        userRole={userRole}
+      <CourierInfoModal
+        open={openInfoModal}
+        onClose={handleToggleInfoModal}
         userId={userId}
-        errors={errors}
-        setErrors={setErrors}
       />
       {userRole !== "courier" && (
         <Box

@@ -26,7 +26,9 @@ const CourierMain = ({ user, userRole, userId, loading }) => {
             <img src={icon1} alt="icon"></img>
           </button>
           <div className="blockText-courier">
-            <p className="modalTextCourier">INFORMATION</p>
+            <p className="modalTextCourier" onClick={handleToggleInfoModal}>
+              INFORMATION
+            </p>
             <p>Watch information about your account</p>
           </div>
         </div>
