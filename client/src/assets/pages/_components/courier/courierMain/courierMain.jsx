@@ -18,6 +18,11 @@ const CourierMain = ({ user, userRole, userId, loading }) => {
   const handleToggleInfoModal = () => {
     setOpenInfoModal((prev) => !prev);
   };
+  const handleLogOut = () => {
+    sessionStorage.removeItem("id");
+    sessionStorage.removeItem("role");
+    sessionStorage.removeItem("token");
+  };
   return (
     <div>
       <div className="courierContainer">
@@ -70,6 +75,7 @@ const CourierMain = ({ user, userRole, userId, loading }) => {
       <LogoutModal
         open={openLogoutModal}
         handleClose={handleToggleLogoutModal}
+        onLogout={handleLogOut}
       />
       <CourierInfoModal
         open={openInfoModal}
