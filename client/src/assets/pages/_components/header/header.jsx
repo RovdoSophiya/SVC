@@ -349,7 +349,7 @@ const Header = ({ user, userRole, userId, loading }) => {
             </Link>
             <Link
               className="list-item"
-              href="#"
+              href="/event"
               underline="hover"
               color="rgba(128, 96, 68, 1)"
             >

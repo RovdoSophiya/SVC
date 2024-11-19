@@ -10,6 +10,7 @@ import CourierAvailDeliveries from "./assets/pages/couirerPage/courierAvailableD
 import CourierCurrentDeliveries from "./assets/pages/couirerPage/courierCurrentDeliveries";
 import CourierOrderHistory from "./assets/pages/couirerPage/courierOrderHistory";
 import Registration from "./assets/pages/registrationPage/registrationPage";
+import Event from "./assets/pages/eventsPage/eventsPage";
 import "./App.css";
 
 function App() {
@@ -102,6 +103,7 @@ function App() {
           path="/courier/deliveryHistory"
           element={<CourierOrderHistory userId={userId} />}
         />
+        <Route path="/event" element={<Event />} />
       </Routes>
       <Footer></Footer>
     </BrowserRouter>
