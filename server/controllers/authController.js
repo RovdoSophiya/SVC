@@ -1,5 +1,8 @@
+const jwt = require("jsonwebtoken");
 const Client = require("../models/Client");
 const Courier = require("../models/Courier");
+const Tokens = require("../models/Tokens");
+require("dotenv").config();
 
 const handleError = (res, error) => {
   console.error("Error:", error);
@@ -23,6 +26,7 @@ const registerClient = async (req, res) => {
     if (existingPhone) {
       return res.status(400).json({ message: "Phone already exists." });
     }
+
     // Создание нового клиента
     const newClient = await Client.create({
       email,
@@ -34,10 +38,34 @@ const registerClient = async (req, res) => {
       address,
     });
 
-    // Возвращаем идентификатор и роль нового клиента
+    // Генерация токенов
+    const accessToken = jwt.sign(
+      { id: newClient.id, role: "client" },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "15m" }
+    );
+
+    const refreshToken = jwt.sign(
+      { id: newClient.id, role: "client" },
+      process.env.REFRESH_TOKEN_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    // Сохранение токенов в базе данных
+    await Tokens.create({
+      clientid: newClient.id,
+      accesstoken: accessToken,
+      refreshtoken: refreshToken,
+      expiresat: new Date(Date.now() + 15 * 60 * 1000),
+    });
+
+    // Возвращаем токены и информацию о новом клиенте
     res.status(201).json({
-      id: newClient.id,
+      user: newClient,
+      // id: newClient.id,
       role: "client",
+      accessToken,
+      refreshToken,
       message: "Client registered successfully",
     });
   } catch (error) {
@@ -65,14 +93,41 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid password" });
     }
 
-    // Если все проверки прошли успешно, возвращаем ответ
+    // Генерация токенов
+    const accessToken = jwt.sign(
+      { id: user.id, role: user instanceof Client ? "client" : "courier" },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "15m" } // Срок действия access token
+    );
+
+    const refreshToken = jwt.sign(
+      { id: user.id, role: user instanceof Client ? "client" : "courier" },
+      process.env.REFRESH_TOKEN_SECRET, // Секретный ключ для подписи
+      { expiresIn: "7d" } // Срок действия refresh token
+    );
+
+    // Сохранение токенов в базе данных
+    await Tokens.create({
+      clientid: user instanceof Client ? user.id : null,
+      courierid: user instanceof Courier ? user.id : null,
+      accesstoken: accessToken,
+      refreshtoken: refreshToken,
+      expiresat: new Date(Date.now() + 15 * 60 * 1000),
+    });
+
+    // Возвращаем токены и информацию о пользователе
     res.status(200).json({
       message: "Login successful",
-      role: user instanceof Client ? "client" : "courier",
-      user: { id: user.id, name: user.name },
+      accessToken,
+      refreshToken,
+      user: {
+        id: user.id,
+        name: user.name,
+        role: user instanceof Client ? "client" : "courier",
+      },
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };
 

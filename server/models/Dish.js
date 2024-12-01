@@ -11,6 +11,7 @@ Dish.init(
     price: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
     filter: DataTypes.STRING,
     category: { type: DataTypes.STRING, allowNull: false },
+    photo: { type: DataTypes.STRING, allowNull: true },
   },
   {
     sequelize,

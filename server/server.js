@@ -1,10 +1,14 @@
 const express = require("express");
 const app = express();
+const path = require("path");
 const cors = require("cors");
+require("dotenv").config();
 
 // Middleware для обработки JSON
-// app.use(cors());
+
 app.use(express.json());
+app.use("/static", express.static(path.join(__dirname, "static")));
+
 // Разрешаем доступ с порта 3000
 app.use(
   cors({

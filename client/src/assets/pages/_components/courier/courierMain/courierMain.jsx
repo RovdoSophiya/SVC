@@ -6,6 +6,7 @@ import icon3 from "../../../../img/icons/book.png";
 import icon4 from "../../../../img/icons/delivery.png";
 import LogoutModal from "../../modal/exitAccountModal/logoutModal";
 import CourierInfoModal from "../../modal/courierModal/courierModal";
+import Cookies from "js-cookie";
 
 const CourierMain = ({ user, userRole, userId, loading }) => {
   /*Модальное окно для выхода*/
@@ -19,9 +20,10 @@ const CourierMain = ({ user, userRole, userId, loading }) => {
     setOpenInfoModal((prev) => !prev);
   };
   const handleLogOut = () => {
-    sessionStorage.removeItem("id");
-    sessionStorage.removeItem("role");
-    sessionStorage.removeItem("token");
+    localStorage.removeItem("id");
+    localStorage.removeItem("role");
+    localStorage.removeItem("accessToken");
+    Cookies.remove("refreshToken");
   };
   return (
     <div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import Cookies from "js-cookie";
+import { login } from "../../../api/auth/authApi";
 import "./login.css";
 
 const Login = () => {
@@ -33,32 +34,26 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/authorization/login",
-        {
-          email,
-          password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
+      const response = await login(email, password);
       // Сохраняем JWT в sessionStorage
-      const { token, role, user } = response.data;
-      sessionStorage.setItem("token", token);
-      sessionStorage.setItem("role", role);
-      sessionStorage.setItem("id", user.id);
+      const { accessToken, refreshToken, user } = response;
+      localStorage.setItem("role", user.role);
+      localStorage.setItem("id", user.id);
+      localStorage.setItem("accessToken", accessToken);
+      Cookies.set("refreshToken", refreshToken, {
+        expires: 7,
+        secure: true,
+        sameSite: "Strict",
+      });
 
       // Перенаправление в зависимости от роли
-      if (role === "client") {
+      if (user.role === "client") {
         navigate("/client"); // Перенаправление на страницу клиента
-      } else if (role === "courier") {
+      } else if (user.role === "courier") {
         navigate("/courier"); // Перенаправление на страницу курьера
       }
     } catch (error) {
+      console.error("Login error:", error);
       const message = error.response?.data?.message || "Login failed.";
       setError(message);
     }

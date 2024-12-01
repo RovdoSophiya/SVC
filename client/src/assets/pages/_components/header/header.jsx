@@ -19,8 +19,9 @@ import axios from "axios"; // Импортируем Axios
 import "./header.css";
 import Logo from "../../../img/logo.png";
 import CourierInfoModal from "../../_components/modal/courierModal/courierModal";
+import { fetchCartCount } from "../../../api/cartApi/cartApi";
 
-const Header = ({ user, userRole, userId, loading }) => {
+const Header = ({ user, userId, loading }) => {
   const [openSearch, setOpenSearch] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [openInfoModal, setOpenInfoModal] = useState(false);
@@ -28,6 +29,7 @@ const Header = ({ user, userRole, userId, loading }) => {
   const inputRef = useRef(null);
   const isSmallScreen = useMediaQuery("(max-width:700px)");
   const navigate = useNavigate();
+  const userRole = localStorage.getItem("role");
 
   const handleToggleSearch = () => {
     setOpenSearch((prev) => !prev);
@@ -57,23 +59,15 @@ const Header = ({ user, userRole, userId, loading }) => {
   };
 
   useEffect(() => {
-    const fetchCartCount = async () => {
+    const getCartCount = async () => {
       if (userRole === "client") {
         try {
-          const response = await axios.get(
-            `http://localhost:5000/api/carts/total/${userId}`
-          );
-          const count = response.data.total;
-          return count;
+          const count = await fetchCartCount(userId);
+          setCartCount(count);
         } catch (error) {
-          console.error("Error fetching cart count:", error);
-          return 0; // Возвращаем 0 в случае ошибки
+          setCartCount(0);
         }
       }
-    };
-    const getCartCount = async () => {
-      const count = await fetchCartCount();
-      setCartCount(count);
     };
 
     getCartCount();
@@ -198,9 +192,7 @@ const Header = ({ user, userRole, userId, loading }) => {
             userRole === "client" || userRole === "courier" ? "highlight" : ""
           }`}
         >
-          {loading ? (
-            <p>Loading...</p>
-          ) : userRole === "client" || userRole === "courier" ? (
+          {userRole === "client" || userRole === "courier" ? (
             <>
               <p>Welcome, {user ? user.name : "Guest"}</p>
               <Link

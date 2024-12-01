@@ -12,6 +12,8 @@ import CourierOrderHistory from "./assets/pages/couirerPage/courierOrderHistory"
 import Registration from "./assets/pages/registrationPage/registrationPage";
 import Event from "./assets/pages/eventsPage/eventsPage";
 import "./App.css";
+import { fetchClientById } from "../src/assets/api/clients/clientApi";
+import { fetchCourierById } from "../src/assets/api/couriers/courierApi";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -20,38 +22,39 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const role = sessionStorage.getItem("role");
+    const role = localStorage.getItem("role");
     setUserRole(role);
 
     const fetchUserData = async () => {
-      const userId = sessionStorage.getItem("id");
-      // console.log(userId);
+      const userId = localStorage.getItem("id");
       setUserId(userId);
+
       if (userId) {
-        let response;
-        if (role === "client") {
-          response = await fetch(`http://localhost:5000/api/clients/${userId}`);
-        } else if (role === "courier") {
-          response = await fetch(
-            `http://localhost:5000/api/couriers/${userId}`
-          );
+        try {
+          let data;
+          if (role === "client") {
+            data = await fetchClientById(userId);
+          } else if (role === "courier") {
+            data = await fetchCourierById(userId);
+          }
+          setUser(data);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          console.error("Error details:", error.response?.data || error);
         }
-        const data = await response.json();
-        setUser(data); // Сохраняем данные пользователя
       }
-      setLoading(false); // Устанавливаем состояние загрузки в false
+      setLoading(false);
     };
 
     fetchUserData();
   }, []);
 
   const handleLogout = () => {
-    sessionStorage.removeItem("role"); // Используйте sessionStorage
-    sessionStorage.removeItem("id"); // Используйте sessionStorage
+    sessionStorage.removeItem("role");
+    sessionStorage.removeItem("id");
     setUser(null);
     setUserRole(null);
     setUserId(null);
-    // Здесь вы можете добавить перенаправление на страницу логина, если нужно
   };
 
   return (

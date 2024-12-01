@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./registration.css"; // Подключите свои стили
+import Cookies from "js-cookie";
 
 const Registration = () => {
   const navigate = useNavigate();
@@ -100,9 +101,15 @@ const Registration = () => {
         }
       );
       if (response.status === 201) {
-        const { id, role } = response.data; // Получаем id и role из ответа
-        sessionStorage.setItem("id", id);
-        sessionStorage.setItem("role", role);
+        const { accessToken, refreshToken, user } = response;
+        localStorage.setItem("id", user.id);
+        localStorage.setItem("role", user.role);
+        localStorage.setItem("accessToken", accessToken);
+        Cookies.set("refreshToken", refreshToken, {
+          expires: 7,
+          secure: true,
+          sameSite: "Strict",
+        });
 
         setFormData({
           lastName: "",
