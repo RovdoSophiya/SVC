@@ -1,5 +1,4 @@
 import axiosInstance from "../apiConfig";
-import Cookies from "js-cookie";
 
 // Функция для входа
 export const login = async (email, password) => {

@@ -15,7 +15,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import MapIcon from "@mui/icons-material/Map";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Link from "@mui/material/Link";
-import axios from "axios"; // Импортируем Axios
 import "./header.css";
 import Logo from "../../../img/logo.png";
 import CourierInfoModal from "../../_components/modal/courierModal/courierModal";

@@ -23,7 +23,7 @@ const MelbourneCup = () => {
         <p className="dynamic-text">Paris Cup</p>
         <p>is racing soon</p>
         <p>Order now to celebrate the big race that stops the nation!</p>
-        <a className="shopButton" href="/shop">
+        <a className="shopButton" href="/dishes">
           <p className="shopNow">SHOP NOW</p>
         </a>
       </div>
