@@ -9,10 +9,13 @@ import {
   Checkbox,
   FormControlLabel,
   Modal,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { Menu as MenuIcon } from "@mui/icons-material";
 import { getDishes, getDishPhotoUrl } from "../../../api/dishApi/dishApi";
 import { Link } from "react-router-dom";
+import { addToCart } from "../../../api/cartApi/cartApi";
 
 const DishComponent = () => {
   const [dishes, setDishes] = useState([]);
@@ -25,6 +28,8 @@ const DishComponent = () => {
   const [cartQuantities, setCartQuantities] = useState({});
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   useEffect(() => {
     const fetchDishes = async () => {
@@ -53,12 +58,22 @@ const DishComponent = () => {
     }));
   };
 
-  const handleAddToCart = (dish) => {
+  const handleAddToCart = async (dish) => {
     const role = localStorage.getItem("role");
     if (role !== "client") {
       setModalOpen(true);
-    } else {
-      console.log(`Add to cart: ${dish.name}`);
+      return;
+    }
+
+    const clientId = localStorage.getItem("id");
+    const count = cartQuantities[dish.id] || 1;
+    console.log("Adding to cart:", { clientId, dishId: dish.id, count });
+    try {
+      await addToCart(clientId, dish.id, count);
+      setSnackbarMessage(`${dish.name} is added to cart!`);
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error("Failed to add to cart:", error);
     }
   };
 
@@ -68,6 +83,10 @@ const DishComponent = () => {
 
   const handleModalClose = () => {
     setModalOpen(false);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   const handleTypeChange = (event) => {
@@ -287,6 +306,21 @@ const DishComponent = () => {
           </Button>
         </div>
       </Modal>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

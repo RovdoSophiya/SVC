@@ -3,7 +3,7 @@ const router = express.Router();
 const СartController = require("../controllers/cartController");
 
 // Добавление товара в корзину
-router.post("/", СartController.addToCart);
+router.post("/add", СartController.addToCart);
 
 // Увеличение количества товара в корзине
 router.patch("/:id/increase-quantity", СartController.increaseQuantity);
