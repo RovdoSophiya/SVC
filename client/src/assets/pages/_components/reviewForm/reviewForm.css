@@ -1,0 +1,69 @@
+.reviewsList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 карточки на больших экранах */
+  gap: 20px;
+}
+.reviewsContainer {
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.reviewCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 16px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  transition: box-shadow 0.3s;
+}
+.reviewCard:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.rating {
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
+}
+.reviewsWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+.reviewsGrid {
+  flex: 1;
+}
+.reviewsWrapper button {
+  padding: 10px 20px;
+  background-color: transparent;
+  border: 0px;
+  cursor: pointer;
+}
+.reviewsWrapper button img {
+  width: 20px;
+  height: auto;
+}
+.reviewsWrapper button:disabled {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .reviewsList {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .reviewsList {
+    grid-template-columns: 1fr;
+  }
+  .reviewsContainer {
+    padding: 0px;
+  }
+}
+@media (max-width: 400px) {
+  .reviewsWrapper button {
+    padding: 5px 5px;
+  }
+}

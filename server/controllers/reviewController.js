@@ -88,8 +88,35 @@ const deleteReview = async (req, res) => {
   }
 };
 
+const getReviews = async (req, res) => {
+  const { page = 1, limit = 3 } = req.query;
+
+  try {
+    const reviews = await Review.findAndCountAll({
+      include: {
+        model: Client,
+        attributes: ["name", "lastname"],
+      },
+      order: [["addtime", "DESC"]],
+      limit: parseInt(limit, 10),
+      offset: (page - 1) * limit,
+    });
+
+    res.json({
+      total: reviews.count,
+      totalPages: Math.ceil(reviews.count / limit),
+      currentPage: page,
+      reviews: reviews.rows,
+    });
+  } catch (error) {
+    console.error("Error fetching reviews:", error); // Логирование ошибки
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   addReview,
   editReview,
   deleteReview,
+  getReviews,
 };

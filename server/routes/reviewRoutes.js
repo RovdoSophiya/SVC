@@ -11,4 +11,6 @@ router.put("/:id", ReviewController.editReview);
 // Удаление отзыва
 router.delete("/:id", ReviewController.deleteReview);
 
+router.get("/", ReviewController.getReviews);
+
 module.exports = router;
