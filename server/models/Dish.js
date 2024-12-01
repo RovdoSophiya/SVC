@@ -7,11 +7,12 @@ Dish.init(
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING, allowNull: false },
-    description: DataTypes.STRING,
+    type: DataTypes.STRING,
     price: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
-    filter: DataTypes.STRING,
-    category: { type: DataTypes.STRING, allowNull: false },
     photo: { type: DataTypes.STRING, allowNull: true },
+    isvegan: { type: DataTypes.BOOLEAN, allowNull: true },
+    isglutenfree: { type: DataTypes.BOOLEAN, allowNull: true },
+    isdietary: { type: DataTypes.BOOLEAN, allowNull: true },
   },
   {
     sequelize,

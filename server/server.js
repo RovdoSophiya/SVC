@@ -7,7 +7,7 @@ require("dotenv").config();
 // Middleware для обработки JSON
 
 app.use(express.json());
-app.use("/static", express.static(path.join(__dirname, "static")));
+app.use("/api/static", express.static(path.join(__dirname, "static")));
 
 // Разрешаем доступ с порта 3000
 app.use(

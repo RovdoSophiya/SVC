@@ -12,6 +12,7 @@ import CourierOrderHistory from "./assets/pages/couirerPage/courierOrderHistory"
 import ReviewPage from "./assets/pages/reviewPage/reviewPage";
 import Registration from "./assets/pages/registrationPage/registrationPage";
 import Event from "./assets/pages/eventsPage/eventsPage";
+import DishPage from "./assets/pages/dishPage/dishPage";
 import "./App.css";
 import { fetchClientById } from "../src/assets/api/clients/clientApi";
 import { fetchCourierById } from "../src/assets/api/couriers/courierApi";
@@ -109,6 +110,7 @@ function App() {
         />
         <Route path="/event" element={<Event />} />
         <Route path="/reviews" element={<ReviewPage />} />
+        <Route path="/dishes" element={<DishPage />} />
       </Routes>
       <Footer></Footer>
     </BrowserRouter>
