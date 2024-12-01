@@ -7,13 +7,22 @@ const Form = () => {
   const [phone, setPhone] = useState("");
   const [date, setDate] = useState("");
   const [address, setAddress] = useState("");
-  const [text, setText] = useState("");
+  const [message, setMessage] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const [phoneError, setPhoneError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const role = localStorage.getItem("role");
+    const clientid = localStorage.getItem("id");
+
+    if (!/^\d+$/.test(phone)) {
+      setPhoneError("Phone number must contain only digits.");
+      return;
+    } else {
+      setPhoneError("");
+    }
 
     if (role !== "client") {
       setModalMessage("Please log in as a client to reserve an event.");
@@ -22,7 +31,7 @@ const Form = () => {
     }
 
     try {
-      await addEvent({ phone, date, address, text });
+      await addEvent({ clientid, date, address, message, phone });
       setModalMessage(
         "Event successfully booked! You can view details in your profile."
       );
@@ -54,6 +63,7 @@ const Form = () => {
             onChange={(e) => setPhone(e.target.value)}
             required
           />
+          {phoneError && <p className="errorMessage">{phoneError}</p>}
         </div>
         <div className="formGroup">
           <p>Event Date*</p>
@@ -79,11 +89,11 @@ const Form = () => {
         </div>
         <div className="formGroupMessage">
           <p>Your Message*</p>
-          <label htmlFor="text"></label>
+          <label htmlFor="message "></label>
           <textarea
-            id="text"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
+            id="message"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
             required
           />
         </div>
