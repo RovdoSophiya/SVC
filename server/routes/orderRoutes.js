@@ -8,4 +8,7 @@ router.post("/", OrderController.addOrder);
 // Удаление заказа
 router.delete("/:id", OrderController.deleteOrder);
 
+// Получение истории заказов с пагинацией и сортировкой
+router.get("/", OrderController.getClientOrders);
+
 module.exports = router;

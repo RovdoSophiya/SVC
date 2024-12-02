@@ -14,6 +14,8 @@ import Registration from "./assets/pages/registrationPage/registrationPage";
 import Event from "./assets/pages/eventsPage/eventsPage";
 import DishPage from "./assets/pages/dishPage/dishPage";
 import CartPage from "./assets/pages/clientPage/cartPage";
+import OrderHistory from "./assets/pages/clientPage/orderHistory";
+import EventHistory from "./assets/pages/clientPage/clientEvent";
 import "./App.css";
 import { fetchClientById } from "../src/assets/api/clients/clientApi";
 import { fetchCourierById } from "../src/assets/api/couriers/courierApi";
@@ -111,6 +113,8 @@ function App() {
           element={<CourierOrderHistory userId={userId} />}
         />
         <Route path="/cart" element={<CartPage />} />
+        <Route path="/orderHistory" element={<OrderHistory />} />
+        <Route path="/client/eventHistory" element={<EventHistory />} />
       </Routes>
       <Footer></Footer>
     </BrowserRouter>

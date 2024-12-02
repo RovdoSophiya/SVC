@@ -35,10 +35,14 @@ const ClientMain = ({ user, userRole, userId, loading, onLogout }) => {
         </div>
         <div className="block">
           <button>
-            <img src={icon1} alt="icon"></img>
+            <a href="/client/eventHistory">
+              <img src={icon1} alt="icon"></img>
+            </a>
           </button>
           <div className="blockText">
-            <p className="modalTextClient">EVENT</p>
+            <a className="modalTextClient" href="/client/eventHistory">
+              EVENT
+            </a>
             <p>Watch information about your events.</p>
           </div>
         </div>

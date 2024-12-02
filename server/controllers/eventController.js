@@ -5,6 +5,17 @@ const handleError = (res, error) => {
   res.status(500).json({ error: error.message });
 };
 
+// Получение всех мероприятий клиента
+const getEvents = async (req, res) => {
+  try {
+    const { clientid } = req.query; // Получаем clientid из запроса
+    const events = await Event.findAll({ where: { clientid } }); // Извлекаем мероприятия по clientid
+    res.json(events); // Возвращаем мероприятия в ответе
+  } catch (error) {
+    handleError(res, error); // Обрабатываем ошибки
+  }
+};
+
 // Добавление мероприятия
 const addEvent = async (req, res) => {
   try {
@@ -66,6 +77,7 @@ const deleteEvent = async (req, res) => {
 };
 
 module.exports = {
+  getEvents,
   addEvent,
   editEvent,
   deleteEvent,
