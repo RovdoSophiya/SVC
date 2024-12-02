@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import "./clientMain.css";
-import icon1 from "../../../img/icons/user.png";
-import icon2 from "../../../img/icons/order.png";
+import icon1 from "../../../img/icons/event.png";
+import icon2 from "../../../img/icons/cart.png";
 import icon3 from "../../../img/icons/book.png";
 import icon4 from "../../../img/icons/review.png";
 import LogoutModal from "../modal/exitAccountModal/logoutModal";
 
 const ClientMain = ({ user, userRole, userId, loading, onLogout }) => {
-  /*Модальное окно для выхода*/
   const [openLogoutModal, setOpenLogoutModal] = useState(false);
   const handleToggleLogoutModal = () => {
     setOpenLogoutModal((prev) => !prev);
@@ -17,20 +16,11 @@ const ClientMain = ({ user, userRole, userId, loading, onLogout }) => {
     <div>
       <div className="clientContainer">
         <div className="block">
-          <button>
-            <img src={icon1} alt="icon"></img>
-          </button>
-          <div className="blockText">
-            <p className="modalTextClient">INFORMATION</p>
-            <p>Watch information about your account.</p>
-          </div>
-        </div>
-        <div className="block">
-          <a href="/cartOrder">
+          <a href="/cart">
             <img alt="icon" src={icon2}></img>
           </a>
           <div className="blockText">
-            <a href="/cartOrder">ORDER</a>
+            <a href="/cart">CART</a>
             <p>Order dishes from your cart (in one click)</p>
           </div>
         </div>
@@ -41,6 +31,15 @@ const ClientMain = ({ user, userRole, userId, loading, onLogout }) => {
           <div className="blockText">
             <a href="/orderHistory">ORDER HISTORY </a>
             <p>See history of your orders (with downloading)</p>
+          </div>
+        </div>
+        <div className="block">
+          <button>
+            <img src={icon1} alt="icon"></img>
+          </button>
+          <div className="blockText">
+            <p className="modalTextClient">EVENT</p>
+            <p>Watch information about your events.</p>
           </div>
         </div>
         <div className="block">

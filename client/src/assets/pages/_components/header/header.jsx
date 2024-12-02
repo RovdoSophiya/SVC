@@ -8,27 +8,28 @@ import {
   Typography,
   Modal,
   Divider,
+  Link,
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import MapIcon from "@mui/icons-material/Map";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import Link from "@mui/material/Link";
 import "./header.css";
 import Logo from "../../../img/logo.png";
-import CourierInfoModal from "../../_components/modal/courierModal/courierModal";
-import { fetchCartCount } from "../../../api/cartApi/cartApi";
 
-const Header = ({ user, userId, loading }) => {
+// import CourierInfoModal from "../../_components/modal/courierModal/courierModal";
+// import { fetchCartCount } from "../../../api/cartApi/cartApi";
+
+const Header = ({ user, loading }) => {
   const [openSearch, setOpenSearch] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [openInfoModal, setOpenInfoModal] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
   const inputRef = useRef(null);
   const isSmallScreen = useMediaQuery("(max-width:700px)");
   const navigate = useNavigate();
   const userRole = localStorage.getItem("role");
+  const userid = localStorage.getItem("id");
 
   const handleToggleSearch = () => {
     setOpenSearch((prev) => !prev);
@@ -56,21 +57,6 @@ const Header = ({ user, userId, loading }) => {
   const handleToggleInfoModal = () => {
     setOpenInfoModal((prev) => !prev);
   };
-
-  useEffect(() => {
-    const getCartCount = async () => {
-      if (userRole === "client") {
-        try {
-          const count = await fetchCartCount(userId);
-          setCartCount(count);
-        } catch (error) {
-          setCartCount(0);
-        }
-      }
-    };
-
-    getCartCount();
-  }, [userRole, userId]);
 
   const handleToggleModal = () => {
     setOpenModal(!openModal);
@@ -241,9 +227,8 @@ const Header = ({ user, userId, loading }) => {
           </IconButton>
         </div>
         {userRole === "client" && (
-          <IconButton sx={{ color: "white" }}>
+          <IconButton component={Link} href="/cart" sx={{ color: "white" }}>
             <ShoppingCartIcon />
-            <span>{cartCount}</span>
           </IconButton>
         )}
       </Box>
@@ -294,12 +279,12 @@ const Header = ({ user, userId, loading }) => {
         </Box>
       </Modal>
 
-      {/* Модальное окно для профиля */}
+      {/* Модальное окно для профиля
       <CourierInfoModal
         open={openInfoModal}
         onClose={handleToggleInfoModal}
         userId={userId}
-      />
+      /> */}
       {userRole !== "courier" && (
         <Box
           className="header"

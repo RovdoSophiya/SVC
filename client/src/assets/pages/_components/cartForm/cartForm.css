@@ -1,0 +1,139 @@
+.cartDescription {
+  width: 100%;
+  text-align: center;
+  color: rgba(128, 96, 68, 1);
+  font-size: 35px;
+}
+.cartFormContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  flex-direction: row;
+  margin: 40px auto;
+}
+.cartContainer {
+  width: 80%;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-self: center;
+  flex-direction: row;
+  color: rgba(128, 96, 68, 1);
+  border: 3px solid rgba(128, 96, 68, 1);
+}
+.cartContainer img {
+  width: 150px;
+  height: 150px;
+  border-radius: 6px;
+}
+.cartContainer h3 {
+  font-size: 30px;
+  flex: 1;
+  margin: 0 20px;
+}
+.cartContainer button {
+  border: none;
+  background-color: transparent;
+  color: rgba(128, 96, 68, 1);
+  font-size: 30px;
+  min-width: 40px;
+}
+.cartContainer p {
+  font-size: 30px;
+  min-width: 60px;
+  text-align: right;
+}
+.countCartContainer {
+  display: flex;
+  flex-direction: row;
+  width: 200px;
+}
+.countCartContainer p {
+  text-align: center;
+}
+.orderCont {
+  width: 85%;
+  margin: 0px auto 50px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: rgba(128, 96, 68, 1);
+}
+.orderCont h3 {
+  text-align: end;
+  font-size: 30px;
+  margin-top: 0px;
+  margin-bottom: 35px;
+}
+.orderCont button {
+  width: 250px;
+  height: 50px;
+  margin: auto;
+  border-color: transparent;
+  background-color: rgba(128, 96, 68, 1);
+  color: white;
+  font-size: 18px;
+}
+.emptyCart {
+  width: 100%;
+  font-size: 30px;
+  text-align: center;
+  margin: 60px auto;
+  color: rgba(128, 96, 68, 1);
+}
+@media (max-width: 800px) {
+  .cartContainer {
+    width: 95%;
+    padding: 5px;
+  }
+  .cartContainer h3 {
+    font-size: 24px;
+    flex: 1;
+    margin: 0 20px;
+  }
+  .cartContainer img {
+    width: 110px;
+    height: 110px;
+    border-radius: 6px;
+  }
+  .orderCont {
+    width: 100%;
+    margin: 0px auto 50px auto;
+  }
+}
+@media (max-width: 630px) {
+  .cartContainer {
+    width: 80%;
+    padding: 15px;
+    flex-direction: column;
+  }
+  .cartContainer h3 {
+    font-size: 24px;
+    text-align: center;
+    flex: 1;
+    margin: 0 20px;
+  }
+  .cartContainer img {
+    width: 150px;
+    height: 150px;
+    border-radius: 6px;
+  }
+  .cartContainer h3 {
+    font-size: 26px;
+    flex: 1;
+    margin: 10px 10px;
+  }
+  .cartContainer p {
+    font-size: 25px;
+  }
+  .countCartContainer {
+    width: 140px;
+    margin: 10px;
+  }
+  .orderCont {
+    width: 95%;
+  }
+}

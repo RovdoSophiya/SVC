@@ -5,7 +5,7 @@ import icon2 from "../../../../img/icons/order.png";
 import icon3 from "../../../../img/icons/book.png";
 import icon4 from "../../../../img/icons/delivery.png";
 import LogoutModal from "../../modal/exitAccountModal/logoutModal";
-import CourierInfoModal from "../../modal/courierModal/courierModal";
+// import CourierInfoModal from "../../modal/courierModal/courierModal";
 import Cookies from "js-cookie";
 
 const CourierMain = ({ user, userRole, userId, loading }) => {
@@ -79,11 +79,11 @@ const CourierMain = ({ user, userRole, userId, loading }) => {
         handleClose={handleToggleLogoutModal}
         onLogout={handleLogOut}
       />
-      <CourierInfoModal
+      {/* <CourierInfoModal
         open={openInfoModal}
         onClose={handleToggleInfoModal}
         userId={userId}
-      />
+      /> */}
     </div>
   );
 };
