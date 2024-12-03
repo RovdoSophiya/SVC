@@ -41,11 +41,70 @@ const updateStatus = async (req, res) => {
 };
 
 // Просмотр истории заказов клиента
+// const getCourierHistory = async (req, res) => {
+//   const courierId = parseInt(req.params.courierId, 10);
+//   try {
+//     const deliveries = await Delivery.findAll({
+//       where: { courierid: courierId },
+//       include: [
+//         {
+//           model: Order,
+//           attributes: ["totalamount"],
+//           include: [
+//             {
+//               model: Client,
+//               attributes: ["lastname", "name", "fathername"],
+//             },
+//             {
+//               model: OrderedDish,
+//               include: [
+//                 {
+//                   model: Dish,
+//                   attributes: ["name"],
+//                 },
+//               ],
+//             },
+//           ],
+//         },
+//       ],
+//     });
+
+//     if (!deliveries || deliveries.length === 0) {
+//       return res.status(404).json({ error: "No deliveries found" });
+//     }
+
+//     const formattedDeliveries = deliveries.map((delivery) => ({
+//       id: delivery.id,
+//       deliveryAddress: delivery.deliveryaddress,
+//       deliveryDate: delivery.deliverydate,
+//       status: delivery.status,
+//       totalAmount: delivery.Order.totalamount || 0,
+//       clientFullName: `${delivery.Order.Client.lastname || ""} ${
+//         delivery.Order.Client.name || ""
+//       } ${delivery.Order.Client.fathername || ""}`.trim(),
+//       orderedDishes: delivery.Order.OrderedDishes.map((orderedDish) => ({
+//         dishName: orderedDish.Dish ? orderedDish.Dish.name : "Без названия",
+//         quantity: orderedDish.quantity,
+//         totalPrice: orderedDish.totalprice,
+//       })),
+//     }));
+
+//     res.json(formattedDeliveries);
+//   } catch (error) {
+//     handleError(res, error);
+//   }
+// };
 const getCourierHistory = async (req, res) => {
   const courierId = parseInt(req.params.courierId, 10);
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 5;
+  const offset = (page - 1) * limit;
+
   try {
     const deliveries = await Delivery.findAll({
       where: { courierid: courierId },
+      offset: offset,
+      limit: limit,
       include: [
         {
           model: Order,
@@ -89,12 +148,20 @@ const getCourierHistory = async (req, res) => {
       })),
     }));
 
-    res.json(formattedDeliveries);
+    // Get total count for pagination
+    const totalCount = await Delivery.count({
+      where: { courierid: courierId },
+    });
+
+    res.json({
+      deliveries: formattedDeliveries,
+      totalCount, // Send total count for pagination
+      totalPages: Math.ceil(totalCount / limit), // Send total pages
+    });
   } catch (error) {
     handleError(res, error);
   }
 };
-
 // Скачивание файлов истории курьера
 const downloadCourierHistory = async (req, res) => {
   const courierid = parseInt(req.params.courierid, 10);

@@ -13,18 +13,22 @@ import {
   Typography,
   Snackbar,
   Alert,
+  Pagination,
 } from "@mui/material";
 
 const CourierOrderHistory = ({ userId }) => {
-  const [orders, setOrders] = useState([]); // Все заказы
-  const [filteredOrders, setFilteredOrders] = useState([]); // Отфильтрованные заказы
+  const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const id = Number(userId);
+  const ordersPerPage = 5;
 
   const fetchOrderHistory = useCallback(async () => {
     if (!id || id === 0) {
@@ -36,26 +40,33 @@ const CourierOrderHistory = ({ userId }) => {
     setError(null);
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/deliveries/courier/history/${id}`
+        `http://localhost:5000/api/deliveries/courier/history/${id}`,
+        {
+          params: {
+            page: currentPage,
+            limit: ordersPerPage,
+            search: searchTerm,
+          },
+        }
       );
-      setOrders(response.data);
-      setFilteredOrders(response.data); // Сохраняем изначальные заказы
+      setOrders(response.data.deliveries);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
       setError("Error loading order history");
     } finally {
       setLoading(false);
     }
-  }, [id]);
+  }, [id, currentPage]);
 
   useEffect(() => {
     fetchOrderHistory();
-  }, [fetchOrderHistory]);
+  }, [fetchOrderHistory, currentPage]);
 
   // Функция фильтрации заказов по адресу
   useEffect(() => {
     const filterOrders = () => {
       if (searchTerm === "") {
-        setFilteredOrders(orders); // Если ничего не введено, показываем все заказы
+        setFilteredOrders(orders);
       } else {
         const lowerSearchTerm = searchTerm.toLowerCase();
         const filtered = orders.filter((order) =>
@@ -137,6 +148,7 @@ const CourierOrderHistory = ({ userId }) => {
           Download History
         </Button>
       </Box>
+
       <TableContainer>
         <Table>
           <TableHead>
@@ -276,6 +288,22 @@ const CourierOrderHistory = ({ userId }) => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Box sx={{ display: "flex", justifyContent: "center", margin: "20px" }}>
+        <Pagination
+          count={totalPages}
+          page={currentPage}
+          onChange={(event, value) => {
+            setCurrentPage(value);
+          }}
+          variant="outlined"
+          shape="rounded"
+          color="primary"
+          siblingCount={0}
+          boundaryCount={1}
+        />
+      </Box>
+
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}

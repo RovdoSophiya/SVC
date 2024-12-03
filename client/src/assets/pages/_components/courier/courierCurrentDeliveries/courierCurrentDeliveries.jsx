@@ -461,7 +461,7 @@ const CurrentDeliveries = ({ userId }) => {
             fullWidth
           >
             <MenuItem value="Pending">Pending</MenuItem>
-            <MenuItem value="Delivered">Delivered</MenuItem>
+            <MenuItem value="On the Way">On the Way</MenuItem>
             <MenuItem value="Delayed">Delayed</MenuItem>
           </Select>
         </DialogContent>
