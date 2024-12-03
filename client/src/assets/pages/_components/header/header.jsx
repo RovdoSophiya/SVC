@@ -5,8 +5,6 @@ import {
   IconButton,
   TextField,
   useMediaQuery,
-  Typography,
-  Modal,
   Divider,
   Link,
 } from "@mui/material";
@@ -17,14 +15,14 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import "./header.css";
 import Logo from "../../../img/logo.png";
 import MapModal from "../../_components/modal/mapModal/mapModal";
-
-// import CourierInfoModal from "../../_components/modal/courierModal/courierModal";
-// import { fetchCartCount } from "../../../api/cartApi/cartApi";
+import EditClientModal from "../../_components/modal/clientModal/clientModal";
+import EditCourierModal from "../../_components/modal/courierModal/courierModal";
 
 const Header = ({ user, loading }) => {
   const [openSearch, setOpenSearch] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [openInfoModal, setOpenInfoModal] = useState(false);
+  const [openEditCourierModal, setOpenEditCourierModal] = useState(false);
+  const [openEditClientModal, setOpenEditClientModal] = useState(false);
   const inputRef = useRef(null);
   const isSmallScreen = useMediaQuery("(max-width:700px)");
   const navigate = useNavigate();
@@ -53,17 +51,19 @@ const Header = ({ user, loading }) => {
     };
   }, [openSearch]);
 
-  /*Модальное окно для информации о курьере*/
-  const handleToggleInfoModal = () => {
-    setOpenInfoModal((prev) => !prev);
-  };
-
   const handleToggleModal = () => {
     setOpenModal(!openModal);
   };
 
   const handleCloseModal = () => {
     setOpenModal(false);
+  };
+  const handleToggleEditCourierModal = () => {
+    setOpenEditCourierModal((prev) => !prev);
+  };
+
+  const handleToggleEditClientModal = () => {
+    setOpenEditClientModal((prev) => !prev);
   };
 
   return (
@@ -182,7 +182,11 @@ const Header = ({ user, loading }) => {
               <p>Welcome, {user ? user.name : "Guest"}</p>
               <Link
                 className="gotoAuthorization"
-                onClick={handleToggleInfoModal}
+                onClick={
+                  userRole === "client"
+                    ? handleToggleEditClientModal
+                    : handleToggleEditCourierModal
+                }
                 underline="hover"
                 color="white"
               >
@@ -216,7 +220,7 @@ const Header = ({ user, loading }) => {
           <IconButton
             onClick={() => {
               if (userRole === "client" || userRole === "courier") {
-                handleToggleInfoModal();
+                handleToggleEditClientModal();
               } else {
                 navigate("/login");
               }
@@ -236,12 +240,19 @@ const Header = ({ user, loading }) => {
       {/* Модальное окно для карты */}
       <MapModal open={openModal} onClose={handleToggleModal} />
 
-      {/* Модальное окно для профиля
-      <CourierInfoModal
-        open={openInfoModal}
-        onClose={handleToggleInfoModal}
-        userId={userId}
-      /> */}
+      {userRole === "client" && (
+        <EditClientModal
+          clientId={userid}
+          open={openEditClientModal}
+          onClose={handleToggleEditClientModal}
+        />
+      )}
+      {userRole === "courier" && (
+        <EditCourierModal
+          open={openEditCourierModal}
+          onClose={handleToggleEditCourierModal}
+        />
+      )}
       {userRole !== "courier" && (
         <Box
           className="header"

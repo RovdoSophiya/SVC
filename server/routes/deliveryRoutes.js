@@ -38,4 +38,6 @@ router.delete("/:id", DeliveryController.deletetDelivery);
 // Получение информации о доставке
 router.get("/:id", DeliveryController.getDelivery);
 
+router.get("/get/completed", DeliveryController.getDeliveredOrders);
+
 module.exports = router;

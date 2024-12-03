@@ -1,5 +1,6 @@
 const Courier = require("../models/Courier");
 const Delivery = require("../models/Delivery");
+const { Op } = require("sequelize");
 
 const handleError = (res, error) => {
   console.error("Error:", error);
@@ -32,18 +33,23 @@ const getCourierById = async (req, res) => {
 // Обновление информации о курьере
 const updateCourier = async (req, res) => {
   try {
-    const updatedCourier = await updateCourier(req.params.id, req.body);
-    res.json(updatedCourier);
-    const { email, id, createdAt, ...updates } = req.body;
-    const courier = await Courier.update(updates, {
-      where: { id: req.params.id },
+    const { id } = req.params;
+    const { email, id: courierId, createdAt, ...updates } = req.body;
+
+    const [updated] = await Courier.update(updates, {
+      where: { id },
     });
-    res.json(courier);
+
+    if (updated) {
+      const updatedCourier = await Courier.findByPk(id);
+      return res.json(updatedCourier);
+    } else {
+      return res.status(404).json({ error: "Courier not found." });
+    }
   } catch (error) {
     handleError(res, error);
   }
 };
-
 // Изменение статуса доступности курьера
 const toggleAvailability = async (req, res) => {
   try {
@@ -107,6 +113,27 @@ const deleteCourier = async (req, res) => {
   }
 };
 
+// Проверка существования номера телефона
+const checkPhoneExists = async (req, res) => {
+  try {
+    const { phone, courierid } = req.query;
+    const courier = await Courier.findOne({
+      where: {
+        phone: phone,
+        id: { [Op.ne]: courierid },
+      },
+    });
+
+    if (courier) {
+      return res.json({ exists: true });
+    }
+
+    return res.json({ exists: false });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   createCourier,
   getCourierById,
@@ -114,4 +141,5 @@ module.exports = {
   toggleAvailability,
   takeOrder,
   deleteCourier,
+  checkPhoneExists,
 };

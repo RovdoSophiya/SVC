@@ -1,10 +1,12 @@
 const { Op } = require("sequelize");
+const sequelize = require("../config/config").sequelize;
 const Delivery = require("../models/Delivery");
 const Client = require("../models/Client");
 const Courier = require("../models/Courier");
 const OrderedDish = require("../models/OrderedDish");
 const Dish = require("../models/Dish");
 const Order = require("../models/Order");
+const Review = require("../models/Review");
 const XLSX = require("xlsx");
 const fs = require("fs");
 const os = require("os");
@@ -432,6 +434,68 @@ const getDelivery = async (req, res) => {
   }
 };
 
+const getDeliveredOrders = async (req, res) => {
+  try {
+    const { clientid } = req.query;
+
+    const deliveries = await Delivery.findAll({
+      where: {
+        status: "Delivered",
+      },
+      include: [
+        {
+          model: Order,
+          where: { clientid },
+          attributes: [],
+          include: [
+            {
+              model: OrderedDish,
+              include: [
+                {
+                  model: Dish,
+                  attributes: ["name", "photo"],
+                },
+              ],
+            },
+            {
+              model: Review,
+              required: false, // LEFT JOIN
+            },
+          ],
+        },
+      ],
+      group: ["Delivery.id", "Order.id", "OrderedDishes.id", "Dish.id"], // Grouping by necessary IDs
+      having: sequelize.where(
+        sequelize.fn("COUNT", sequelize.col("Reviews.id")),
+        0
+      ), // Filter for no reviews
+    });
+
+    if (!deliveries.length) {
+      return res
+        .status(404)
+        .json({ message: "No delivered orders found without reviews" });
+    }
+
+    const result = deliveries.map((delivery) => {
+      return {
+        deliveryid: delivery.id,
+        dishes: delivery.Order.OrderedDishes.map((orderedDish) => ({
+          name: orderedDish.Dish.name,
+          photo: orderedDish.Dish.photo,
+        })),
+      };
+    });
+
+    res.status(200).json({ deliveries: result });
+  } catch (error) {
+    console.error("Detailed error:", error); // Log the actual error for debugging
+    res
+      .status(500)
+      .json({ message: "An error occurred", error: error.message });
+  }
+};
+
 module.exports = {
   addDelivery,
   updateStatus,
@@ -442,4 +506,5 @@ module.exports = {
   sortDeliveriesByPrice,
   deletetDelivery,
   getDelivery,
+  getDeliveredOrders,
 };

@@ -17,4 +17,7 @@ router.put("/:id", ClientController.updateClient);
 // Удаление клиента по id
 router.delete("/:id", ClientController.deleteClient);
 
+//проверка телефона
+router.get("/check/check-phone", ClientController.checkPhoneExists);
+
 module.exports = router;

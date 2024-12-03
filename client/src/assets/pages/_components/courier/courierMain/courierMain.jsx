@@ -5,26 +5,31 @@ import icon2 from "../../../../img/icons/order.png";
 import icon3 from "../../../../img/icons/book.png";
 import icon4 from "../../../../img/icons/delivery.png";
 import LogoutModal from "../../modal/exitAccountModal/logoutModal";
-// import CourierInfoModal from "../../modal/courierModal/courierModal";
+import CourierInfoModal from "../../modal/courierModal/courierModal";
 import Cookies from "js-cookie";
 
-const CourierMain = ({ user, userRole, userId, loading }) => {
+const CourierMain = () => {
+  const userId = localStorage.getItem("id");
+
   /*Модальное окно для выхода*/
   const [openLogoutModal, setOpenLogoutModal] = useState(false);
   const handleToggleLogoutModal = () => {
     setOpenLogoutModal((prev) => !prev);
   };
+
   /*Модальное окно для информации*/
   const [openInfoModal, setOpenInfoModal] = useState(false);
   const handleToggleInfoModal = () => {
     setOpenInfoModal((prev) => !prev);
   };
+
   const handleLogOut = () => {
     localStorage.removeItem("id");
     localStorage.removeItem("role");
     localStorage.removeItem("accessToken");
     Cookies.remove("refreshToken");
   };
+
   return (
     <div>
       <div className="courierContainer">
@@ -74,16 +79,18 @@ const CourierMain = ({ user, userRole, userId, loading }) => {
       >
         Back to home
       </button>
+
       <LogoutModal
         open={openLogoutModal}
         handleClose={handleToggleLogoutModal}
         onLogout={handleLogOut}
       />
-      {/* <CourierInfoModal
+
+      <CourierInfoModal
         open={openInfoModal}
         onClose={handleToggleInfoModal}
         userId={userId}
-      /> */}
+      />
     </div>
   );
 };

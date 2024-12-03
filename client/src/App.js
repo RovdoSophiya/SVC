@@ -16,10 +16,11 @@ import DishPage from "./assets/pages/dishPage/dishPage";
 import CartPage from "./assets/pages/clientPage/cartPage";
 import OrderHistory from "./assets/pages/clientPage/orderHistory";
 import EventHistory from "./assets/pages/clientPage/clientEvent";
+import ReviewOrder from "./assets/pages/clientPage/clientReview";
 import ClientCurrentDeliveries from "./assets/pages/clientPage/clientCurrent";
 import "./App.css";
 import { fetchClientById } from "../src/assets/api/clients/clientApi";
-import { fetchCourierById } from "../src/assets/api/couriers/courierApi";
+import CourierApi from "./assets/api/couriers/courierApi";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -41,7 +42,7 @@ function App() {
           if (role === "client") {
             data = await fetchClientById(userId);
           } else if (role === "courier") {
-            data = await fetchCourierById(userId);
+            data = await CourierApi.fetchCourierById(userId);
           }
           setUser(data);
         } catch (error) {
@@ -117,6 +118,7 @@ function App() {
         <Route path="/orderHistory" element={<OrderHistory />} />
         <Route path="/client/eventHistory" element={<EventHistory />} />
         <Route path="/client/current" element={<ClientCurrentDeliveries />} />
+        <Route path="/addReview" element={<ReviewOrder />} />
       </Routes>
       <Footer></Footer>
     </BrowserRouter>

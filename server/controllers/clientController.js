@@ -1,4 +1,5 @@
 const Client = require("../models/Client");
+const { Op } = require("sequelize");
 
 class ClientController {
   // Получение информации обо всех клиентах
@@ -55,6 +56,28 @@ class ClientController {
       res.status(400).json({ error: error.message });
     }
   }
+
+  // Проверка существования номера телефона
+  async checkPhoneExists(req, res) {
+    try {
+      const { phone, clientid } = req.query;
+      const client = await Client.findOne({
+        where: {
+          phone: phone,
+          id: { [Op.ne]: clientid },
+        },
+      });
+
+      if (client) {
+        return res.json({ exists: true });
+      }
+
+      return res.json({ exists: false });
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
   // Удаление клиента по id
   async deleteClient(req, res) {
     try {

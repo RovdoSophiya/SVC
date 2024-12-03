@@ -20,4 +20,7 @@ router.put("/:id/takeOrder/:DeliveryId", CourierController.takeOrder);
 // Удаление курьера по id
 router.delete("/:id", CourierController.deleteCourier);
 
+// Поиск телефона
+router.get("/check/checkPhoneExists", CourierController.checkPhoneExists);
+
 module.exports = router;

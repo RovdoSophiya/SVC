@@ -5,11 +5,20 @@ import icon2 from "../../../img/icons/cart.png";
 import icon3 from "../../../img/icons/book.png";
 import icon4 from "../../../img/icons/review.png";
 import LogoutModal from "../modal/exitAccountModal/logoutModal";
+import Cookies from "js-cookie";
 
-const ClientMain = ({ user, userRole, userId, loading, onLogout }) => {
+const ClientMain = () => {
   const [openLogoutModal, setOpenLogoutModal] = useState(false);
+
   const handleToggleLogoutModal = () => {
     setOpenLogoutModal((prev) => !prev);
+  };
+
+  const handleLogOut = () => {
+    localStorage.removeItem("id");
+    localStorage.removeItem("role");
+    localStorage.removeItem("accessToken");
+    Cookies.remove("refreshToken");
   };
 
   return (
@@ -75,7 +84,7 @@ const ClientMain = ({ user, userRole, userId, loading, onLogout }) => {
       <LogoutModal
         open={openLogoutModal}
         handleClose={handleToggleLogoutModal}
-        onLogout={onLogout}
+        onLogout={handleLogOut}
       />
     </div>
   );
