@@ -28,7 +28,7 @@ Delivery.init(
   }
 );
 
-Order.hasMany(Delivery, { foreignKey: "orderid" });
+Order.hasOne(Delivery, { foreignKey: "orderid" });
 Delivery.belongsTo(Order, { foreignKey: "orderid" });
 Courier.hasMany(Delivery, { foreignKey: "courierid" });
 Delivery.belongsTo(Courier, { foreignKey: "courierid" });

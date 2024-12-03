@@ -1,7 +1,9 @@
 const Cart = require("../models/Cart");
+const Client = require("../models/Client");
 const Dish = require("../models/Dish");
 const OrderedDish = require("../models/OrderedDish");
 const Order = require("../models/Order");
+const Delivery = require("../models/Delivery");
 
 const handleError = (res, error) => {
   console.error("Error:", error);
@@ -171,7 +173,8 @@ const calculateTotalPrice = async (req, res) => {
 // Заказ блюд
 const orderCartItems = async (req, res) => {
   try {
-    const { clientid } = req.body;
+    const { clientid } = req.params;
+    const client = await Client.findByPk(clientid);
     if (!clientid) {
       return res.status(400).json({ message: "Client ID is required" }); // Ошибка, если не передан clientId
     }
@@ -204,7 +207,18 @@ const orderCartItems = async (req, res) => {
       await item.destroy(); // Удаляем товар из корзины после переноса
     }
 
-    res.json({ message: "Cart ordered successfully", orderId: order.id });
+    const delivery = await Delivery.create({
+      orderid: order.id,
+      courierid: null,
+      deliveryaddress: client.address,
+      deliverydate: new Date(),
+      status: "Pending",
+    });
+
+    res.json({
+      message: "Cart ordered successfully",
+      orderId: order.id,
+    });
   } catch (error) {
     handleError(res, error);
   }

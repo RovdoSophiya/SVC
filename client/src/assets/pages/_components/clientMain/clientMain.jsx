@@ -30,7 +30,16 @@ const ClientMain = ({ user, userRole, userId, loading, onLogout }) => {
           </a>
           <div className="blockText">
             <a href="/orderHistory">ORDER HISTORY </a>
-            <p>See history of your orders (with downloading)</p>
+            <p>See history of your orders</p>
+          </div>
+        </div>
+        <div className="block">
+          <a href="/client/current">
+            <img alt="icon" src={icon3}></img>
+          </a>
+          <div className="blockText">
+            <a href="/client/current">Current deliveries</a>
+            <p>See currents deliveries</p>
           </div>
         </div>
         <div className="block">

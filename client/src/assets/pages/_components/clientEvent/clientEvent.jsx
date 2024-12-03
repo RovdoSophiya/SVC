@@ -270,6 +270,21 @@ const EventManager = () => {
         </Table>
       </TableContainer>
 
+      <a
+        href="/client"
+        style={{
+          display: "block",
+          textAlign: "center",
+          marginTop: "70px",
+          marginBottom: "70px",
+          textDecoration: "none",
+          fontSize: "24px",
+          color: "rgba(128, 96, 68, 1)",
+        }}
+      >
+        Return back
+      </a>
+
       {/* Edit Event Modal */}
       <Modal open={modalOpen} onClose={closeModal} closeAfterTransition>
         <Fade in={modalOpen}>

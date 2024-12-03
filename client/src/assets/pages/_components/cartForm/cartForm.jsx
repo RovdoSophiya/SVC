@@ -46,8 +46,11 @@ const Cart = () => {
   };
 
   const decreaseCount = async (dishid) => {
-    await decreaseCartCount(clientid, dishid);
-    loadCartItems();
+    const item = cartItems.find((item) => item.dishid === dishid);
+    if (item.count > 1) {
+      await decreaseCartCount(clientid, dishid);
+      loadCartItems();
+    }
   };
 
   const handleRemoveItemClick = (dishid) => {
@@ -87,7 +90,7 @@ const Cart = () => {
   };
   return (
     <div>
-      {cartItems.length === 0 ? ( // Проверка на пустую корзину
+      {cartItems.length === 0 ? (
         <p className="emptyCart">Your cart is empty.</p>
       ) : (
         cartItems.map((item) => (
@@ -107,7 +110,12 @@ const Cart = () => {
               <div className="countCartContainer">
                 <button onClick={() => increaseCount(item.dishid)}>+</button>
                 <p>{item.count}</p>
-                <button onClick={() => decreaseCount(item.dishid)}>-</button>
+                <button
+                  onClick={() => decreaseCount(item.dishid)}
+                  disabled={item.count <= 1}
+                >
+                  -
+                </button>
               </div>
               <p>{item.price} $</p>
             </div>

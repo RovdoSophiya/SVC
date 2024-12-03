@@ -11,4 +11,10 @@ router.delete("/:id", OrderController.deleteOrder);
 // Получение истории заказов с пагинацией и сортировкой
 router.get("/", OrderController.getClientOrders);
 
+// Получение текущих аказов с пагинацией и сортировкой
+router.get("/current", OrderController.getCurrentClientOrders);
+
+//Скачивание файлов
+router.get("/word", OrderController.downloadOrdersWord);
+
 module.exports = router;

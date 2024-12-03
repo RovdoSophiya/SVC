@@ -23,21 +23,21 @@ const OrdersTable = () => {
   const [modalShow, setModalShow] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [sortOrder, setSortOrder] = useState("ASC");
   const clientid = localStorage.getItem("id");
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/orders`, {
-          params: {
-            clientid: clientid,
-            page: currentPage + 1,
-            limit: limit,
-            sortBy: "orderdate",
-            order: sortOrder,
-          },
-        });
+        const response = await axios.get(
+          `http://localhost:5000/api/orders/current`,
+          {
+            params: {
+              clientid: clientid,
+              page: currentPage + 1,
+              limit: limit,
+            },
+          }
+        );
         setOrders(response.data.orders);
         setTotal(response.data.total);
       } catch (error) {
@@ -46,7 +46,7 @@ const OrdersTable = () => {
     };
 
     fetchOrders();
-  }, [currentPage, limit, sortOrder]);
+  }, [currentPage, limit]);
 
   const handleShow = (order) => {
     setSelectedOrder(order);
@@ -56,10 +56,6 @@ const OrdersTable = () => {
   const handleClose = () => {
     setModalShow(false);
     setSelectedOrder(null);
-  };
-
-  const toggleSortOrder = () => {
-    setSortOrder((prev) => (prev === "ASC" ? "DESC" : "ASC"));
   };
 
   const handleNextPage = () => {
@@ -80,78 +76,9 @@ const OrdersTable = () => {
     });
   };
 
-  const handleDownloadWord = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/orders/word`,
-        {
-          params: { clientid: clientid },
-          responseType: "blob",
-        }
-      );
-
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "orders.doc");
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (error) {
-      console.error("Error downloading Word file:", error);
-    }
-  };
-
   return (
     <div>
-      {/* Кнопка сортировки */}
-      {orders.length > 0 && (
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <Button
-            onClick={handleDownloadWord}
-            variant="contained"
-            sx={{
-              mb: 2,
-              border: "2px solid rgba(128, 96, 68, 1)",
-              backgroundColor: "white",
-              color: "rgba(128, 96, 68, 1)",
-              display: "flex",
-              marginLeft: "10px",
-              marginTop: "40px",
-              "@media (max-width:600px)": {
-                fontSize: "12px",
-              },
-              "@media (max-width:400px)": {
-                fontSize: "9px",
-              },
-            }}
-          >
-            Download Orders
-          </Button>
-          <Button
-            onClick={toggleSortOrder}
-            variant="contained"
-            sx={{
-              mb: 2,
-              border: "2px solid rgba(128, 96, 68, 1) ",
-              backgroundColor: "white",
-              color: "rgba(128, 96, 68, 1)",
-              display: "flex",
-              marginRight: "10px",
-              marginTop: "40px",
-              "@media (max-width:600px)": {
-                fontSize: "12px",
-              },
-              "@media (max-width:400px)": {
-                fontSize: "9px",
-              },
-            }}
-          >
-            Sort order date by: {sortOrder === "ASC" ? "⬆" : "⬇"}
-          </Button>
-        </div>
-      )}
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} sx={{ marginTop: "40px" }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -159,7 +86,6 @@ const OrdersTable = () => {
                 sx={{
                   color: "rgba(128, 96, 68, 1)",
                   textAlign: "center",
-                  marginLeft: "10px",
                   "@media (max-width:600px)": {
                     padding: "16px 2px",
                     fontSize: "12px",

@@ -60,9 +60,7 @@ export const deleteFromCart = async (clientid, dishid) => {
 
 export const orderCart = async (clientid) => {
   try {
-    const response = await axiosInstance.post("/carts/order", {
-      clientid,
-    });
+    const response = await axiosInstance.post(`/carts/order/${clientid}`);
     return response.data;
   } catch (error) {
     console.error("Error when placing an order:", error);

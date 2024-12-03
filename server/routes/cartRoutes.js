@@ -15,7 +15,7 @@ router.delete("/:clientid/:dishid", СartController.removeFromCart);
 router.get("/total/:clientid", СartController.calculateTotalPrice);
 
 // Заказ блюд из корзины
-router.post("/order", СartController.orderCartItems);
+router.post("/order/:clientid", СartController.orderCartItems);
 
 router.get("/:clientid", СartController.getCartItems);
 
