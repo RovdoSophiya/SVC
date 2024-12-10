@@ -12,7 +12,7 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import { Menu as MenuIcon } from "@mui/icons-material";
+import { Menu as MenuIcon, KeyboardArrowUp } from "@mui/icons-material";
 import { getDishes, getDishPhotoUrl } from "../../../api/dishApi/dishApi";
 import { Link } from "react-router-dom";
 import { addToCart } from "../../../api/cartApi/cartApi";
@@ -105,6 +105,13 @@ const DishComponent = () => {
       isvegan: false,
       isglutenfree: false,
       isdietary: false,
+    });
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
     });
   };
 
@@ -321,6 +328,23 @@ const DishComponent = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
+
+      {/* Стрелка в правом нижнем углу */}
+      <Button
+        onClick={scrollToTop}
+        sx={{
+          position: "fixed",
+          bottom: "20px",
+          right: "20px",
+          backgroundColor: "rgba(128, 96, 68, 1)",
+          color: "white",
+          borderRadius: "50%",
+          padding: "10px",
+          fontSize: "1.5rem",
+        }}
+      >
+        <KeyboardArrowUp sx={{ fontSize: "2rem" }} />
+      </Button>
     </div>
   );
 };

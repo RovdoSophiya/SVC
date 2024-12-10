@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import {
   Table,
   TableBody,
@@ -14,12 +13,16 @@ import {
   Typography,
   Snackbar,
 } from "@mui/material";
+import {
+  fetchAllOrders,
+  downloadOrdersExcel,
+} from "../../../../api/orderApi/orderApi";
 
 const OrdersTable = () => {
   const [orders, setOrders] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [limit, setLimit] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const limit = 5;
   const [modalShow, setModalShow] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -27,26 +30,19 @@ const OrdersTable = () => {
   const clientid = localStorage.getItem("id");
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const response = await axios.get(`http://localhost:5000/api/orders`, {
-          params: {
-            clientid: clientid,
-            page: currentPage + 1,
-            limit: limit,
-            sortBy: "orderdate",
-            order: sortOrder,
-          },
-        });
-        setOrders(response.data.orders);
-        setTotal(response.data.total);
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-      }
+    const getOrders = async () => {
+      const data = await fetchAllOrders(
+        clientid,
+        currentPage,
+        limit,
+        sortOrder
+      );
+      setOrders(data.orders);
+      setTotalPages(data.totalPages);
     };
 
-    fetchOrders();
-  }, [currentPage, limit, sortOrder]);
+    getOrders();
+  }, [currentPage, limit, sortOrder, clientid]);
 
   const handleShow = (order) => {
     setSelectedOrder(order);
@@ -63,13 +59,12 @@ const OrdersTable = () => {
   };
 
   const handleNextPage = () => {
-    if ((currentPage + 1) * limit < total) {
+    if (currentPage < totalPages) {
       setCurrentPage((prev) => prev + 1);
     }
   };
-
   const handlePrevPage = () => {
-    if (currentPage > 0) {
+    if (currentPage > 1) {
       setCurrentPage((prev) => prev - 1);
     }
   };
@@ -80,26 +75,15 @@ const OrdersTable = () => {
     });
   };
 
-  const handleDownloadWord = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/orders/word`,
-        {
-          params: { clientid: clientid },
-          responseType: "blob",
-        }
-      );
-
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "orders.doc");
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (error) {
-      console.error("Error downloading Word file:", error);
-    }
+  const handleDownloadExcel = async () => {
+    const data = await downloadOrdersExcel(clientid);
+    const url = window.URL.createObjectURL(new Blob([data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `orders_history_${clientid}.xlsx`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   };
 
   return (
@@ -108,7 +92,7 @@ const OrdersTable = () => {
       {orders.length > 0 && (
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Button
-            onClick={handleDownloadWord}
+            onClick={handleDownloadExcel}
             variant="contained"
             sx={{
               mb: 2,
@@ -301,7 +285,7 @@ const OrdersTable = () => {
         >
           <Button
             onClick={handlePrevPage}
-            disabled={currentPage === 0} // Блокировка кнопки влево
+            disabled={currentPage === 1} // Блокировка кнопки влево
             variant="outlined"
             sx={{
               color: "rgba(128, 96, 68, 1)",
@@ -312,7 +296,8 @@ const OrdersTable = () => {
           </Button>
           <Button
             onClick={handleNextPage}
-            disabled={(currentPage + 1) * limit >= total} // Блокировка кнопки вправо
+            // disabled={currentPage * limit >= total} // Блокировка кнопки вправо
+            disabled={currentPage >= totalPages}
             variant="outlined"
             sx={{
               marginLeft: "8px",

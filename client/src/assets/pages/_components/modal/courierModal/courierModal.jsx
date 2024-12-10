@@ -10,7 +10,11 @@ import {
   FormControlLabel,
   Switch,
 } from "@mui/material";
-import CourierApi from "../../../../api/couriers/courierApi";
+import {
+  fetchCourierById,
+  checkPhoneExists,
+  updateCourier,
+} from "../../../../api/courierApi/courierApi";
 
 const EditCourierModal = ({ open, onClose }) => {
   const [courierData, setCourierData] = useState(null);
@@ -31,7 +35,7 @@ const EditCourierModal = ({ open, onClose }) => {
     const fetchCourierData = async () => {
       if (!open) return;
 
-      const { data } = await CourierApi.fetchCourierById(courierId);
+      const { data } = await fetchCourierById(courierId);
       if (data) {
         setCourierData(data);
         setLastname(data.lastname);
@@ -66,17 +70,14 @@ const EditCourierModal = ({ open, onClose }) => {
       return;
     }
 
-    const { data: phoneExists } = await CourierApi.checkPhoneExists(
-      phone,
-      courierId
-    );
+    const { data: phoneExists } = await checkPhoneExists(phone, courierId);
     if (phoneExists) {
       setSnackbarMessage("This phone number already exists.");
       setSnackbarOpen(true);
       return;
     }
 
-    const { message } = await CourierApi.updateCourier(courierId, {
+    const { message } = await updateCourier(courierId, {
       lastname,
       name,
       fathername,

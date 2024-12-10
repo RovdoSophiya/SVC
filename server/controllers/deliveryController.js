@@ -7,9 +7,9 @@ const OrderedDish = require("../models/OrderedDish");
 const Dish = require("../models/Dish");
 const Order = require("../models/Order");
 const Review = require("../models/Review");
-const XLSX = require("xlsx");
 const fs = require("fs");
 const os = require("os");
+const ExcelJS = require("exceljs");
 const path = require("path");
 
 const handleError = (res, error) => {
@@ -40,7 +40,6 @@ const updateStatus = async (req, res) => {
   }
 };
 
-// Просмотр истории заказов клиента
 // const getCourierHistory = async (req, res) => {
 //   const courierId = parseInt(req.params.courierId, 10);
 //   try {
@@ -94,6 +93,148 @@ const updateStatus = async (req, res) => {
 //     handleError(res, error);
 //   }
 // };
+const downloadCourierHistory = async (req, res) => {
+  const courierid = parseInt(req.params.courierid, 10);
+
+  try {
+    const courier = await Courier.findOne({
+      where: { id: courierid },
+      attributes: ["lastname", "name"],
+    });
+
+    if (!courier) {
+      return res.status(404).send("Courier not found.");
+    }
+
+    const courierFullName = `${courier.lastname || ""} ${
+      courier.name || ""
+    }`.trim();
+
+    const deliveries = await Delivery.findAll({
+      where: { courierid },
+      include: [
+        {
+          model: Order,
+          attributes: ["totalamount"],
+          include: [
+            {
+              model: Client,
+              attributes: ["lastname", "name", "fathername"],
+            },
+          ],
+        },
+      ],
+    });
+
+    const formattedDeliveries = deliveries.map((delivery) => {
+      const order = delivery.Order || {};
+      const client = order.Client || {};
+      return {
+        deliveryAddress: delivery.deliveryaddress,
+        deliveryDate: delivery.deliverydate,
+        status: delivery.status,
+        totalAmount: order.totalamount || 0,
+        clientFullName: `${client.lastname || ""} ${client.name || ""} ${
+          client.fathername || ""
+        }`.trim(),
+      };
+    });
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Courier History");
+
+    // Добавляем заголовок отчета
+    worksheet.mergeCells("A1:E1");
+    const titleCell = worksheet.getCell("A1");
+    titleCell.value = `Delivery History Report of ${courierFullName}`;
+    titleCell.font = { size: 16, bold: true };
+    titleCell.alignment = { horizontal: "center", vertical: "middle" };
+
+    // Добавляем строку с датой генерации отчета
+    worksheet.mergeCells("A2:E2");
+    const dateCell = worksheet.getCell("A2");
+    dateCell.value = `Report Date: ${new Date().toLocaleDateString()}`;
+    dateCell.font = { size: 12, italic: true };
+    dateCell.alignment = { horizontal: "center", vertical: "middle" };
+
+    // Настраиваем колонки
+    worksheet.columns = [
+      { key: "deliveryAddress", width: 30 },
+      { key: "deliveryDate", width: 20 },
+      { key: "status", width: 15 },
+      { key: "totalAmount", width: 15 },
+      { key: "clientFullName", width: 30 },
+    ];
+
+    // Заголовки столбцов
+    const headers = [
+      "Delivery Address",
+      "Delivery Date",
+      "Status",
+      "Total Amount",
+      "Client Full Name",
+    ];
+
+    // Добавляем заголовки
+    headers.forEach((header, index) => {
+      const cell = worksheet.getCell(3, index + 1);
+      cell.value = header;
+      cell.font = { bold: true };
+      cell.alignment = { horizontal: "center", vertical: "middle" };
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF4CAF50" },
+      };
+    });
+
+    // Добавляем данные
+    formattedDeliveries.forEach((delivery, index) => {
+      const row = worksheet.addRow(delivery);
+      row.alignment = { vertical: "middle" };
+      if (index % 2 === 0) {
+        row.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFE8F5E9" },
+        };
+      }
+    });
+
+    // Добавляем рамки к таблице
+    worksheet.eachRow((row, rowNumber) => {
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        };
+      });
+    });
+
+    // Сохраняем и отправляем файл
+    const downloadsPath = path.join(os.homedir(), "Downloads");
+    const filePath = path.join(
+      downloadsPath,
+      `courier_history_${courierid}.xlsx`
+    );
+
+    await workbook.xlsx.writeFile(filePath);
+
+    res.download(filePath, `courier_history_${courierid}.xlsx`, (err) => {
+      if (err) {
+        console.error("Download error:", err);
+        res.status(500).send("Error downloading file.");
+      }
+      fs.unlinkSync(filePath); // Удаляем файл после скачки
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error generating report.");
+  }
+};
+
 const getCourierHistory = async (req, res) => {
   const courierId = parseInt(req.params.courierId, 10);
   const page = parseInt(req.query.page) || 1;
@@ -148,73 +289,14 @@ const getCourierHistory = async (req, res) => {
       })),
     }));
 
-    // Get total count for pagination
     const totalCount = await Delivery.count({
       where: { courierid: courierId },
     });
 
     res.json({
       deliveries: formattedDeliveries,
-      totalCount, // Send total count for pagination
-      totalPages: Math.ceil(totalCount / limit), // Send total pages
-    });
-  } catch (error) {
-    handleError(res, error);
-  }
-};
-// Скачивание файлов истории курьера
-const downloadCourierHistory = async (req, res) => {
-  const courierid = parseInt(req.params.courierid, 10);
-
-  try {
-    const deliveries = await Delivery.findAll({
-      where: { courierid: Number(courierid) },
-      include: [
-        {
-          model: Order,
-          attributes: ["totalamount"],
-          include: [
-            {
-              model: Client,
-              attributes: ["lastname", "name", "fathername"],
-            },
-          ],
-        },
-      ],
-    });
-
-    const formattedDeliveries = deliveries.map((delivery) => {
-      const order = delivery.Order || {};
-      const client = order.Client || {};
-      return {
-        deliveryAddress: delivery.deliveryaddress,
-        deliveryDate: delivery.deliverydate,
-        status: delivery.status,
-        totalAmount: order.totalamount || 0,
-        clientFullName: `${client.lastname || ""} ${client.name || ""} ${
-          client.fathername || ""
-        }`.trim(),
-      };
-    });
-
-    const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.json_to_sheet(formattedDeliveries);
-    XLSX.utils.book_append_sheet(workbook, worksheet, "CourierHistory");
-
-    const downloadsPath = path.join(os.homedir(), "Downloads");
-    const filePath = path.join(
-      downloadsPath,
-      `courier_history_${courierid}.xlsx`
-    );
-
-    XLSX.writeFile(workbook, filePath); // Сохраняем в файл
-
-    res.download(filePath, `courier_history_${courierid}.csv`, (err) => {
-      if (err) {
-        console.error("Download error:", err);
-        res.status(500).send("Error downloading file.");
-      }
-      fs.unlinkSync(filePath); // Удаляем файл после скачки
+      totalCount,
+      totalPages: Math.ceil(totalCount / limit),
     });
   } catch (error) {
     handleError(res, error);
@@ -423,23 +505,23 @@ const sortDeliveriesByPrice = async (req, res) => {
   }
 };
 
-// Удаление доставки(с условием)
-const deletetDelivery = async (req, res) => {
-  try {
-    const delivery = await Delivery.findByPk(req.params.id);
-    if (!delivery)
-      return res.status(404).json({ message: "Delivery not found" });
-    if (delivery.status !== "Adding an order") {
-      return res
-        .status(400)
-        .json({ message: "Cannot delete delivery with current status" });
-    }
-    await delivery.destroy();
-    res.json({ message: "Delivery deleted" });
-  } catch (error) {
-    handleError(res, error);
-  }
-};
+// // Удаление доставки(с условием)
+// const deletetDelivery = async (req, res) => {
+//   try {
+//     const delivery = await Delivery.findByPk(req.params.id);
+//     if (!delivery)
+//       return res.status(404).json({ message: "Delivery not found" });
+//     if (delivery.status !== "Adding an order") {
+//       return res
+//         .status(400)
+//         .json({ message: "Cannot delete delivery with current status" });
+//     }
+//     await delivery.destroy();
+//     res.json({ message: "Delivery deleted" });
+//   } catch (error) {
+//     handleError(res, error);
+//   }
+// };
 
 // Получение информации о доставке
 const getDelivery = async (req, res) => {
@@ -571,7 +653,6 @@ module.exports = {
   allDeliveries,
   sortDeliveriesByDate,
   sortDeliveriesByPrice,
-  deletetDelivery,
   getDelivery,
   getDeliveredOrders,
 };

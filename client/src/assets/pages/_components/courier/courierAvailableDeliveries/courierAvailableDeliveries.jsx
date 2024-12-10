@@ -1,5 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
-import axios from "axios";
+import {
+  fetchAvailableOrders,
+  fetchSortedOrders,
+  takeOrder,
+} from "../../../../api/deliveryApi/deliveryApi";
 import {
   Box,
   Table,
@@ -21,7 +25,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-const AvailableOrders = ({ userId }) => {
+const AvailableOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -35,61 +39,36 @@ const AvailableOrders = ({ userId }) => {
   const [snackbarSeverity, setSnackbarSeverity] = React.useState("success");
   const [openModal, setOpenModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const userId = localStorage.getItem("id");
 
-  const fetchAvailableOrders = useCallback(async () => {
+  const fetchOrders = useCallback(async () => {
     setLoading(true);
     setError(null);
-    try {
-      const response = await axios.get(
-        "http://localhost:5000/api/deliveries/search/available"
-      );
-      setOrders(response.data);
-    } catch (error) {
-      setError("Error loading orders");
-    } finally {
-      setLoading(false);
+    const result = await fetchAvailableOrders();
+    if (result.error) {
+      setError(result.error);
+    } else {
+      setOrders(result.data);
     }
+    setLoading(false);
   }, []);
 
-  //   setLoading(true);
-  //   setError(null);
-  //   try {
-  //     const response = await axios.get(
-  //       `http://localhost:5000/api/couriers/deliveries/sortBy${sortBy}`,
-  //       {
-  //         params: { order },
-  //       }
-  //     );
-  //     setOrders(response.data);
-  //     setSortConfig({ sortBy, order });
-  //   } catch (error) {
-  //     setError(`Error loading sorted orders by ${sortBy.toLowerCase()}`);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-  const fetchSortedOrders = async (sortBy, order) => {
+  const fetchOrdersSorted = async (sortBy, order) => {
     setLoading(true);
     setError(null);
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/deliveries/sort/sortBy${sortBy}/available`,
-        {
-          params: { order },
-        }
-      );
-      setOrders(response.data);
+    const result = await fetchSortedOrders(sortBy, order);
+    if (result.error) {
+      setError(result.error);
+    } else {
+      setOrders(result.data);
       setSortConfig({ sortBy, order });
-    } catch (error) {
-      setError(`Error loading sorted orders by ${sortBy.toLowerCase()}`);
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
-    fetchAvailableOrders();
-  }, [fetchAvailableOrders]);
+    fetchOrders();
+  }, [fetchOrders]);
 
   const handleToggleRow = (id) => {
     setOpenRows((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -102,23 +81,21 @@ const AvailableOrders = ({ userId }) => {
 
   const handleConfirmOrder = async () => {
     const id = userId.userId || userId;
-    try {
-      await axios.put(
-        `http://localhost:5000/api/couriers/${id}/takeOrder/${selectedOrderId}`
-      );
+    const result = await takeOrder(id, selectedOrderId);
+    if (result.error) {
+      setSnackbarMessage(result.error);
+      setSnackbarSeverity("error");
+      setOpenSnackbar(true);
+    } else {
       setSnackbarMessage("Delivery has been added to current deliveries.");
       setSnackbarSeverity("success");
       setOpenSnackbar(true);
-      await fetchAvailableOrders();
-    } catch (error) {
-      setSnackbarMessage("Oops, something went wrong!");
-      setSnackbarSeverity("error");
-      setOpenSnackbar(true);
-    } finally {
-      setOpenModal(false);
-      setSelectedOrderId(null);
+      await fetchOrders(); // Обновляем список заказов
     }
+    setOpenModal(false);
+    setSelectedOrderId(null);
   };
+
   const handleCloseModal = () => {
     setOpenModal(false);
     setSelectedOrderId(null);
@@ -134,7 +111,7 @@ const AvailableOrders = ({ userId }) => {
       sortConfig.sortBy === "Date" && sortConfig.order === "ASC"
         ? "DESC"
         : "ASC";
-    fetchSortedOrders("Date", newOrder);
+    fetchOrdersSorted("Date", newOrder);
   };
 
   const handleSortByPrice = () => {
@@ -143,7 +120,7 @@ const AvailableOrders = ({ userId }) => {
       sortConfig.sortBy === "Price" && sortConfig.order === "ASC"
         ? "DESC"
         : "ASC";
-    fetchSortedOrders("Price", newOrder);
+    fetchOrdersSorted("Price", newOrder);
   };
 
   if (loading) {

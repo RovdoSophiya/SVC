@@ -90,7 +90,7 @@ const loginUser = async (req, res) => {
 
     // Проверка пароля
     if (user.password !== password) {
-      return res.status(400).json({ message: "Invalid password" });
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
     // Генерация токенов

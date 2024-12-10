@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   fetchCartItems,
   increaseCartCount,
@@ -25,15 +25,15 @@ const Cart = () => {
   const [total, setTotal] = useState(0);
   const [openDialog, setOpenDialog] = useState(false);
   const [itemToRemove, setItemToRemove] = useState(null);
+  const [openCheckoutDialog, setOpenCheckoutDialog] = useState(false);
   const [orderMessage, setOrderMessage] = useState("");
   const clientid = localStorage.getItem("id");
 
-  const loadCartItems = async () => {
+  const loadCartItems = useCallback(async () => {
     const items = await fetchCartItems(clientid);
-    // console.log(items);
     setCartItems(items);
     calculateTotal(items);
-  };
+  }, [clientid]);
 
   const calculateTotal = (items) => {
     const total = items.reduce((sum, item) => sum + item.price, 0);
@@ -73,21 +73,28 @@ const Cart = () => {
 
   useEffect(() => {
     loadCartItems();
-  }, []);
+  }, [loadCartItems]);
 
-  const handleCheckout = async () => {
+  const handleCheckout = () => {
+    setOpenCheckoutDialog(true);
+  };
+
+  const confirmOrder = async () => {
     try {
       await orderCart(clientid);
       setOrderMessage("The order was placed successfully!");
       loadCartItems();
     } catch (error) {
       setOrderMessage("Error when placing an order. Try again.");
+    } finally {
+      setOpenCheckoutDialog(false);
     }
   };
 
   const handleCloseSnackbar = () => {
     setOrderMessage("");
   };
+
   return (
     <div>
       {cartItems.length === 0 ? (
@@ -142,6 +149,42 @@ const Cart = () => {
       >
         Return back
       </a>
+
+      {/* Модальное окно подтверждения заказа */}
+      <Dialog
+        open={openCheckoutDialog}
+        onClose={() => setOpenCheckoutDialog(false)}
+      >
+        <DialogTitle
+          sx={{ color: "rgba(128, 96, 68, 1)", textAlign: "center" }}
+        >
+          Confirm Order
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText
+            sx={{ color: "rgba(128, 96, 68, 1)", textAlign: "center" }}
+          >
+            Are you sure you want to place the order?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setOpenCheckoutDialog(false)}
+            color="primary"
+            sx={{ color: "rgba(128, 96, 68, 1)" }}
+          >
+            No
+          </Button>
+          <Button
+            onClick={confirmOrder}
+            color="primary"
+            sx={{ color: "rgba(128, 96, 68, 1)" }}
+          >
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       {/* Модальное окно подтверждения удаления */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle

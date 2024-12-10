@@ -1,15 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Box,
-  IconButton,
-  TextField,
-  useMediaQuery,
-  Divider,
-  Link,
-} from "@mui/material";
+import { Box, IconButton, Divider, Link } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
-import SearchIcon from "@mui/icons-material/Search";
 import MapIcon from "@mui/icons-material/Map";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import "./header.css";
@@ -18,46 +10,18 @@ import MapModal from "../../_components/modal/mapModal/mapModal";
 import EditClientModal from "../../_components/modal/clientModal/clientModal";
 import EditCourierModal from "../../_components/modal/courierModal/courierModal";
 
-const Header = ({ user, loading }) => {
-  const [openSearch, setOpenSearch] = useState(false);
+const Header = () => {
   const [openModal, setOpenModal] = useState(false);
   const [openEditCourierModal, setOpenEditCourierModal] = useState(false);
   const [openEditClientModal, setOpenEditClientModal] = useState(false);
-  const inputRef = useRef(null);
-  const isSmallScreen = useMediaQuery("(max-width:700px)");
   const navigate = useNavigate();
   const userRole = localStorage.getItem("role");
   const userid = localStorage.getItem("id");
-
-  const handleToggleSearch = () => {
-    setOpenSearch((prev) => !prev);
-  };
-
-  const handleClickOutside = (event) => {
-    if (inputRef.current && !inputRef.current.contains(event.target)) {
-      setOpenSearch(false);
-    }
-  };
-
-  useEffect(() => {
-    if (openSearch) {
-      window.addEventListener("mousedown", handleClickOutside);
-    } else {
-      window.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      window.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [openSearch]);
 
   const handleToggleModal = () => {
     setOpenModal(!openModal);
   };
 
-  const handleCloseModal = () => {
-    setOpenModal(false);
-  };
   const handleToggleEditCourierModal = () => {
     setOpenEditCourierModal((prev) => !prev);
   };
@@ -104,73 +68,7 @@ const Header = ({ user, loading }) => {
           style={{
             display: userRole === "courier" ? "none" : "flex",
           }}
-        >
-          {(!isSmallScreen || openSearch) && (
-            <Box
-              ref={inputRef}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                position: "absolute",
-                width: "60%",
-                zIndex: 1,
-                backgroundColor: "rgba(128, 96, 68, 1)",
-                "@media (max-width:1080px)": {
-                  width: "400px",
-                  marginLeft: "-100px",
-                },
-                "@media (max-width:834px)": {
-                  width: "300px",
-                  marginLeft: "-100px",
-                },
-                "@media (max-width:505px)": {
-                  width: "200px",
-                  marginLeft: "-120px",
-                },
-                ...(userRole === "client" || userRole === "courier"
-                  ? {
-                      width: "80%",
-                      "@media (max-width:1080px)": {
-                        width: "400px",
-                        marginLeft: "-120px",
-                      },
-                    }
-                  : {}),
-              }}
-            >
-              <TextField
-                variant="outlined"
-                placeholder="Search..."
-                size="small"
-                sx={{
-                  marginRight: "8px",
-                  width: "90%",
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "white",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "white",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "white",
-                    },
-                  },
-                  "& .MuiInputBase-input": {
-                    color: "white",
-                  },
-                  "& .MuiInputBase-input::placeholder": {
-                    color: "white",
-                    opacity: 1,
-                  },
-                }}
-              />
-              <IconButton onClick={handleToggleSearch} sx={{ color: "white" }}>
-                <SearchIcon />
-              </IconButton>
-            </Box>
-          )}
-        </div>
+        ></div>
 
         <div
           className={`authorization ${
@@ -179,7 +77,7 @@ const Header = ({ user, loading }) => {
         >
           {userRole === "client" || userRole === "courier" ? (
             <>
-              <p>Welcome, {user ? user.name : "Guest"}</p>
+              <p>Welcome</p>
               <Link
                 className="gotoAuthorization"
                 onClick={
@@ -212,15 +110,12 @@ const Header = ({ user, loading }) => {
           <IconButton onClick={handleToggleModal} sx={{ color: "white" }}>
             <MapIcon />
           </IconButton>
-          {isSmallScreen && userRole !== "courier" && (
-            <IconButton onClick={handleToggleSearch} sx={{ color: "white" }}>
-              <SearchIcon />
-            </IconButton>
-          )}
           <IconButton
             onClick={() => {
-              if (userRole === "client" || userRole === "courier") {
+              if (userRole === "client") {
                 handleToggleEditClientModal();
+              } else if (userRole === "courier") {
+                handleToggleEditCourierModal();
               } else {
                 navigate("/login");
               }

@@ -27,7 +27,6 @@ const Login = () => {
     e.preventDefault();
     setError("");
 
-    // Валидация
     if (!email || !password) {
       setError("Email and password are required.");
       return;
@@ -35,7 +34,6 @@ const Login = () => {
 
     try {
       const response = await login(email, password);
-      // Сохраняем JWT в sessionStorage
       const { accessToken, refreshToken, user } = response;
       localStorage.setItem("role", user.role);
       localStorage.setItem("id", user.id);
@@ -46,11 +44,10 @@ const Login = () => {
         sameSite: "Strict",
       });
 
-      // Перенаправление в зависимости от роли
       if (user.role === "client") {
-        navigate("/client"); // Перенаправление на страницу клиента
+        navigate("/client");
       } else if (user.role === "courier") {
-        navigate("/courier"); // Перенаправление на страницу курьера
+        navigate("/courier");
       }
     } catch (error) {
       console.error("Login error:", error);

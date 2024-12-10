@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useCallback } from "react";
-import axios from "axios";
+import {
+  fetchOrderHistory,
+  downloadCourierHistory,
+} from "../../../../api/deliveryApi/deliveryApi";
 import {
   Box,
-  TextField,
   Table,
   TableBody,
   TableCell,
@@ -16,93 +18,76 @@ import {
   Pagination,
 } from "@mui/material";
 
-const CourierOrderHistory = ({ userId }) => {
+const CourierOrderHistory = () => {
   const [orders, setOrders] = useState([]);
-  const [filteredOrders, setFilteredOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-  const id = Number(userId);
+  const courierid = localStorage.getItem("id");
   const ordersPerPage = 5;
 
-  const fetchOrderHistory = useCallback(async () => {
-    if (!id || id === 0) {
+  const fetchOrders = useCallback(async () => {
+    if (!courierid || courierid === 0) {
       setError("Invalid User ID");
       setLoading(false);
       return;
     }
     setLoading(true);
     setError(null);
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/deliveries/courier/history/${id}`,
-        {
-          params: {
-            page: currentPage,
-            limit: ordersPerPage,
-            search: searchTerm,
-          },
-        }
-      );
-      setOrders(response.data.deliveries);
-      setTotalPages(response.data.totalPages);
-    } catch (error) {
-      setError("Error loading order history");
-    } finally {
-      setLoading(false);
+    const result = await fetchOrderHistory(
+      courierid,
+      currentPage,
+      ordersPerPage
+    );
+    if (result.error) {
+      setError(result.error); // Устанавливаем ошибку из API
+    } else {
+      setOrders(result.data.deliveries);
+      setTotalPages(result.data.totalPages);
     }
-  }, [id, currentPage]);
+    setLoading(false);
+  }, [courierid, currentPage]);
 
   useEffect(() => {
-    fetchOrderHistory();
-  }, [fetchOrderHistory, currentPage]);
-
-  // Функция фильтрации заказов по адресу
-  useEffect(() => {
-    const filterOrders = () => {
-      if (searchTerm === "") {
-        setFilteredOrders(orders);
-      } else {
-        const lowerSearchTerm = searchTerm.toLowerCase();
-        const filtered = orders.filter((order) =>
-          order.deliveryAddress.toLowerCase().includes(lowerSearchTerm)
-        );
-        setFilteredOrders(filtered);
-      }
-    };
-
-    filterOrders();
-  }, [searchTerm, orders]);
+    fetchOrders();
+  }, [fetchOrders, currentPage]);
 
   const handleDownload = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/deliveries/courier/history/download/${id}`,
-        {
-          responseType: "blob",
-        }
-      );
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `courier_history_${userId}.xlsx`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (error) {
-      setSnackbarMessage("Error downloading file.");
+    const result = await downloadCourierHistory(courierid);
+    if (result.error) {
+      setSnackbarMessage(result.error);
       setSnackbarSeverity("error");
       setOpenSnackbar(true);
+      return;
     }
+
+    const url = window.URL.createObjectURL(new Blob([result.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `courier_history_${courierid}.xlsx`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   };
 
   if (loading) {
-    return <Typography variant="h6">Loading...</Typography>;
+    return (
+      <Typography
+        variant="h6"
+        sx={{
+          width: "100%",
+          textAlign: "center",
+          marginTop: "20px",
+          marginBottom: "20px",
+        }}
+      >
+        Loading...
+      </Typography>
+    );
   }
 
   if (error) {
@@ -119,23 +104,11 @@ const CourierOrderHistory = ({ userId }) => {
         sx={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
+          justifyContent: "flex-end",
           margin: "20px",
           alignSelf: "center",
         }}
       >
-        <TextField
-          variant="outlined"
-          placeholder="Search by address..."
-          size="small"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{
-            marginRight: "8px",
-            width: "70%",
-            "@media(max-width:730px)": { width: "60%" },
-          }}
-        />
         <Button
           onClick={handleDownload}
           variant="contained"
@@ -143,12 +116,16 @@ const CourierOrderHistory = ({ userId }) => {
             marginLeft: "8px",
             backgroundColor: "rgba(128, 96, 68, 1)",
             "@media(max-width:730px)": { fontSize: "12px", height: "40px" },
+            "@media(max-width:500px)": {
+              fontSize: "10px",
+              width: "160px",
+              height: "25px",
+            },
           }}
         >
           Download History
         </Button>
       </Box>
-
       <TableContainer>
         <Table>
           <TableHead>
@@ -161,7 +138,8 @@ const CourierOrderHistory = ({ userId }) => {
                     padding: "4px",
                   },
                   "@media(max-width:330px)": {
-                    padding: "3px",
+                    padding: "1px",
+                    fontSize: "10px",
                   },
                 }}
               >
@@ -175,7 +153,8 @@ const CourierOrderHistory = ({ userId }) => {
                     padding: "4px",
                   },
                   "@media(max-width:330px)": {
-                    padding: "3px",
+                    padding: "1px",
+                    fontSize: "10px",
                   },
                 }}
               >
@@ -189,7 +168,8 @@ const CourierOrderHistory = ({ userId }) => {
                     padding: "4px",
                   },
                   "@media(max-width:330px)": {
-                    padding: "3px",
+                    padding: "1px",
+                    fontSize: "10px",
                   },
                 }}
               >
@@ -203,7 +183,8 @@ const CourierOrderHistory = ({ userId }) => {
                     padding: "4px",
                   },
                   "@media(max-width:330px)": {
-                    padding: "3px",
+                    padding: "1px",
+                    fontSize: "10px",
                   },
                 }}
               >
@@ -217,7 +198,8 @@ const CourierOrderHistory = ({ userId }) => {
                     padding: "4px",
                   },
                   "@media(max-width:330px)": {
-                    padding: "3px",
+                    padding: "1px",
+                    fontSize: "10px",
                   },
                 }}
               >
@@ -226,7 +208,7 @@ const CourierOrderHistory = ({ userId }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredOrders.map((order) => (
+            {orders.map((order) => (
               <TableRow key={order.id}>
                 <TableCell
                   sx={{
@@ -234,6 +216,10 @@ const CourierOrderHistory = ({ userId }) => {
                       textAlign: "center",
                       padding: "4px",
                       fontSize: "12px",
+                    },
+                    "@media(max-width:350px)": {
+                      padding: "0px",
+                      fontSize: "8px",
                     },
                   }}
                 >
@@ -246,6 +232,10 @@ const CourierOrderHistory = ({ userId }) => {
                       padding: "4px",
                       fontSize: "11px",
                     },
+                    "@media(max-width:350px)": {
+                      padding: "0px",
+                      fontSize: "8px",
+                    },
                   }}
                 >
                   {new Date(order.deliveryDate).toLocaleString()}
@@ -256,6 +246,10 @@ const CourierOrderHistory = ({ userId }) => {
                       textAlign: "center",
                       padding: "4px",
                       fontSize: "12px",
+                    },
+                    "@media(max-width:350px)": {
+                      padding: "0px",
+                      fontSize: "8px",
                     },
                   }}
                 >
@@ -268,6 +262,10 @@ const CourierOrderHistory = ({ userId }) => {
                       padding: "4px",
                       fontSize: "12px",
                     },
+                    "@media(max-width:350px)": {
+                      padding: "0px",
+                      fontSize: "8px",
+                    },
                   }}
                 >
                   {order.totalAmount}
@@ -278,6 +276,10 @@ const CourierOrderHistory = ({ userId }) => {
                       textAlign: "center",
                       padding: "4px",
                       fontSize: "12px",
+                    },
+                    "@media(max-width:350px)": {
+                      padding: "0px",
+                      fontSize: "8px",
                     },
                   }}
                 >

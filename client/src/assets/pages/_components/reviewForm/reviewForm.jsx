@@ -10,12 +10,12 @@ const Reviews = () => {
   const [reviews, setReviews] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(true);
   const [limit, setLimit] = useState(3);
+  const [fade, setFade] = useState(false);
 
   useEffect(() => {
     const fetchReviews = async (page) => {
-      setLoading(true);
+      setFade(true);
       try {
         const data = await getReviews(page, limit);
         setReviews(data.reviews);
@@ -23,12 +23,12 @@ const Reviews = () => {
       } catch (error) {
         console.error("Error fetching reviews:", error);
       } finally {
-        setLoading(false);
+        setFade(false);
       }
     };
 
     fetchReviews(currentPage);
-  }, [currentPage, limit]); // Зависимости: currentPage и limit
+  }, [currentPage, limit]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -41,11 +41,11 @@ const Reviews = () => {
       }
     };
 
-    handleResize(); // Установка начального значения
-    window.addEventListener("resize", handleResize); //обработчик событий
+    handleResize();
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener("resize", handleResize); // Удаление обработчика при размонтировании
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -72,43 +72,52 @@ const Reviews = () => {
       >
         Reviews
       </h2>
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <div className="reviewsWrapper">
-          <button onClick={handlePrevPage} disabled={currentPage === 1}>
-            <img src={Previous} alt="Previous"></img>
-          </button>
-          <Grid container spacing={3} className="reviewsGrid">
-            {reviews.map((review) => (
-              <Grid item xs={12} sm={6} md={4} key={review.id}>
-                <Card className="reviewCard">
-                  <CardContent sx={{ color: "#806044" }}>
-                    <Typography variant="h6">
-                      {`${review.Client.name} ${review.Client.lastname}`}
-                    </Typography>
-                    <Typography variant="body2">{review.comment}</Typography>
-                    <div className="rating">
-                      {Array.from({ length: review.rating }, (_, index) => (
-                        <StarRateIcon key={index} sx={{ color: "#FFD700" }} />
-                      ))}
-                    </div>
-                    <Typography variant="caption">
-                      {new Date(review.addtime).toLocaleDateString()}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-          <button
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages}
-          >
-            <img src={Next} alt="Previous"></img>
-          </button>
-        </div>
-      )}
+      <div className={`reviewsWrapper ${fade ? "fade" : ""}`}>
+        <button onClick={handlePrevPage} disabled={currentPage === 1}>
+          <img src={Previous} alt="Previous"></img>
+        </button>
+        <Grid
+          container
+          spacing={3}
+          className="reviewsGrid"
+          sx={{
+            marginLeft: "5px",
+            marginRight: "5px",
+            paddingLeft: "0px !important",
+          }}
+        >
+          {reviews.map((review) => (
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              key={review.id}
+              sx={{ "@media(max-width:400px)": { width: "200px" } }}
+            >
+              <Card className="reviewCard">
+                <CardContent sx={{ color: "#806044" }}>
+                  <Typography variant="h6">
+                    {`${review.Client.name} ${review.Client.lastname}`}
+                  </Typography>
+                  <Typography variant="body2">{review.comment}</Typography>
+                  <div className="rating">
+                    {Array.from({ length: review.rating }, (_, index) => (
+                      <StarRateIcon key={index} sx={{ color: "#FFD700" }} />
+                    ))}
+                  </div>
+                  <Typography variant="caption">
+                    {new Date(review.addtime).toLocaleDateString()}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+        <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+          <img src={Next} alt="Previous"></img>
+        </button>
+      </div>
     </div>
   );
 };

@@ -15,6 +15,6 @@ router.get("/", OrderController.getClientOrders);
 router.get("/current", OrderController.getCurrentClientOrders);
 
 //Скачивание файлов
-router.get("/word", OrderController.downloadOrdersWord);
+router.get("/excel", OrderController.downloadOrdersExcel);
 
 module.exports = router;

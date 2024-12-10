@@ -1,5 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
-import axios from "axios";
+import {
+  fetchCurrentDeliveries,
+  fetchSortedDeliveries,
+  updateOrderStatus,
+} from "../../../../api/deliveryApi/deliveryApi";
 import {
   Box,
   Table,
@@ -24,7 +28,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-const CurrentDeliveries = ({ userId }) => {
+const CurrentDeliveries = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -33,6 +37,7 @@ const CurrentDeliveries = ({ userId }) => {
     sortBy: "Price",
     order: "ASC",
   });
+  const userId = localStorage.getItem("id");
 
   //Управление снакбаром
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -44,44 +49,35 @@ const CurrentDeliveries = ({ userId }) => {
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState("Pending");
 
-  const fetchCurrentDeliveries = useCallback(async () => {
+  const fetchDeliveries = useCallback(async () => {
     setLoading(true);
     setError(null);
     const id = Number(userId);
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/deliveries/search/courierid:${id}`
-      );
-      setOrders(response.data);
-    } catch (error) {
-      setError("Error loading current deliveries");
-    } finally {
-      setLoading(false);
+    const result = await fetchCurrentDeliveries(id);
+    if (result.error) {
+      setError(result.error);
+    } else {
+      setOrders(result.data);
     }
+    setLoading(false);
   }, [userId]);
 
-  const fetchSortedDeliveries = async (sortBy, order) => {
+  const fetchSorted = async (sortBy, order) => {
     setLoading(true);
     setError(null);
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/deliveries/sort/sortBy${sortBy}/${userId}`,
-        {
-          params: { order },
-        }
-      );
-      setOrders(response.data);
+    const result = await fetchSortedDeliveries(userId, sortBy, order);
+    if (result.error) {
+      setError(result.error);
+    } else {
+      setOrders(result.data);
       setSortConfig({ sortBy, order });
-    } catch (error) {
-      setError(`Error loading sorted deliveries by ${sortBy.toLowerCase()}`);
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
-    fetchCurrentDeliveries();
-  }, [fetchCurrentDeliveries]);
+    fetchDeliveries();
+  }, [fetchDeliveries]);
 
   const handleToggleRow = (id) => {
     setOpenRows((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -99,22 +95,20 @@ const CurrentDeliveries = ({ userId }) => {
   };
 
   const handleStatusChange = async () => {
-    try {
-      await axios.patch(
-        `http://localhost:5000/api/deliveries/${selectedOrderId}/status`,
-        { status: selectedStatus }
-      );
+    const result = await updateOrderStatus(selectedOrderId, selectedStatus);
+    if (result.error) {
+      setSnackbarMessage(result.error);
+      setSnackbarSeverity("error");
+      setOpenSnackbar(true);
+    } else {
       setSnackbarMessage("Order status has been updated.");
       setSnackbarSeverity("success");
       setOpenSnackbar(true);
-      await fetchCurrentDeliveries(); // Обновляем список заказов
-      handleDialogClose(); // Закрываем диалог
-    } catch (error) {
-      setSnackbarMessage("Error updating order status.");
-      setSnackbarSeverity("error");
-      setOpenSnackbar(true);
+      await fetchDeliveries();
+      handleDialogClose();
     }
   };
+
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
   };
@@ -124,7 +118,7 @@ const CurrentDeliveries = ({ userId }) => {
       sortConfig.sortBy === "Date" && sortConfig.order === "ASC"
         ? "DESC"
         : "ASC";
-    fetchSortedDeliveries("Date", newOrder);
+    fetchSorted("Date", newOrder);
   };
 
   const handleSortByPrice = () => {
@@ -132,7 +126,7 @@ const CurrentDeliveries = ({ userId }) => {
       sortConfig.sortBy === "Price" && sortConfig.order === "ASC"
         ? "DESC"
         : "ASC";
-    fetchSortedDeliveries("Price", newOrder);
+    fetchSorted("Price", newOrder);
   };
 
   if (loading) {
@@ -462,6 +456,7 @@ const CurrentDeliveries = ({ userId }) => {
           >
             <MenuItem value="Pending">Pending</MenuItem>
             <MenuItem value="On the Way">On the Way</MenuItem>
+            <MenuItem value="Delivered">Delivered</MenuItem>
             <MenuItem value="Delayed">Delayed</MenuItem>
           </Select>
         </DialogContent>

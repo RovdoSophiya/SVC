@@ -1,16 +1,10 @@
 import ClientMain from "../_components/clientMain/clientMain";
 import Description from "../_components/description/description";
 
-const Client = ({ user, userRole, userId, loading, onLogout }) => {
+const Client = () => {
   return (
     <div>
-      <ClientMain
-        user={user}
-        userRole={userRole}
-        userId={userId}
-        loading={loading}
-        onLogout={onLogout}
-      />
+      <ClientMain />
       <Description />
     </div>
   );

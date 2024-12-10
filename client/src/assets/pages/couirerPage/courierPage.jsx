@@ -1,14 +1,9 @@
 import CourierMain from "../_components/courier/courierMain/courierMain";
 
-const Courier = ({ user, userRole, userId, loading }) => {
+const Courier = () => {
   return (
     <div>
-      <CourierMain
-        user={user}
-        userRole={userRole}
-        userId={userId}
-        loading={loading}
-      />
+      <CourierMain />
     </div>
   );
 };

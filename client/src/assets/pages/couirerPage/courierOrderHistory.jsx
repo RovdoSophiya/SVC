@@ -1,7 +1,7 @@
 import History from "../_components/courier/courierOrderHistory/courierOrderHistory";
 
-const CourierOrderHistory = ({ userId }) => {
-  return <History userId={userId} />;
+const CourierOrderHistory = () => {
+  return <History />;
 };
 
 export default CourierOrderHistory;

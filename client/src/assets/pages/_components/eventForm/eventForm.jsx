@@ -11,6 +11,7 @@ const Form = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [phoneError, setPhoneError] = useState("");
+  const [dateError, setDateError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,6 +23,17 @@ const Form = () => {
       return;
     } else {
       setPhoneError("");
+    }
+
+    const selectedDate = new Date(date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Убираем время для точного сравнения
+
+    if (selectedDate < today) {
+      setDateError("Cannot book an event on a past date.");
+      return;
+    } else {
+      setDateError("");
     }
 
     if (role !== "client") {
@@ -75,6 +87,7 @@ const Form = () => {
             onChange={(e) => setDate(e.target.value)}
             required
           />
+          {dateError && <p className="errorMessage">{dateError}</p>}
         </div>
         <div className="formGroupAddress">
           <p>Event Address (optional)</p>

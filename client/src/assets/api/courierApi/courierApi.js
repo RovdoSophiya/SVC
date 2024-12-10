@@ -1,6 +1,6 @@
 import axiosInstance from "../apiConfig";
 
-const fetchCourierById = async (id) => {
+export const fetchCourierById = async (id) => {
   try {
     const response = await axiosInstance.get(`/couriers/${id}`);
     return {
@@ -10,14 +10,12 @@ const fetchCourierById = async (id) => {
     return handleError(error);
   }
 };
-
-const handleError = (error) => {
+export const handleError = (error) => {
   const message =
     error.response?.data?.error || "An unexpected error occurred.";
   return { data: null, message };
 };
-
-const updateCourier = async (id, data) => {
+export const updateCourier = async (id, data) => {
   try {
     const response = await axiosInstance.put(`/couriers/${id}`, data);
     return {
@@ -29,7 +27,7 @@ const updateCourier = async (id, data) => {
   }
 };
 
-const checkPhoneExists = async (phone, courierId) => {
+export const checkPhoneExists = async (phone, courierId) => {
   try {
     const response = await axiosInstance.get(
       `/couriers/check/checkPhoneExists=${phone}`,
@@ -41,10 +39,4 @@ const checkPhoneExists = async (phone, courierId) => {
   } catch (error) {
     return handleError(error);
   }
-};
-
-export default {
-  fetchCourierById,
-  updateCourier,
-  checkPhoneExists,
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Header from "../src/assets/pages/_components/header/header";
 import Main from "../src/assets/pages/mainPage/mainPage";
@@ -19,59 +19,40 @@ import EventHistory from "./assets/pages/clientPage/clientEvent";
 import ReviewOrder from "./assets/pages/clientPage/clientReview";
 import ClientCurrentDeliveries from "./assets/pages/clientPage/clientCurrent";
 import "./App.css";
-import { fetchClientById } from "../src/assets/api/clients/clientApi";
-import CourierApi from "./assets/api/couriers/courierApi";
+// import { fetchClientById } from "../src/assets/api/clients/clientApi";
+// import CourierApi from "./assets/api/couriers/courierApi";
 
 function App() {
-  const [user, setUser] = useState(null);
-  const [userRole, setUserRole] = useState(null);
-  const [userId, setUserId] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // const [user, setUser] = useState(null);
+  // // const [loading, setLoading] = useState(true);
+  // const role = localStorage.getItem("role");
+  // const userId = localStorage.getItem("id");
 
-  useEffect(() => {
-    const role = localStorage.getItem("role");
-    setUserRole(role);
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     if (userId) {
+  //       try {
+  //         let data;
+  //         if (role === "client") {
+  //           data = await fetchClientById(userId);
+  //         } else if (role === "courier") {
+  //           data = await CourierApi.fetchCourierById(userId);
+  //         }
+  //         setUser(data);
+  //       } catch (error) {
+  //         console.error("Error fetching user data:", error);
+  //         console.error("Error details:", error.response?.data || error);
+  //       }
+  //     }
+  //     // setLoading(false);
+  //   };
 
-    const fetchUserData = async () => {
-      const userId = localStorage.getItem("id");
-      setUserId(userId);
-
-      if (userId) {
-        try {
-          let data;
-          if (role === "client") {
-            data = await fetchClientById(userId);
-          } else if (role === "courier") {
-            data = await CourierApi.fetchCourierById(userId);
-          }
-          setUser(data);
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-          console.error("Error details:", error.response?.data || error);
-        }
-      }
-      setLoading(false);
-    };
-
-    fetchUserData();
-  }, []);
-
-  const handleLogout = () => {
-    sessionStorage.removeItem("role");
-    sessionStorage.removeItem("id");
-    setUser(null);
-    setUserRole(null);
-    setUserId(null);
-  };
+  //   fetchUserData();
+  // }, [role, userId]);
 
   return (
     <BrowserRouter>
-      <Header
-        user={user}
-        userRole={userRole}
-        userId={userId}
-        loading={loading}
-      />
+      <Header />
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/event" element={<Event />} />
@@ -79,46 +60,25 @@ function App() {
         <Route path="/dishes" element={<DishPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/registration" element={<Registration />} />
-        <Route
-          path="/client"
-          element={
-            <Client
-              user={user}
-              userRole={userRole}
-              userId={userId}
-              loading={loading}
-              onLogout={handleLogout}
-            />
-          }
-        />
-        <Route
-          path="/courier"
-          element={
-            <Courier
-              user={user}
-              userRole={userRole}
-              userId={userId}
-              loading={loading}
-            />
-          }
-        />
+        <Route path="/client" element={<Client />} />
+        <Route path="/courier" element={<Courier />} />
         <Route
           path="/courier/availableDeliveries"
-          element={<CourierAvailDeliveries userId={userId} />}
+          element={<CourierAvailDeliveries />}
         />
         <Route
           path="/courier/currentDeliveries"
-          element={<CourierCurrentDeliveries userId={userId} />}
+          element={<CourierCurrentDeliveries />}
         />
         <Route
           path="/courier/deliveryHistory"
-          element={<CourierOrderHistory userId={userId} />}
+          element={<CourierOrderHistory />}
         />
         <Route path="/cart" element={<CartPage />} />
-        <Route path="/orderHistory" element={<OrderHistory />} />
+        <Route path="/client/orderHistory" element={<OrderHistory />} />
         <Route path="/client/eventHistory" element={<EventHistory />} />
         <Route path="/client/current" element={<ClientCurrentDeliveries />} />
-        <Route path="/addReview" element={<ReviewOrder />} />
+        <Route path="/client/addReview" element={<ReviewOrder />} />
       </Routes>
       <Footer></Footer>
     </BrowserRouter>

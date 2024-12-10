@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { registerUser } from "../../../api/auth/authApi";
 import { useNavigate } from "react-router-dom";
-import "./registration.css"; // Подключите свои стили
+import "./registration.css";
 import Cookies from "js-cookie";
 
 const Registration = () => {
@@ -87,78 +87,52 @@ const Registration = () => {
       return;
     }
 
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/api/authorization/register",
-        {
-          name: formData.name,
-          lastname: formData.lastname,
-          fathername: formData.fatername,
-          phone: formData.phone,
-          email: formData.email,
-          address: formData.address,
-          password: formData.password,
-        }
-      );
-      if (response.status === 201) {
-        const { accessToken, refreshToken, user } = response;
-        localStorage.setItem("id", user.id);
-        localStorage.setItem("role", user.role);
-        localStorage.setItem("accessToken", accessToken);
-        Cookies.set("refreshToken", refreshToken, {
-          expires: 7,
-          secure: true,
-          sameSite: "Strict",
-        });
+    const result = await registerUser(formData);
 
-        setFormData({
-          lastName: "",
-          firstName: "",
-          fatherName: "",
-          phone: "",
-          email: "",
-          address: "",
-          password: "",
-          confirmpassword: "",
-        });
-        setTimeout(() => {
-          navigate("/client");
-        }, 2000); // Задержка перед перенаправлением
-      }
-    } catch (error) {
-      if (error.response) {
-        const message = error.response.data?.message;
-        if (message) {
-          if (message.includes("Email already exists")) {
-            setErrors((prevErrors) => ({
-              ...prevErrors,
-              email: "Email already exists",
-            }));
-          } else if (message.includes("Phone already exists")) {
-            setErrors((prevErrors) => ({
-              ...prevErrors,
-              phone: "Phone already exists",
-            }));
-          } else {
-            setErrors((prevErrors) => ({
-              ...prevErrors,
-              submit: message || "Registration failed",
-            }));
-          }
-        } else {
-          // Если message отсутствует, установим общее сообщение об ошибке
-          setErrors((prevErrors) => ({
-            ...prevErrors,
-            submit: "Mistake. Please, try again.",
-          }));
-        }
+    if (result.error) {
+      const message = result.error;
+      if (message.includes("Email already exists")) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          email: "Email already exists",
+        }));
+      } else if (message.includes("Phone already exists")) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          phone: "Phone already exists",
+        }));
       } else {
         setErrors((prevErrors) => ({
           ...prevErrors,
-          submit: "Mistake. Please, try again.",
+          submit: message || "Registration failed",
         }));
       }
+      return;
     }
+
+    const { accessToken, refreshToken, user } = result.data;
+    localStorage.setItem("id", user.id);
+    localStorage.setItem("role", "client");
+    localStorage.setItem("accessToken", accessToken);
+    Cookies.set("refreshToken", refreshToken, {
+      expires: 7,
+      secure: true,
+      sameSite: "Strict",
+    });
+
+    setFormData({
+      name: "",
+      lastname: "",
+      fathername: "",
+      phone: "",
+      email: "",
+      address: "",
+      password: "",
+      confirmpassword: "",
+    });
+    setTimeout(() => {
+      navigate("/client");
+    }, 2000);
   };
 
   return (
@@ -275,8 +249,8 @@ const Registration = () => {
                 onChange={handleChange}
                 required
               />
-              {errors.confirmPassword && (
-                <p className="error">{errors.confirmPassword}</p>
+              {errors.confirmpassword && (
+                <p className="error">{errors.confirmpassword}</p>
               )}
             </div>
           </div>

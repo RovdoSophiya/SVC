@@ -34,11 +34,11 @@ const ClientMain = () => {
           </div>
         </div>
         <div className="block">
-          <a href="/orderHistory">
+          <a href="/client/orderHistory">
             <img alt="icon" src={icon3}></img>
           </a>
           <div className="blockText">
-            <a href="/orderHistory">ORDER HISTORY </a>
+            <a href="/client/orderHistory">ORDER HISTORY </a>
             <p>See history of your orders</p>
           </div>
         </div>
@@ -47,7 +47,7 @@ const ClientMain = () => {
             <img alt="icon" src={icon3}></img>
           </a>
           <div className="blockText">
-            <a href="/client/current">Current deliveries</a>
+            <a href="/client/current">CURRENT DELIVERIES</a>
             <p>See currents deliveries</p>
           </div>
         </div>
@@ -65,11 +65,11 @@ const ClientMain = () => {
           </div>
         </div>
         <div className="block">
-          <a href="/addReview">
+          <a href="/client/addReview">
             <img alt="icon" src={icon4}></img>
           </a>
           <div className="blockText">
-            <a href="/addReview">ADD REVIEW</a>
+            <a href="/client/addReview">ADD REVIEW</a>
             <p>Add review to completed deliveries.</p>
           </div>
         </div>

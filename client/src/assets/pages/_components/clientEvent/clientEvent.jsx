@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Box,
   Button,
@@ -17,7 +17,11 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import axios from "axios";
+import {
+  deleteEvent,
+  fetchEvents as fetchEventsApi,
+  updateEvent,
+} from "../../../api/eventApi/eventApi";
 import "./clientEvent.css";
 
 const EventManager = () => {
@@ -29,24 +33,22 @@ const EventManager = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const clientid = localStorage.getItem("id");
 
-  useEffect(() => {
-    fetchEvents();
-  }, []);
-
-  const fetchEvents = async () => {
+  const fetchEvents = useCallback(async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/events`, {
-        params: { clientid },
-      });
+      const eventsData = await fetchEventsApi(clientid);
       const currentDate = new Date();
-      const upcomingEvents = response.data.filter(
+      const upcomingEvents = eventsData.filter(
         (event) => new Date(event.date) >= currentDate
       );
       setEvents(upcomingEvents);
     } catch (error) {
       console.error("Error fetching events:", error);
     }
-  };
+  }, [clientid]);
+
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
 
   const openModal = (event) => {
     setSelectedEvent(event);
@@ -81,15 +83,18 @@ const EventManager = () => {
       return;
     }
 
+    await handleUpdateEvent(); // Вызов функции обновления
+  };
+
+  const handleUpdateEvent = async () => {
     try {
-      await axios.put(
-        `http://localhost:5000/api/events/${selectedEvent.id}`,
-        selectedEvent
-      );
+      await updateEvent(selectedEvent.id, selectedEvent);
       setSnackbarMessage("Event updated successfully");
       fetchEvents();
     } catch (error) {
-      setSnackbarMessage(error.response.data.message || "Error updating event");
+      setSnackbarMessage(
+        error.response?.data?.message || "Error updating event"
+      );
     } finally {
       closeModal();
       setSnackbarOpen(true);
@@ -100,15 +105,15 @@ const EventManager = () => {
     if (!selectedEvent) return;
 
     try {
-      await axios.delete(
-        `http://localhost:5000/api/events/${selectedEvent.id}`
-      );
+      await deleteEvent(selectedEvent.id);
       setSnackbarMessage("Event deleted successfully");
-      fetchEvents();
+      fetchEvents(); // Обновляем список событий
     } catch (error) {
-      setSnackbarMessage(error.response.data.message || "Error deleting event");
+      setSnackbarMessage(
+        error.response?.data?.message || "Error deleting event"
+      );
     } finally {
-      closeConfirmDelete();
+      closeConfirmDelete(); // Закрываем модальное окно подтверждения
       setSnackbarOpen(true);
     }
   };

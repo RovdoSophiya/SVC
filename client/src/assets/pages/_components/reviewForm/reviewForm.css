@@ -1,13 +1,36 @@
 .reviewsList {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 карточки на больших экранах */
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
 .reviewsContainer {
   padding: 20px;
   margin-bottom: 20px;
 }
+.reviewsWrapper {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  transform: translateY(0);
+}
 
+.reviewsWrapper.fade {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.reviewsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.reviewCard {
+  transition: transform 0.3s;
+}
+
+.reviewCard:hover {
+  transform: scale(1.05);
+}
 .reviewCard {
   display: flex;
   flex-direction: column;
@@ -54,7 +77,7 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .reviewsList {
     grid-template-columns: 1fr;
   }
