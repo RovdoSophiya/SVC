@@ -32,9 +32,6 @@ router.get(
   DeliveryController.sortDeliveriesByPrice
 );
 
-// // Удаление доставки(с условием)
-// router.delete("/:id", DeliveryController.deletetDelivery);
-
 // Получение информации о доставке
 router.get("/:id", DeliveryController.getDelivery);
 

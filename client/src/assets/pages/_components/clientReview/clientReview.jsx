@@ -1,119 +1,317 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Button, TextField, Typography, Snackbar } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardMedia,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Rating,
+  Snackbar,
+  TextField,
+  Typography,
+  Alert,
+} from "@mui/material";
 import { getDishPhotoUrl } from "../../../api/dishApi/dishApi";
+import {
+  fetchOrdersWithoutReviews,
+  addReview,
+} from "../../../api/reviewApi/reviewApi";
 
-const CompletedOrders = () => {
-  const [deliveries, setDeliveries] = useState([]);
-  const [rating, setRating] = useState(1);
+const AddReview = () => {
+  const clientId = localStorage.getItem("id");
+  const [orders, setOrders] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-
-  const clientid = localStorage.getItem("id"); // Получаем clientid из localStorage
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchDeliveredOrders = async () => {
+    const loadOrders = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:5000/api/deliveries/get/completed`,
-          {
-            params: { clientid },
-          }
-        );
-        setDeliveries(response.data.deliveries);
+        const ordersData = await fetchOrdersWithoutReviews(clientId);
+        setOrders(ordersData);
       } catch (error) {
-        console.error("Error fetching delivered orders:", error);
+        setSnackbarMessage(error.message);
+        setSnackbarOpen(true);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchDeliveredOrders();
-  }, [clientid]);
+    loadOrders();
+  }, [clientId]);
 
-  const handleAddReview = async (orderid) => {
-    if (rating < 1 || rating > 5) {
-      setSnackbarMessage("Рейтинг должен быть от 1 до 5");
-      setSnackbarOpen(true);
-      return;
-    }
+  const handleOpenModal = (order) => {
+    setSelectedOrder(order);
+    setRating(0);
+    setComment("");
+    setModalOpen(true);
+  };
 
-    if (comment.length > 255) {
-      setSnackbarMessage("Текст отзыва не может превышать 255 символов");
-      setSnackbarOpen(true);
-      return;
-    }
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedOrder(null);
+    setRating(0);
+    setComment("");
+  };
 
+  const handleConfirmation = async () => {
     try {
-      await axios.post(`http://localhost:5000/api/reviews`, {
-        clientid,
-        orderid,
+      const reviewData = {
+        clientid: clientId,
+        orderid: selectedOrder.orderId,
         rating,
         comment,
-      });
-      setSnackbarMessage("Отзыв добавлен успешно");
+      };
+
+      const successMessage = await addReview(reviewData);
+
+      setSnackbarMessage(successMessage);
       setSnackbarOpen(true);
-      setComment(""); // Сбрасываем текст отзыва
-      setRating(1); // Сбрасываем рейтинг
+      setModalOpen(false);
+
+      setOrders((prevOrders) =>
+        prevOrders.filter((order) => order.orderId !== selectedOrder.orderId)
+      );
     } catch (error) {
-      console.error("Error adding review:", error);
-      setSnackbarMessage("Ошибка при добавлении отзыва");
+      setSnackbarMessage(error.message);
       setSnackbarOpen(true);
+    } finally {
+      setConfirmationOpen(false);
     }
   };
 
+  const handleSubmit = () => {
+    if (rating < 1) {
+      setSnackbarMessage("The rating must be at least 1 star.");
+      setSnackbarOpen(true);
+      return;
+    }
+    if (comment.length > 255) {
+      setSnackbarMessage("Reviews must not exceed 255 characters.");
+      setSnackbarOpen(true);
+      return;
+    }
+    setConfirmationOpen(true);
+  };
+
   return (
-    <div>
-      <Typography variant="h4">Завершенные заказы</Typography>
-      {deliveries.length === 0 ? (
-        <Typography variant="body1">Нет завершенных доставок.</Typography> // Сообщение при отсутствии доставок
+    <Box>
+      {loading ? (
+        <Typography
+          variant="h6"
+          align="center"
+          sx={{ margin: "50px auto", color: "rgba(128, 96, 68, 1)" }}
+        >
+          Loading orders...
+        </Typography>
+      ) : orders.length === 0 ? (
+        <Typography
+          variant="h6"
+          align="center"
+          sx={{ margin: "50px auto", color: "rgba(128, 96, 68, 1)" }}
+        >
+          You currently have no completed orders.
+        </Typography>
       ) : (
-        deliveries.map((delivery, index) => (
-          <div key={delivery.deliveryid}>
-            <Typography variant="h6">Доставка #{index + 1}</Typography>
-            <Typography variant="body1">
-              Сумма заказа: {delivery.totalamount} руб.
-            </Typography>
-            <ul>
-              {delivery.dishes.map((dish, dishIndex) => (
-                <li key={dishIndex}>
-                  <img
-                    src={getDishPhotoUrl(dish.photo)}
-                    alt={dish.name}
-                    width={50}
+        orders.map((order) => (
+          <Card
+            key={order.orderId}
+            sx={{
+              marginBottom: 2,
+              display: "flex",
+              flexDirection: "column",
+              textAlign: "center",
+              color: "rgba(128, 96, 68, 1)",
+            }}
+          >
+            <CardContent>
+              <Typography variant="h6">
+                Delivery date: {order.deliveryDate}
+              </Typography>
+              <Typography variant="body1">
+                Sum: {order.totalAmount} $
+              </Typography>
+              <Typography variant="subtitle1" sx={{ marginTop: 1 }}>
+                List of dishes:
+              </Typography>
+              {order.orderedDishes.map((dish, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginTop: 1,
+                    justifyContent: "center",
+                  }}
+                >
+                  <CardMedia
+                    component="img"
+                    image={
+                      getDishPhotoUrl(dish.dishPhoto) || "/placeholder.png"
+                    }
+                    alt={dish.dishName}
+                    sx={{
+                      width: 100,
+                      height: 100,
+                      marginRight: 2,
+                      borderRadius: "5px",
+                      borderWidth: "3px",
+                      borderStyle: "solid",
+                      borderColor: "rgba(128, 96, 68, 1)",
+                    }}
                   />
-                  {dish.name}
-                </li>
+                  <Box>
+                    <Typography>{dish.dishName}</Typography>
+                    <Typography>
+                      Count: {dish.quantity}, Price: {dish.dishPrice} $
+                    </Typography>
+                    <Typography>Total: {dish.totalPrice} $</Typography>
+                  </Box>
+                </Box>
               ))}
-            </ul>
-            <TextField
-              label="Рейтинг (1-5)"
-              type="number"
-              value={rating}
-              onChange={(e) => setRating(e.target.value)}
-              inputProps={{ min: 1, max: 5 }}
-            />
-            <TextField
-              label="Комментарий"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              inputProps={{ maxLength: 255 }}
-              multiline
-              rows={4}
-            />
-            <Button onClick={() => handleAddReview(delivery.deliveryid)}>
-              Добавить отзыв
+            </CardContent>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handleOpenModal(order)}
+              sx={{
+                width: "300px",
+                margin: " 20px auto",
+                backgroundColor: "transparent",
+                color: "rgba(128, 96, 68, 1)",
+                borderWidth: "3px",
+                borderStyle: "solid",
+                borderColor: "rgba(128, 96, 68, 1)",
+              }}
+            >
+              Add review
             </Button>
-          </div>
+          </Card>
         ))
       )}
+      <a
+        href="/client"
+        style={{
+          display: "block",
+          textAlign: "center",
+          marginTop: "70px",
+          marginBottom: "70px",
+          textDecoration: "none",
+          fontSize: "24px",
+          color: "rgba(128, 96, 68, 1)",
+        }}
+      >
+        Return back
+      </a>
+
+      {/* Модальное окно для отзыва */}
+      <Dialog open={modalOpen} onClose={handleCloseModal}>
+        <DialogTitle sx={{ color: "rgba(128, 96, 68, 1)" }}>
+          Adding a review
+        </DialogTitle>
+        <DialogContent>
+          <Typography component="legend" sx={{ color: "rgba(128, 96, 68, 1)" }}>
+            Rating
+          </Typography>
+          <Rating
+            value={rating}
+            onChange={(event, newValue) => setRating(newValue)}
+          />
+          <TextField
+            fullWidth
+            multiline
+            rows={4}
+            margin="normal"
+            label="Review"
+            placeholder="Write review"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions
+          sx={{ display: "flex", justifyContent: "space-between" }}
+        >
+          <Button
+            onClick={handleCloseModal}
+            sx={{
+              color: "rgba(128, 96, 68, 1)",
+              borderWidth: "3px",
+              borderStyle: "solid",
+              borderColor: "rgba(128, 96, 68, 1)",
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSubmit}
+            sx={{
+              color: "white",
+              backgroundColor: "rgba(128, 96, 68, 1)",
+            }}
+          >
+            Send
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Диалог подтверждения */}
+      <Dialog open={confirmationOpen}>
+        <DialogTitle sx={{ color: "rgba(128, 96, 68, 1)" }}>
+          Confirmation
+        </DialogTitle>
+        <DialogContent>
+          <Typography sx={{ color: "rgba(128, 96, 68, 1)" }}>
+            Are you sure you want to submit review?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setConfirmationOpen(false)}
+            sx={{
+              color: "rgba(128, 96, 68, 1)",
+              borderWidth: "3px",
+              borderStyle: "solid",
+              borderColor: "rgba(128, 96, 68, 1)",
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleConfirmation}
+            sx={{
+              color: "white",
+              backgroundColor: "rgba(128, 96, 68, 1)",
+            }}
+          >
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Snackbar для уведомлений */}
       <Snackbar
         open={snackbarOpen}
-        onClose={() => setSnackbarOpen(false)}
-        message={snackbarMessage}
         autoHideDuration={3000}
-      />
-    </div>
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={snackbarMessage.includes("success") ? "success" : "error"}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </Box>
   );
 };
 
-export default CompletedOrders;
+export default AddReview;

@@ -17,4 +17,9 @@ router.get("/current", OrderController.getCurrentClientOrders);
 //Скачивание файлов
 router.get("/excel", OrderController.downloadOrdersExcel);
 
+router.get(
+  "/getWithoutReviews/:clientid",
+  OrderController.getCompletedDeliveriesWithoutReview
+);
+
 module.exports = router;

@@ -22,6 +22,7 @@ const EditClientModal = ({ open, onClose }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const clientId = localStorage.getItem("id");
 
   useEffect(() => {
@@ -45,21 +46,40 @@ const EditClientModal = ({ open, onClose }) => {
 
   const handleApply = async () => {
     if (!lastname || !name) {
+      setSnackbarSeverity("error");
       setSnackbarMessage("Last name and name cannot be empty.");
       setSnackbarOpen(true);
       return;
     }
 
     if (/[^0-9]/.test(phone)) {
+      setSnackbarSeverity("error");
       setSnackbarMessage("The phone number must contain only numbers.");
       setSnackbarOpen(true);
       return;
     }
 
-    if (password && password !== confirmPassword) {
-      setSnackbarMessage("The passwords do not match.");
-      setSnackbarOpen(true);
-      return;
+    if (password) {
+      if (password.length < 6) {
+        setSnackbarSeverity("error");
+        setSnackbarMessage("Password must be longer than 6 characters.");
+        setSnackbarOpen(true);
+        return;
+      }
+
+      if (/[^a-zA-Z0-9]/.test(password)) {
+        setSnackbarSeverity("error");
+        setSnackbarMessage("Password cannot contain special characters.");
+        setSnackbarOpen(true);
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        setSnackbarSeverity("error");
+        setSnackbarMessage("The passwords do not match.");
+        setSnackbarOpen(true);
+        return;
+      }
     }
 
     const { data: phoneExists } = await ClientApi.checkPhoneExists(
@@ -82,6 +102,7 @@ const EditClientModal = ({ open, onClose }) => {
       ...(password && { password }),
     });
 
+    setSnackbarSeverity("success");
     setPassword("");
     setConfirmPassword("");
     setSnackbarMessage(message);
@@ -228,7 +249,7 @@ const EditClientModal = ({ open, onClose }) => {
         >
           <Alert
             onClose={() => setSnackbarOpen(false)}
-            severity="error"
+            severity={snackbarSeverity}
             sx={{ width: "100%" }}
           >
             {snackbarMessage}

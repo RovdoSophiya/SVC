@@ -29,6 +29,7 @@ const EditCourierModal = ({ open, onClose }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("error");
   const courierId = localStorage.getItem("id");
 
   useEffect(() => {
@@ -54,25 +55,43 @@ const EditCourierModal = ({ open, onClose }) => {
   const handleApply = async () => {
     if (!lastname || !name || !vehicletype) {
       setSnackbarMessage("Last name, name, and vehicle type cannot be empty.");
+      setSnackbarSeverity("error");
       setSnackbarOpen(true);
       return;
     }
 
     if (/[^0-9]/.test(phone)) {
       setSnackbarMessage("The phone number must contain only numbers.");
+      setSnackbarSeverity("error");
       setSnackbarOpen(true);
       return;
     }
 
-    if (password && password !== confirmPassword) {
-      setSnackbarMessage("The passwords do not match.");
-      setSnackbarOpen(true);
-      return;
+    if (password) {
+      if (password.length <= 6) {
+        setSnackbarMessage("Password must be longer than 6 characters.");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+        return;
+      }
+      if (/[^a-zA-Z0-9]/.test(password)) {
+        setSnackbarMessage("Password cannot contain special characters.");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+        return;
+      }
+      if (password !== confirmPassword) {
+        setSnackbarMessage("The passwords do not match.");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+        return;
+      }
     }
 
     const { data: phoneExists } = await checkPhoneExists(phone, courierId);
     if (phoneExists) {
       setSnackbarMessage("This phone number already exists.");
+      setSnackbarSeverity("error");
       setSnackbarOpen(true);
       return;
     }
@@ -245,7 +264,7 @@ const EditCourierModal = ({ open, onClose }) => {
         >
           <Alert
             onClose={() => setSnackbarOpen(false)}
-            severity="error"
+            severity={snackbarSeverity}
             sx={{ width: "100%" }}
           >
             {snackbarMessage}

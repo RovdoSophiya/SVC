@@ -4,6 +4,7 @@ const OrderedDish = require("../models/OrderedDish");
 const Courier = require("../models/Courier");
 const Client = require("../models/Client");
 const Dish = require("../models/Dish");
+const Review = require("../models/Review");
 const { Op } = require("sequelize");
 const fs = require("fs");
 const os = require("os");
@@ -37,6 +38,7 @@ const deleteOrder = async (req, res) => {
   }
 };
 
+//Получение всех заказов клиента
 const getClientOrders = async (req, res) => {
   try {
     const {
@@ -274,6 +276,7 @@ const getClientOrders = async (req, res) => {
 //   }
 // };
 
+//Получение всех текущих заказов клиента
 const getCurrentClientOrders = async (req, res) => {
   try {
     const { clientid, page = 1, limit = 5 } = req.query;
@@ -369,6 +372,7 @@ const getCurrentClientOrders = async (req, res) => {
   }
 };
 
+//Скачивание отчета в формате Excel
 const downloadOrdersExcel = async (req, res) => {
   try {
     const { clientid } = req.query;
@@ -551,10 +555,69 @@ const downloadOrdersExcel = async (req, res) => {
   }
 };
 
+//Получение завершенных заказов без отзывов
+const getCompletedDeliveriesWithoutReview = async (req, res) => {
+  try {
+    const { clientid } = req.params;
+
+    // Находим все заказы клиента
+    const orders = await Order.findAll({
+      where: { clientid },
+      include: [
+        {
+          model: Delivery,
+          where: { status: "Delivered" },
+          required: true, // Учитываем только заказы с доставкой "Delivered"
+        },
+        {
+          model: OrderedDish,
+          include: [
+            {
+              model: Dish,
+              attributes: ["name", "price", "photo"],
+            },
+          ],
+        },
+      ],
+    });
+
+    // Фильтруем заказы без отзывов
+    const ordersWithoutReview = [];
+    for (const order of orders) {
+      const reviewExists = await Review.findOne({
+        where: { orderid: order.id },
+      });
+
+      if (!reviewExists) {
+        // Формируем объект для возвращения
+        ordersWithoutReview.push({
+          orderId: order.id,
+          totalAmount: order.totalamount,
+          deliveryAddress: order.Delivery.deliveryaddress,
+          deliveryDate: order.Delivery.deliverydate,
+          orderedDishes: order.OrderedDishes.map((item) => ({
+            dishName: item.Dish.name,
+            dishPrice: item.Dish.price,
+            dishPhoto: item.Dish.photo,
+            quantity: item.quantity,
+            totalPrice: item.totalprice,
+          })),
+        });
+      }
+    }
+
+    res.status(200).json(ordersWithoutReview);
+  } catch (error) {
+    console.error("Error fetching deliveries:", error.message);
+    res.status(500).json({ error: "Failed to fetch deliveries" });
+  }
+};
+
 module.exports = {
   addOrder,
   deleteOrder,
   getClientOrders,
   getCurrentClientOrders,
   downloadOrdersExcel,
+  getCompletedDeliveriesWithoutReview,
 };
