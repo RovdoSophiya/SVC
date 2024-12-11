@@ -68,7 +68,7 @@ const EditCourierModal = ({ open, onClose }) => {
     }
 
     if (password) {
-      if (password.length <= 6) {
+      if (password.length < 5) {
         setSnackbarMessage("Password must be longer than 6 characters.");
         setSnackbarSeverity("error");
         setSnackbarOpen(true);

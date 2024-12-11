@@ -44,7 +44,7 @@ const CourierOrderHistory = () => {
       ordersPerPage
     );
     if (result.error) {
-      setError(result.error); // Устанавливаем ошибку из API
+      setError(result.error);
     } else {
       setOrders(result.data.deliveries);
       setTotalPages(result.data.totalPages);
@@ -100,212 +100,230 @@ const CourierOrderHistory = () => {
 
   return (
     <div>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "flex-end",
-          margin: "20px",
-          alignSelf: "center",
-        }}
-      >
-        <Button
-          onClick={handleDownload}
-          variant="contained"
+      {orders.length === 0 ? (
+        <Typography
+          variant="h6"
           sx={{
-            marginLeft: "8px",
-            backgroundColor: "rgba(128, 96, 68, 1)",
-            "@media(max-width:730px)": { fontSize: "12px", height: "40px" },
-            "@media(max-width:500px)": {
-              fontSize: "10px",
-              width: "160px",
-              height: "25px",
-            },
+            textAlign: "center",
+            margin: "70px auto",
+            color: "rgba(128, 96, 68, 1)",
+            fontSize: "35px",
           }}
         >
-          Download History
-        </Button>
-      </Box>
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell
-                sx={{
-                  fontWeight: "bold",
-                  "@media(max-width:470px)": {
-                    textAlign: "center",
-                    padding: "4px",
-                  },
-                  "@media(max-width:330px)": {
-                    padding: "1px",
-                    fontSize: "10px",
-                  },
-                }}
-              >
-                Address
-              </TableCell>
-              <TableCell
-                sx={{
-                  fontWeight: "bold",
-                  "@media(max-width:470px)": {
-                    textAlign: "center",
-                    padding: "4px",
-                  },
-                  "@media(max-width:330px)": {
-                    padding: "1px",
-                    fontSize: "10px",
-                  },
-                }}
-              >
-                Date
-              </TableCell>
-              <TableCell
-                sx={{
-                  fontWeight: "bold",
-                  "@media(max-width:470px)": {
-                    textAlign: "center",
-                    padding: "4px",
-                  },
-                  "@media(max-width:330px)": {
-                    padding: "1px",
-                    fontSize: "10px",
-                  },
-                }}
-              >
-                Status
-              </TableCell>
-              <TableCell
-                sx={{
-                  fontWeight: "bold",
-                  "@media(max-width:470px)": {
-                    textAlign: "center",
-                    padding: "4px",
-                  },
-                  "@media(max-width:330px)": {
-                    padding: "1px",
-                    fontSize: "10px",
-                  },
-                }}
-              >
-                Amount
-              </TableCell>
-              <TableCell
-                sx={{
-                  fontWeight: "bold",
-                  "@media(max-width:470px)": {
-                    textAlign: "center",
-                    padding: "4px",
-                  },
-                  "@media(max-width:330px)": {
-                    padding: "1px",
-                    fontSize: "10px",
-                  },
-                }}
-              >
-                Client
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {orders.map((order) => (
-              <TableRow key={order.id}>
-                <TableCell
-                  sx={{
-                    "@media(max-width:470px)": {
-                      textAlign: "center",
-                      padding: "4px",
-                      fontSize: "12px",
-                    },
-                    "@media(max-width:350px)": {
-                      padding: "0px",
-                      fontSize: "8px",
-                    },
-                  }}
-                >
-                  {order.deliveryAddress}
-                </TableCell>
-                <TableCell
-                  sx={{
-                    "@media(max-width:470px)": {
-                      textAlign: "center",
-                      padding: "4px",
-                      fontSize: "11px",
-                    },
-                    "@media(max-width:350px)": {
-                      padding: "0px",
-                      fontSize: "8px",
-                    },
-                  }}
-                >
-                  {new Date(order.deliveryDate).toLocaleString()}
-                </TableCell>
-                <TableCell
-                  sx={{
-                    "@media(max-width:470px)": {
-                      textAlign: "center",
-                      padding: "4px",
-                      fontSize: "12px",
-                    },
-                    "@media(max-width:350px)": {
-                      padding: "0px",
-                      fontSize: "8px",
-                    },
-                  }}
-                >
-                  {order.status}
-                </TableCell>
-                <TableCell
-                  sx={{
-                    "@media(max-width:470px)": {
-                      textAlign: "center",
-                      padding: "4px",
-                      fontSize: "12px",
-                    },
-                    "@media(max-width:350px)": {
-                      padding: "0px",
-                      fontSize: "8px",
-                    },
-                  }}
-                >
-                  {order.totalAmount}
-                </TableCell>
-                <TableCell
-                  sx={{
-                    "@media(max-width:470px)": {
-                      textAlign: "center",
-                      padding: "4px",
-                      fontSize: "12px",
-                    },
-                    "@media(max-width:350px)": {
-                      padding: "0px",
-                      fontSize: "8px",
-                    },
-                  }}
-                >
-                  {order.clientFullName}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          No orders found.
+        </Typography>
+      ) : (
+        <>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+              margin: "20px",
+              alignSelf: "center",
+            }}
+          >
+            <Button
+              onClick={handleDownload}
+              variant="contained"
+              sx={{
+                marginLeft: "8px",
+                backgroundColor: "rgba(128, 96, 68, 1)",
+                "@media(max-width:730px)": { fontSize: "12px", height: "40px" },
+                "@media(max-width:500px)": {
+                  fontSize: "10px",
+                  width: "160px",
+                  height: "25px",
+                },
+              }}
+            >
+              Download History
+            </Button>
+          </Box>
 
-      <Box sx={{ display: "flex", justifyContent: "center", margin: "20px" }}>
-        <Pagination
-          count={totalPages}
-          page={currentPage}
-          onChange={(event, value) => {
-            setCurrentPage(value);
-          }}
-          variant="outlined"
-          shape="rounded"
-          color="primary"
-          siblingCount={0}
-          boundaryCount={1}
-        />
-      </Box>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    sx={{
+                      fontWeight: "bold",
+                      "@media(max-width:470px)": {
+                        textAlign: "center",
+                        padding: "4px",
+                      },
+                      "@media(max-width:330px)": {
+                        padding: "1px",
+                        fontSize: "10px",
+                      },
+                    }}
+                  >
+                    Address
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      fontWeight: "bold",
+                      "@media(max-width:470px)": {
+                        textAlign: "center",
+                        padding: "4px",
+                      },
+                      "@media(max-width:330px)": {
+                        padding: "1px",
+                        fontSize: "10px",
+                      },
+                    }}
+                  >
+                    Date
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      fontWeight: "bold",
+                      "@media(max-width:470px)": {
+                        textAlign: "center",
+                        padding: "4px",
+                      },
+                      "@media(max-width:330px)": {
+                        padding: "1px",
+                        fontSize: "10px",
+                      },
+                    }}
+                  >
+                    Status
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      fontWeight: "bold",
+                      "@media(max-width:470px)": {
+                        textAlign: "center",
+                        padding: "4px",
+                      },
+                      "@media(max-width:330px)": {
+                        padding: "1px",
+                        fontSize: "10px",
+                      },
+                    }}
+                  >
+                    Amount
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      fontWeight: "bold",
+                      "@media(max-width:470px)": {
+                        textAlign: "center",
+                        padding: "4px",
+                      },
+                      "@media(max-width:330px)": {
+                        padding: "1px",
+                        fontSize: "10px",
+                      },
+                    }}
+                  >
+                    Client
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {orders.map((order) => (
+                  <TableRow key={order.id}>
+                    <TableCell
+                      sx={{
+                        "@media(max-width:470px)": {
+                          textAlign: "center",
+                          padding: "4px",
+                          fontSize: "12px",
+                        },
+                        "@media(max-width:350px)": {
+                          padding: "0px",
+                          fontSize: "8px",
+                        },
+                      }}
+                    >
+                      {order.deliveryAddress}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        "@media(max-width:470px)": {
+                          textAlign: "center",
+                          padding: "4px",
+                          fontSize: "11px",
+                        },
+                        "@media(max-width:350px)": {
+                          padding: "0px",
+                          fontSize: "8px",
+                        },
+                      }}
+                    >
+                      {new Date(order.deliveryDate).toLocaleString()}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        "@media(max-width:470px)": {
+                          textAlign: "center",
+                          padding: "4px",
+                          fontSize: "12px",
+                        },
+                        "@media(max-width:350px)": {
+                          padding: "0px",
+                          fontSize: "8px",
+                        },
+                      }}
+                    >
+                      {order.status}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        "@media(max-width:470px)": {
+                          textAlign: "center",
+                          padding: "4px",
+                          fontSize: "12px",
+                        },
+                        "@media(max-width:350px)": {
+                          padding: "0px",
+                          fontSize: "8px",
+                        },
+                      }}
+                    >
+                      {order.totalAmount}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        "@media(max-width:470px)": {
+                          textAlign: "center",
+                          padding: "4px",
+                          fontSize: "12px",
+                        },
+                        "@media(max-width:350px)": {
+                          padding: "0px",
+                          fontSize: "8px",
+                        },
+                      }}
+                    >
+                      {order.clientFullName}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
 
+          <Box
+            sx={{ display: "flex", justifyContent: "center", margin: "20px" }}
+          >
+            <Pagination
+              count={totalPages}
+              page={currentPage}
+              onChange={(event, value) => {
+                setCurrentPage(value);
+              }}
+              variant="outlined"
+              shape="rounded"
+              color="primary"
+              siblingCount={0}
+              boundaryCount={1}
+            />
+          </Box>
+        </>
+      )}
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}

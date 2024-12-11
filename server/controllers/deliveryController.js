@@ -269,16 +269,12 @@ const getCourierHistory = async (req, res) => {
       ],
     });
 
-    if (!deliveries || deliveries.length === 0) {
-      return res.status(404).json({ error: "No deliveries found" });
-    }
-
     const formattedDeliveries = deliveries.map((delivery) => ({
       id: delivery.id,
       deliveryAddress: delivery.deliveryaddress,
       deliveryDate: delivery.deliverydate,
       status: delivery.status,
-      totalAmount: delivery.Order.totalamount || 0,
+      totalAmount: delivery.Order?.totalamount || 0,
       clientFullName: `${delivery.Order.Client.lastname || ""} ${
         delivery.Order.Client.name || ""
       } ${delivery.Order.Client.fathername || ""}`.trim(),

@@ -152,175 +152,89 @@ const CurrentDeliveries = () => {
     );
   }
 
-  if (orders.length === 0) {
-    return (
-      <Typography
-        variant="h6"
-        sx={{ display: "flex", justifyContent: "center" }}
-      >
-        No current deliveries
-      </Typography>
-    );
-  }
-
   return (
     <div>
-      <div
-        style={{
-          marginTop: "20px",
-          marginBottom: "20px",
-          display: "flex",
-          justifyContent: "flex-end",
-          gap: "10px",
-        }}
-      >
-        <Button
-          onClick={handleSortByDate}
-          variant={sortConfig.sortBy === "Date" ? "contained" : "outlined"}
-          sx={{
-            borderColor: "rgba(128, 96, 68, 1)",
-            backgroundColor:
-              sortConfig.sortBy === "Date"
-                ? "rgba(128, 96, 68, 1)"
-                : "transparent",
-            color:
-              sortConfig.sortBy === "Date" ? "white" : "rgba(128, 96, 68, 1)",
-            "@media(max-width:400px)": { fontSize: "10px" },
-          }}
-        >
-          Sort by Date{" "}
-          {sortConfig.sortBy === "Date"
-            ? sortConfig.order === "ASC"
-              ? "↑"
-              : "↓"
-            : ""}
-        </Button>
-        <Button
-          onClick={handleSortByPrice}
-          variant={sortConfig.sortBy === "Price" ? "contained" : "outlined"}
-          sx={{
-            borderColor: "rgba(128, 96, 68, 1)",
-            backgroundColor:
-              sortConfig.sortBy === "Price"
-                ? "rgba(128, 96, 68, 1)"
-                : "transparent",
-            color:
-              sortConfig.sortBy === "Price" ? "white" : "rgba(128, 96, 68, 1)",
-            "@media(max-width:400px)": { fontSize: "10px" },
-          }}
-        >
-          Sort by Amount{" "}
-          {sortConfig.sortBy === "Price"
-            ? sortConfig.order === "ASC"
-              ? "↑"
-              : "↓"
-            : ""}
-        </Button>
-      </div>
-      <Box
-        sx={{
-          width: "100%",
-          overflowX: "auto",
-          margin: "auto",
-          marginTop: "20px",
-          padding: "0",
-        }}
-      >
-        <TableContainer
-          sx={{
-            width: "100%",
-            margin: "auto",
-            marginTop: "20px",
-          }}
-        >
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: "1rem",
-                    "@media(max-width:540px)": {
-                      paddingRight: "3px",
-                    },
-                    "@media(max-width:328px)": {
-                      paddingRight: "1px",
-                    },
-                  }}
-                >
-                  Address
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: "1rem",
-                    "@media(max-width:540px)": {
-                      paddingRight: "3px",
-                    },
-                    "@media(max-width:328px)": {
-                      paddingRight: "1px",
-                    },
-                  }}
-                >
-                  Status
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: "1rem",
-                    "@media(max-width:540px)": {
-                      paddingRight: "3px",
-                    },
-                    "@media(max-width:328px)": {
-                      paddingRight: "1px",
-                    },
-                  }}
-                >
-                  Amount
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: "1rem",
-                    "@media(max-width:540px)": {
-                      paddingRight: "3px",
-                    },
-                    "@media(max-width:328px)": {
-                      paddingRight: "1px",
-                    },
-                  }}
-                >
-                  Actions
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {orders.map((order) => (
-                <React.Fragment key={order.id}>
+      {orders.length > 0 ? (
+        <>
+          <div
+            style={{
+              marginTop: "20px",
+              marginBottom: "20px",
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "10px",
+            }}
+          >
+            <Button
+              onClick={handleSortByDate}
+              variant={sortConfig.sortBy === "Date" ? "contained" : "outlined"}
+              sx={{
+                borderColor: "rgba(128, 96, 68, 1)",
+                backgroundColor:
+                  sortConfig.sortBy === "Date"
+                    ? "rgba(128, 96, 68, 1)"
+                    : "transparent",
+                color:
+                  sortConfig.sortBy === "Date"
+                    ? "white"
+                    : "rgba(128, 96, 68, 1)",
+                "@media(max-width:400px)": { fontSize: "10px" },
+              }}
+            >
+              Sort by Date{" "}
+              {sortConfig.sortBy === "Date"
+                ? sortConfig.order === "ASC"
+                  ? "↑"
+                  : "↓"
+                : ""}
+            </Button>
+            <Button
+              onClick={handleSortByPrice}
+              variant={sortConfig.sortBy === "Price" ? "contained" : "outlined"}
+              sx={{
+                borderColor: "rgba(128, 96, 68, 1)",
+                backgroundColor:
+                  sortConfig.sortBy === "Price"
+                    ? "rgba(128, 96, 68, 1)"
+                    : "transparent",
+                color:
+                  sortConfig.sortBy === "Price"
+                    ? "white"
+                    : "rgba(128, 96, 68, 1)",
+                "@media(max-width:400px)": { fontSize: "10px" },
+              }}
+            >
+              Sort by Amount{" "}
+              {sortConfig.sortBy === "Price"
+                ? sortConfig.order === "ASC"
+                  ? "↑"
+                  : "↓"
+                : ""}
+            </Button>
+          </div>
+          <Box
+            sx={{
+              width: "100%",
+              overflowX: "auto",
+              margin: "auto",
+              marginTop: "20px",
+              padding: "0",
+            }}
+          >
+            <TableContainer
+              sx={{
+                width: "100%",
+                margin: "auto",
+                marginTop: "20px",
+              }}
+            >
+              <Table>
+                <TableHead>
                   <TableRow>
                     <TableCell
                       sx={{
-                        "@media(max-width:540px)": {
-                          padding: "0px",
-                          textAlign: "center",
-                        },
-                      }}
-                    >
-                      <IconButton onClick={() => handleToggleRow(order.id)}>
-                        <ExpandMoreIcon
-                          className={openRows[order.id] ? "rotated" : ""}
-                          sx={{
-                            transition: "transform 0.3s",
-                            transform: openRows[order.id]
-                              ? "rotate(180deg)"
-                              : "rotate(0deg)",
-                          }}
-                        />
-                      </IconButton>
-                      {order.deliveryAddress}
-                    </TableCell>
-                    <TableCell
-                      sx={{
+                        fontWeight: "bold",
+                        fontSize: "1rem",
                         "@media(max-width:540px)": {
                           paddingRight: "3px",
                         },
@@ -329,10 +243,12 @@ const CurrentDeliveries = () => {
                         },
                       }}
                     >
-                      {order.status}
+                      Address
                     </TableCell>
                     <TableCell
                       sx={{
+                        fontWeight: "bold",
+                        fontSize: "1rem",
                         "@media(max-width:540px)": {
                           paddingRight: "3px",
                         },
@@ -341,10 +257,12 @@ const CurrentDeliveries = () => {
                         },
                       }}
                     >
-                      {order.totalAmount}
+                      Status
                     </TableCell>
                     <TableCell
                       sx={{
+                        fontWeight: "bold",
+                        fontSize: "1rem",
                         "@media(max-width:540px)": {
                           paddingRight: "3px",
                         },
@@ -353,68 +271,162 @@ const CurrentDeliveries = () => {
                         },
                       }}
                     >
-                      <Button
-                        variant="contained"
-                        onClick={() => handleDialogOpen(order.id)}
-                        sx={{
-                          textTransform: "none",
-                          fontWeight: "bold",
-                          backgroundColor: "rgba(128, 96, 68, 1)",
-                          "@media(max-width:540px)": {
-                            fontSize: "10px",
-                          },
-                        }}
-                      >
-                        Change Status
-                      </Button>
+                      Amount
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: "bold",
+                        fontSize: "1rem",
+                        "@media(max-width:540px)": {
+                          paddingRight: "3px",
+                        },
+                        "@media(max-width:328px)": {
+                          paddingRight: "1px",
+                        },
+                      }}
+                    >
+                      Actions
                     </TableCell>
                   </TableRow>
-                  <TableRow>
-                    <TableCell
-                      colSpan={4}
-                      style={{ paddingBottom: 0, paddingTop: 0 }}
-                    >
-                      <Collapse
-                        in={openRows[order.id]}
-                        timeout="auto"
-                        unmountOnExit
-                      >
-                        <div
-                          style={{
-                            padding: "16px",
-                            backgroundColor: "rgba(128, 96, 68, 0.4)",
-                            borderRadius: "8px",
+                </TableHead>
+                <TableBody>
+                  {orders.map((order) => (
+                    <React.Fragment key={order.id}>
+                      <TableRow>
+                        <TableCell
+                          sx={{
+                            "@media(max-width:540px)": {
+                              padding: "0px",
+                              textAlign: "center",
+                            },
                           }}
                         >
-                          <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                            Additional Information
-                          </Typography>
-                          <Typography>
-                            Delivery Date:{" "}
-                            {new Date(order.deliveryDate).toLocaleString()}
-                          </Typography>
-                          <Typography>
-                            Client Name: {order.clientFullName}
-                          </Typography>
-                          <Typography>Ordered Dishes:</Typography>
-                          <ul>
-                            {order.orderedDishes.map((dish, index) => (
-                              <li key={index}>
-                                {dish.dishName} - Quantity: {dish.quantity},
-                                Price: {dish.totalPrice}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </Collapse>
-                    </TableCell>
-                  </TableRow>
-                </React.Fragment>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
+                          <IconButton onClick={() => handleToggleRow(order.id)}>
+                            <ExpandMoreIcon
+                              className={openRows[order.id] ? "rotated" : ""}
+                              sx={{
+                                transition: "transform 0.3s",
+                                transform: openRows[order.id]
+                                  ? "rotate(180deg)"
+                                  : "rotate(0deg)",
+                              }}
+                            />
+                          </IconButton>
+                          {order.deliveryAddress}
+                        </TableCell>
+                        <TableCell
+                          sx={{
+                            "@media(max-width:540px)": {
+                              paddingRight: "3px",
+                            },
+                            "@media(max-width:328px)": {
+                              paddingRight: "1px",
+                            },
+                          }}
+                        >
+                          {order.status}
+                        </TableCell>
+                        <TableCell
+                          sx={{
+                            "@media(max-width:540px)": {
+                              paddingRight: "3px",
+                            },
+                            "@media(max-width:328px)": {
+                              paddingRight: "1px",
+                            },
+                          }}
+                        >
+                          {order.totalAmount}
+                        </TableCell>
+                        <TableCell
+                          sx={{
+                            "@media(max-width:540px)": {
+                              paddingRight: "3px",
+                            },
+                            "@media(max-width:328px)": {
+                              paddingRight: "1px",
+                            },
+                          }}
+                        >
+                          <Button
+                            variant="contained"
+                            onClick={() => handleDialogOpen(order.id)}
+                            sx={{
+                              textTransform: "none",
+                              fontWeight: "bold",
+                              backgroundColor: "rgba(128, 96, 68, 1)",
+                              "@media(max-width:540px)": {
+                                fontSize: "10px",
+                              },
+                            }}
+                          >
+                            Change Status
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell
+                          colSpan={4}
+                          style={{ paddingBottom: 0, paddingTop: 0 }}
+                        >
+                          <Collapse
+                            in={openRows[order.id]}
+                            timeout="auto"
+                            unmountOnExit
+                          >
+                            <div
+                              style={{
+                                padding: "16px",
+                                backgroundColor: "rgba(128, 96, 68, 0.4)",
+                                borderRadius: "8px",
+                              }}
+                            >
+                              <Typography
+                                variant="h6"
+                                sx={{ fontWeight: "bold" }}
+                              >
+                                Additional Information
+                              </Typography>
+                              <Typography>
+                                Delivery Date:{" "}
+                                {new Date(order.deliveryDate).toLocaleString()}
+                              </Typography>
+                              <Typography>
+                                Client Name: {order.clientFullName}
+                              </Typography>
+                              <Typography>Ordered Dishes:</Typography>
+                              <ul>
+                                {order.orderedDishes.map((dish, index) => (
+                                  <li key={index}>
+                                    {dish.dishName} - Quantity: {dish.quantity},
+                                    Price: {dish.totalPrice}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </Collapse>
+                        </TableCell>
+                      </TableRow>
+                    </React.Fragment>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+        </>
+      ) : (
+        <Typography
+          variant="h6"
+          sx={{
+            textAlign: "center",
+            margin: "70px auto",
+            color: "rgba(128, 96, 68, 1)",
+            fontSize: "35px",
+          }}
+        >
+          No current deliveries
+        </Typography>
+      )}
       <a
         href="/courier"
         style={{

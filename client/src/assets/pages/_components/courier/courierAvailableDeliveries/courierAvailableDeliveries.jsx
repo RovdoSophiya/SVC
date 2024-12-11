@@ -148,12 +148,33 @@ const AvailableOrders = () => {
 
   if (orders.length === 0) {
     return (
-      <Typography
-        variant="h6"
-        sx={{ display: "flex", justifyContent: "center" }}
-      >
-        No available orders
-      </Typography>
+      <div style={{ display: "flex", justifyContent: "column" }}>
+        <Typography
+          variant="h6"
+          sx={{
+            textAlign: "center",
+            margin: "70px auto",
+            color: "rgba(128, 96, 68, 1)",
+            fontSize: "35px",
+          }}
+        >
+          No available orders
+        </Typography>
+        <a
+          href="/courier"
+          style={{
+            display: "block",
+            textAlign: "center",
+            marginTop: "40px",
+            marginBottom: "40px",
+            textDecoration: "none",
+            fontSize: "24px",
+            color: "rgba(128, 96, 68, 1)",
+          }}
+        >
+          Return back
+        </a>
+      </div>
     );
   }
 
