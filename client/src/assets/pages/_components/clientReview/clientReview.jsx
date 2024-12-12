@@ -135,7 +135,12 @@ const AddReview = () => {
           >
             <CardContent>
               <Typography variant="h6">
-                Delivery date: {order.deliveryDate}
+                Delivery date:{" "}
+                {new Date(order.deliveryDate).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
               </Typography>
               <Typography variant="body1">
                 Sum: {order.totalAmount} $

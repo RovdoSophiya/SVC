@@ -44,6 +44,7 @@ footer {
   flex-direction: row;
   justify-content: space-around;
   justify-self: center;
+  width: 100%;
 }
 .followingItem1,
 .followingItem2,

@@ -2,7 +2,6 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://rovdosophiya.github.io/SVC",
   "dependencies": {
     "@mui/icons-material": "^6.1.5",
     "@testing-library/jest-dom": "^5.17.0",
