@@ -40,59 +40,6 @@ const updateStatus = async (req, res) => {
   }
 };
 
-// const getCourierHistory = async (req, res) => {
-//   const courierId = parseInt(req.params.courierId, 10);
-//   try {
-//     const deliveries = await Delivery.findAll({
-//       where: { courierid: courierId },
-//       include: [
-//         {
-//           model: Order,
-//           attributes: ["totalamount"],
-//           include: [
-//             {
-//               model: Client,
-//               attributes: ["lastname", "name", "fathername"],
-//             },
-//             {
-//               model: OrderedDish,
-//               include: [
-//                 {
-//                   model: Dish,
-//                   attributes: ["name"],
-//                 },
-//               ],
-//             },
-//           ],
-//         },
-//       ],
-//     });
-
-//     if (!deliveries || deliveries.length === 0) {
-//       return res.status(404).json({ error: "No deliveries found" });
-//     }
-
-//     const formattedDeliveries = deliveries.map((delivery) => ({
-//       id: delivery.id,
-//       deliveryAddress: delivery.deliveryaddress,
-//       deliveryDate: delivery.deliverydate,
-//       status: delivery.status,
-//       totalAmount: delivery.Order.totalamount || 0,
-//       clientFullName: `${delivery.Order.Client.lastname || ""} ${
-//         delivery.Order.Client.name || ""
-//       } ${delivery.Order.Client.fathername || ""}`.trim(),
-//       orderedDishes: delivery.Order.OrderedDishes.map((orderedDish) => ({
-//         dishName: orderedDish.Dish ? orderedDish.Dish.name : "Без названия",
-//         quantity: orderedDish.quantity,
-//         totalPrice: orderedDish.totalprice,
-//       })),
-//     }));
-
-//     res.json(formattedDeliveries);
-//   } catch (error) {
-//     handleError(res, error);
-//   }
-// };
 const downloadCourierHistory = async (req, res) => {
   const courierid = parseInt(req.params.courierid, 10);
 
@@ -500,24 +447,6 @@ const sortDeliveriesByPrice = async (req, res) => {
     handleError(res, error);
   }
 };
-
-// // Удаление доставки(с условием)
-// const deletetDelivery = async (req, res) => {
-//   try {
-//     const delivery = await Delivery.findByPk(req.params.id);
-//     if (!delivery)
-//       return res.status(404).json({ message: "Delivery not found" });
-//     if (delivery.status !== "Adding an order") {
-//       return res
-//         .status(400)
-//         .json({ message: "Cannot delete delivery with current status" });
-//     }
-//     await delivery.destroy();
-//     res.json({ message: "Delivery deleted" });
-//   } catch (error) {
-//     handleError(res, error);
-//   }
-// };
 
 // Получение информации о доставке
 const getDelivery = async (req, res) => {

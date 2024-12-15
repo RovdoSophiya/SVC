@@ -19,37 +19,8 @@ import EventHistory from "./assets/pages/clientPage/clientEvent";
 import ReviewOrder from "./assets/pages/clientPage/clientReview";
 import ClientCurrentDeliveries from "./assets/pages/clientPage/clientCurrent";
 import "./App.css";
-// import { fetchClientById } from "../src/assets/api/clients/clientApi";
-// import CourierApi from "./assets/api/couriers/courierApi";
 
 function App() {
-  // const [user, setUser] = useState(null);
-  // // const [loading, setLoading] = useState(true);
-  // const role = localStorage.getItem("role");
-  // const userId = localStorage.getItem("id");
-
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     if (userId) {
-  //       try {
-  //         let data;
-  //         if (role === "client") {
-  //           data = await fetchClientById(userId);
-  //         } else if (role === "courier") {
-  //           data = await CourierApi.fetchCourierById(userId);
-  //         }
-  //         setUser(data);
-  //       } catch (error) {
-  //         console.error("Error fetching user data:", error);
-  //         console.error("Error details:", error.response?.data || error);
-  //       }
-  //     }
-  //     // setLoading(false);
-  //   };
-
-  //   fetchUserData();
-  // }, [role, userId]);
-
   return (
     <BrowserRouter>
       <Header />

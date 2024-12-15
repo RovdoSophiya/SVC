@@ -17,8 +17,6 @@ router.get("/total/:clientid", СartController.calculateTotalPrice);
 // Заказ блюд из корзины
 router.post("/order/:clientid", СartController.orderCartItems);
 
-router.get("/:clientid", СartController.getCartItems);
-
 router.put("/:clientid/:dishid/increase", СartController.increaseItemCount);
 
 router.put("/:clientid/:dishid/decrease", СartController.decreaseItemCount);
