@@ -8,11 +8,11 @@ const handleError = (res, error) => {
 // Получение всех мероприятий клиента
 const getEvents = async (req, res) => {
   try {
-    const { clientid } = req.query; // Получаем clientid из запроса
-    const events = await Event.findAll({ where: { clientid } }); // Извлекаем мероприятия по clientid
-    res.json(events); // Возвращаем мероприятия в ответе
+    const { clientid } = req.query;
+    const events = await Event.findAll({ where: { clientid } });
+    res.json(events);
   } catch (error) {
-    handleError(res, error); // Обрабатываем ошибки
+    handleError(res, error);
   }
 };
 

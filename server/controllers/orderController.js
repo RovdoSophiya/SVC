@@ -405,14 +405,13 @@ const getCompletedDeliveriesWithoutReview = async (req, res) => {
   try {
     const { clientid } = req.params;
 
-    // Находим все заказы клиента
     const orders = await Order.findAll({
       where: { clientid },
       include: [
         {
           model: Delivery,
           where: { status: "Delivered" },
-          required: true, // Учитываем только заказы с доставкой "Delivered"
+          required: true,
         },
         {
           model: OrderedDish,
@@ -426,7 +425,6 @@ const getCompletedDeliveriesWithoutReview = async (req, res) => {
       ],
     });
 
-    // Фильтруем заказы без отзывов
     const ordersWithoutReview = [];
     for (const order of orders) {
       const reviewExists = await Review.findOne({
@@ -434,7 +432,6 @@ const getCompletedDeliveriesWithoutReview = async (req, res) => {
       });
 
       if (!reviewExists) {
-        // Формируем объект для возвращения
         ordersWithoutReview.push({
           orderId: order.id,
           totalAmount: order.totalamount,

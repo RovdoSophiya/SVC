@@ -8,15 +8,6 @@ router.post("/", DishController.addDish);
 // Удаление блюда
 router.delete("/:id", DishController.deleteDish);
 
-// // Фильтрация по категории
-// router.get("/filter/category", DishController.filterByCategory);
-
-// // Фильтрация по цене
-// router.get("/filter/price", DishController.filterByPrice);
-
-// // Фильтрация по требованиям
-// router.get("/filter/requirements", DishController.filterByRequirements);
-
 // Получение информации по id
 router.get("/:id", DishController.getDishById);
 

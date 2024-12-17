@@ -56,7 +56,7 @@ const toggleAvailability = async (req, res) => {
     const courier = await Courier.findByPk(req.params.id);
     if (courier) {
       courier.available = !courier.available; // Меняем доступность на противоположную
-      await courier.save(); // Сохраняем обновление
+      await courier.save();
       res.json({
         message: "Courier availability status updated",
         available: courier.available,

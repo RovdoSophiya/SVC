@@ -27,7 +27,6 @@ const registerClient = async (req, res) => {
       return res.status(400).json({ message: "Phone already exists." });
     }
 
-    // Создание нового клиента
     const newClient = await Client.create({
       email,
       password,
@@ -51,7 +50,6 @@ const registerClient = async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    // Сохранение токенов в базе данных
     await Tokens.create({
       clientid: newClient.id,
       accesstoken: accessToken,
@@ -59,10 +57,8 @@ const registerClient = async (req, res) => {
       expiresat: new Date(Date.now() + 15 * 60 * 1000),
     });
 
-    // Возвращаем токены и информацию о новом клиенте
     res.status(201).json({
       user: newClient,
-      // id: newClient.id,
       role: "client",
       accessToken,
       refreshToken,
@@ -78,17 +74,14 @@ const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Поиск пользователя среди клиентов и курьеров
     let user =
       (await Client.findOne({ where: { email } })) ||
       (await Courier.findOne({ where: { email } }));
 
-    // Если пользователь не найден, возвращаем ошибку
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    // Проверка пароля
     if (user.password !== password) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
@@ -102,11 +95,10 @@ const loginUser = async (req, res) => {
 
     const refreshToken = jwt.sign(
       { id: user.id, role: user instanceof Client ? "client" : "courier" },
-      process.env.REFRESH_TOKEN_SECRET, // Секретный ключ для подписи
+      process.env.REFRESH_TOKEN_SECRET,
       { expiresIn: "7d" } // Срок действия refresh token
     );
 
-    // Сохранение токенов в базе данных
     await Tokens.create({
       clientid: user instanceof Client ? user.id : null,
       courierid: user instanceof Courier ? user.id : null,

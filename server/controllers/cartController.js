@@ -47,11 +47,11 @@ const addToCart = async (req, res) => {
     // Проверяем, есть ли блюдо с таким ID в базе данных
     const dish = await Dish.findByPk(dishid);
     if (!dish) {
-      return res.status(404).json({ message: "Dish not found" }); // Ошибка, если блюдо не найдено
+      return res.status(404).json({ message: "Dish not found" });
     }
 
     if (count <= 0) {
-      return res.status(400).json({ message: "Count must be greater than 0" }); // Ошибка, если количество <= 0
+      return res.status(400).json({ message: "Count must be greater than 0" });
     }
     // Проверяем, существует ли товар уже в корзине
     const existingItem = await Cart.findOne({
@@ -60,7 +60,7 @@ const addToCart = async (req, res) => {
 
     if (existingItem) {
       existingItem.count += count;
-      existingItem.price = existingItem.count * dish.price; // Пересчитываем цену
+      existingItem.price = existingItem.count * dish.price;
       await existingItem.save();
       return res.json(existingItem);
     } else {
@@ -114,7 +114,7 @@ const decreaseItemCount = async (req, res) => {
       if (cartItem.count > 1) {
         cartItem.count -= 1;
         const dishPrice = cartItem.Dish.price;
-        cartItem.price = cartItem.count * dishPrice; // Пересчет цены
+        cartItem.price = cartItem.count * dishPrice;
         await cartItem.save();
         res.json(cartItem);
       } else {
@@ -142,7 +142,6 @@ const removeFromCart = async (req, res) => {
       return res.status(404).json({ message: "Item not found" });
     }
 
-    // Удаляем товар из корзины
     await cartItem.destroy();
     res.json({ message: "Item removed from cart" });
   } catch (error) {
@@ -157,7 +156,6 @@ const calculateTotalPrice = async (req, res) => {
   try {
     const cartItems = await Cart.findAll({ where: { clientid } });
 
-    // Если корзина пуста, возвращаем 0
     if (cartItems.length === 0) {
       return res.json({ total: 0 });
     }
@@ -176,13 +174,13 @@ const orderCartItems = async (req, res) => {
     const { clientid } = req.params;
     const client = await Client.findByPk(clientid);
     if (!clientid) {
-      return res.status(400).json({ message: "Client ID is required" }); // Ошибка, если не передан clientId
+      return res.status(400).json({ message: "Client ID is required" });
     }
 
     // Находим все товары в корзине для указанного клиента
     const cartItems = await Cart.findAll({ where: { clientid: clientid } });
     if (cartItems.length === 0) {
-      return res.status(400).json({ message: "Cart is empty" }); // Ошибка, если корзина пуста
+      return res.status(400).json({ message: "Cart is empty" });
     }
 
     const totalamount = cartItems.reduce((sum, item) => sum + item.price, 0);

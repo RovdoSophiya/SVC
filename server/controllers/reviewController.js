@@ -109,7 +109,7 @@ const getReviews = async (req, res) => {
       reviews: reviews.rows,
     });
   } catch (error) {
-    console.error("Error fetching reviews:", error); // Логирование ошибки
+    console.error("Error fetching reviews:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

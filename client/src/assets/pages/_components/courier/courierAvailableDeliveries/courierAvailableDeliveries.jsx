@@ -148,7 +148,7 @@ const AvailableOrders = () => {
 
   if (orders.length === 0) {
     return (
-      <div style={{ display: "flex", justifyContent: "column" }}>
+      <div style={{ display: "flex", flexDirection: "column" }}>
         <Typography
           variant="h6"
           sx={{
@@ -163,7 +163,6 @@ const AvailableOrders = () => {
         <a
           href="/courier"
           style={{
-            display: "block",
             textAlign: "center",
             marginTop: "40px",
             marginBottom: "40px",

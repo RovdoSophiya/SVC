@@ -53,7 +53,7 @@ Tokens.init(
     sequelize,
     modelName: "Tokens",
     tableName: "Tokens",
-    timestamps: false, // Чтобы не создавать автоматические поля createdAt и updatedAt
+    timestamps: false,
   }
 );
 
